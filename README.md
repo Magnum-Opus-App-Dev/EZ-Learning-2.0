@@ -1,1 +1,4 @@
-#Welcome to Magnum Opus' EZ Learning 2.0
+# Welcome to Magnum Opus' <br /> EZ Learning 2.0 Version Control
+**Made in Partial Fulfillment to IT 105 - Application Development and Emerging Technologies** <br />
+*Dar - Dela Fuente - Echano - Malubay - Mortiga*
+> The next step for acknowledged EZ Learning: A learning application for students like you and me now available in cloud...
