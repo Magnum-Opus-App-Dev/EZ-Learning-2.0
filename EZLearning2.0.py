@@ -37,7 +37,7 @@ class LOGIN(customtkinter.CTk):
         self.master.title('EZ-Learning 2.0')
         self.master.iconbitmap("Logo.ico")
         self.master.config(bg="#121212")
-        print("The Login class has been opened")
+        print("OPENED: Login Feature")
 
         self._Email = StringVar()
         self._Password = StringVar()
@@ -138,7 +138,6 @@ class LOGIN(customtkinter.CTk):
         else: 
             try:
                 login = auth.sign_in_with_email_and_password(self._Email.get(), self._Password.get())
-                print("Login Successfully")
                 NOTES_FOLDER(self.master)
             except:
                 tkinter.messagebox.showinfo('Error', 'Invalid Email or Password. Try again')
@@ -154,7 +153,7 @@ class SIGNUP(customtkinter.CTk):
         self.master.title('EZ-Learning 2.0')
         self.master.iconbitmap("Logo.ico")
         self.master.config(bg="#121212")
-        print("The Signup class has been opened")
+        print("OPENED: Signup Feature")
 
         self._Username = StringVar()
         self._Email = StringVar()
@@ -281,7 +280,6 @@ class SIGNUP(customtkinter.CTk):
             else: 
                 try:
                     signin = auth.create_user_with_email_and_password(self._Email.get(), self._Password.get())
-                    print("Signin Successfully")
                 except:
                     tkinter.messagebox.showinfo('Invalid', 'Email Exist, please input another account')
 
@@ -293,11 +291,9 @@ class NOTES_FOLDER(customtkinter.CTk):
         self.master = master
         self.threelinemenu_dark = ImageTk.PhotoImage(Image.open("3line_dark.png"))
         self.threelinemenu_light = ImageTk.PhotoImage(Image.open("3line_light.png"))
-        self.closemenu_dark = ImageTk.PhotoImage(Image.open("close_dark.png"))
-        self.closemenu_light = ImageTk.PhotoImage(Image.open("close_light.png"))
         self.backframe()
         self.side_menu_icon()    
-        print("The Home class has been opened")
+        print("OPENED: Notes Folder")
 
     def backframe(self):
         Frame(self.master,
@@ -325,13 +321,106 @@ class NOTES_FOLDER(customtkinter.CTk):
         THREELINE_MENU(self.master)
 
 class QUIZ_FOLDER(customtkinter.CTk):
-    ""
+    def __init__(self, master):
+        self.master = master
+        self.threelinemenu_dark = ImageTk.PhotoImage(Image.open("3line_dark.png"))
+        self.threelinemenu_light = ImageTk.PhotoImage(Image.open("3line_light.png"))
+        self.backframe()
+        self.side_menu_icon()    
+        print("OPENED: Quiz Folder")
+
+    def backframe(self):
+        Frame(self.master,
+        width=900,
+        height=500,
+        background=self.master.cget("bg")).place(x=0, y=0)
+
+    def side_menu_icon(self):
+        if self.master.cget("bg") == "#121212":
+            Button(self.master,
+            image=self.threelinemenu_dark,
+            command=self.side_menu,
+            border=0,
+            bg=self.master.cget("bg"),
+            activebackground=self.master.cget("bg")).place(x=5,y=8)
+        elif self.master.cget("bg") == "#0d9187":
+            Button(self.master,
+            image= self.threelinemenu_light,
+            command=self.side_menu,
+            border=0,
+            bg=self.master.cget("bg"),
+            activebackground=self.master.cget("bg")).place(x=5,y=8)
+    
+    def side_menu(self):
+        THREELINE_MENU(self.master)
 
 class RECYCLE_BIN(customtkinter.CTk):
-    ""
+    def __init__(self, master):
+        self.master = master
+        self.threelinemenu_dark = ImageTk.PhotoImage(Image.open("3line_dark.png"))
+        self.threelinemenu_light = ImageTk.PhotoImage(Image.open("3line_light.png"))
+        self.backframe()
+        self.side_menu_icon()    
+        print("OPENED: Recycle Bin")
+
+    def backframe(self):
+        Frame(self.master,
+        width=900,
+        height=500,
+        background=self.master.cget("bg")).place(x=0, y=0)
+
+    def side_menu_icon(self):
+        if self.master.cget("bg") == "#121212":
+            Button(self.master,
+            image=self.threelinemenu_dark,
+            command=self.side_menu,
+            border=0,
+            bg=self.master.cget("bg"),
+            activebackground=self.master.cget("bg")).place(x=5,y=8)
+        elif self.master.cget("bg") == "#0d9187":
+            Button(self.master,
+            image= self.threelinemenu_light,
+            command=self.side_menu,
+            border=0,
+            bg=self.master.cget("bg"),
+            activebackground=self.master.cget("bg")).place(x=5,y=8)
+    
+    def side_menu(self):
+        THREELINE_MENU(self.master)
 
 class PROFILE_SETTINGS(customtkinter.CTk):
-    ""
+    def __init__(self, master):
+        self.master = master
+        self.threelinemenu_dark = ImageTk.PhotoImage(Image.open("3line_dark.png"))
+        self.threelinemenu_light = ImageTk.PhotoImage(Image.open("3line_light.png"))
+        self.backframe()
+        self.side_menu_icon()    
+        print("OPENED: Profile Settings")
+
+    def backframe(self):
+        Frame(self.master,
+        width=900,
+        height=500,
+        background=self.master.cget("bg")).place(x=0, y=0)
+
+    def side_menu_icon(self):
+        if self.master.cget("bg") == "#121212":
+            Button(self.master,
+            image=self.threelinemenu_dark,
+            command=self.side_menu,
+            border=0,
+            bg=self.master.cget("bg"),
+            activebackground=self.master.cget("bg")).place(x=5,y=8)
+        elif self.master.cget("bg") == "#0d9187":
+            Button(self.master,
+            image= self.threelinemenu_light,
+            command=self.side_menu,
+            border=0,
+            bg=self.master.cget("bg"),
+            activebackground=self.master.cget("bg")).place(x=5,y=8)
+    
+    def side_menu(self):
+        THREELINE_MENU(self.master)
 
 class THREELINE_MENU(customtkinter.CTk):
     def __init__(self, master):
@@ -340,9 +429,21 @@ class THREELINE_MENU(customtkinter.CTk):
         self.closemenu_light = ImageTk.PhotoImage(Image.open("close_light.png"))
 
         self.burger_menu()
-        print("The Three-Line Menu class has been opened")
+        print("OPENED: Three-Line Menu")
 
-    def menu(self):
+    def notes_folder(self):
+        NOTES_FOLDER(self.master)
+    
+    def quiz_folder(self):
+        QUIZ_FOLDER(self.master)
+    
+    def recycle_bin(self):
+        RECYCLE_BIN(self.master)
+
+    def profile_settings(self):
+        PROFILE_SETTINGS(self.master)
+
+    def TBC(self):
         pass
     
     def burger_menu(self):
@@ -367,13 +468,13 @@ class THREELINE_MENU(customtkinter.CTk):
         else: close_button = self.closemenu_light
         Button(self.master,
         image=close_button,
-        command=self.menu,
+        command=self.TBC,
         border=0,
         bg=bg_color,
         activebackground=bg_color).place(x=7,y=10)
         Notes = Button(self.master,
                 text="     Notes",
-                command=self.menu,
+                command=self.notes_folder,
                 anchor=W,
                 font=fontstyle,
                 border=0,
@@ -386,7 +487,7 @@ class THREELINE_MENU(customtkinter.CTk):
                 text="     Quizzes",
                 anchor=W,
                 font=fontstyle,
-                command=self.menu,
+                command=self.quiz_folder,
                 border=0,
                 fg=fg_color,
                 activeforeground=activefg,
@@ -397,7 +498,7 @@ class THREELINE_MENU(customtkinter.CTk):
                 text="     Recycle Bin",
                 anchor=W,
                 font=fontstyle,
-                command=self.menu,
+                command=self.recycle_bin,
                 border=0,
                 fg=fg_color,
                 activeforeground=activefg,
@@ -408,7 +509,7 @@ class THREELINE_MENU(customtkinter.CTk):
                 text="     Profile Settings",
                 anchor=W,
                 font=fontstyle,
-                command=self.menu,
+                command=self.profile_settings,
                 border=0,
                 fg=fg_color,
                 activeforeground=activefg,
@@ -419,7 +520,7 @@ class THREELINE_MENU(customtkinter.CTk):
                 text="     Logout",
                 anchor=W,
                 font=fontstyle,
-                command=self.menu,
+                command=self.TBC,
                 border=0,
                 fg=fg_color,
                 activeforeground=activefg,
