@@ -445,8 +445,12 @@ class THREELINE_MENU(customtkinter.CTk):
 
     def TBC(self):
         pass
-    
+
     def burger_menu(self):
+
+        def destroy_threeline():
+            threeline_menu.destroy()
+            print("CLOSED: Three-Line Menu")
         fg_color = "#ffffff"
         activefg = "#ffffff"
         fontstyle = ("Roboto", 17, "bold")
@@ -466,13 +470,13 @@ class THREELINE_MENU(customtkinter.CTk):
         if bg_color == "#3B3838":
             close_button = self.closemenu_dark
         else: close_button = self.closemenu_light
-        Button(self.master,
+        Button(threeline_menu,
         image=close_button,
-        command=self.TBC,
+        command=destroy_threeline,
         border=0,
         bg=bg_color,
         activebackground=bg_color).place(x=7,y=10)
-        Notes = Button(self.master,
+        Notes = Button(threeline_menu,
                 text="     Notes",
                 command=self.notes_folder,
                 anchor=W,
@@ -483,7 +487,7 @@ class THREELINE_MENU(customtkinter.CTk):
                 bg=bg_color,
                 activebackground=activebg,
                 width=20)
-        Quizzes = Button(self.master,
+        Quizzes = Button(threeline_menu,
                 text="     Quizzes",
                 anchor=W,
                 font=fontstyle,
@@ -494,7 +498,7 @@ class THREELINE_MENU(customtkinter.CTk):
                 bg=bg_color,
                 activebackground=activebg,
                 width=20)
-        Recycle_Bin = Button(self.master,
+        Recycle_Bin = Button(threeline_menu,
                 text="     Recycle Bin",
                 anchor=W,
                 font=fontstyle,
@@ -505,7 +509,7 @@ class THREELINE_MENU(customtkinter.CTk):
                 bg=bg_color,
                 activebackground=activebg,
                 width=20)
-        Profile_Settings = Button(self.master,
+        Profile_Settings = Button(threeline_menu,
                 text="     Profile Settings",
                 anchor=W,
                 font=fontstyle,
@@ -516,7 +520,7 @@ class THREELINE_MENU(customtkinter.CTk):
                 bg=bg_color,
                 activebackground=activebg,
                 width=20)
-        Logout = Button(self.master,
+        Logout = Button(threeline_menu,
                 text="     Logout",
                 anchor=W,
                 font=fontstyle,
