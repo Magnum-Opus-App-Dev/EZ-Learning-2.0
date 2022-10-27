@@ -464,6 +464,46 @@ class NOTE_FILES(customtkinter.CTk):
     def side_menu(self):
         THREELINE_MENU(self.master)
 
+class NOTE_EDITOR(customtkinter.CTk):
+    def __init__(self, master):
+        self.master = master
+        self.threelinemenu_dark = ImageTk.PhotoImage(Image.open("3line_dark.png"))
+        self.threelinemenu_light = ImageTk.PhotoImage(Image.open("3line_light.png"))
+        self.backframe()
+        self.features()
+        print("OPENED: Note Editor")
+
+    def backframe(self):
+        Frame(self.master,
+        width=900,
+        height=500,
+        background=self.master.cget("bg")).place(x=0, y=0)
+
+    def features(self):
+
+        bg_color = self.master.cget("bg")
+
+        if bg_color == "#121212":
+
+            Button(self.master,
+            image=self.threelinemenu_dark,
+            command=self.side_menu,
+            border=0,
+            bg=bg_color,
+            activebackground=bg_color).place(x=7,y=10)
+
+        elif bg_color == "#0d9187":
+
+            Button(self.master,
+            image=self.threelinemenu_light,
+            command=self.side_menu,
+            border=0,
+            bg=bg_color,
+            activebackground=bg_color).place(x=7,y=10)
+    
+    def side_menu(self):
+        THREELINE_MENU(self.master)
+
 class QUIZ_FOLDER(customtkinter.CTk):
     def __init__(self, master):
         self.master = master
@@ -638,6 +678,46 @@ class QUIZ_FILES(customtkinter.CTk):
             bg=bg_color,
             borderwidth=0,
             fg="#e9e9e9").place(x=100, y=30)
+    
+    def side_menu(self):
+        THREELINE_MENU(self.master)
+
+class QUIZ_EDITOR(customtkinter.CTk):
+    def __init__(self, master):
+        self.master = master
+        self.threelinemenu_dark = ImageTk.PhotoImage(Image.open("3line_dark.png"))
+        self.threelinemenu_light = ImageTk.PhotoImage(Image.open("3line_light.png"))
+        self.backframe()
+        self.features()
+        print("OPENED: Quiz Editor")
+
+    def backframe(self):
+        Frame(self.master,
+        width=900,
+        height=500,
+        background=self.master.cget("bg")).place(x=0, y=0)
+
+    def features(self):
+
+        bg_color = self.master.cget("bg")
+
+        if bg_color == "#121212":
+
+            Button(self.master,
+            image=self.threelinemenu_dark,
+            command=self.side_menu,
+            border=0,
+            bg=bg_color,
+            activebackground=bg_color).place(x=7,y=10)
+
+        elif bg_color == "#0d9187":
+
+            Button(self.master,
+            image=self.threelinemenu_light,
+            command=self.side_menu,
+            border=0,
+            bg=bg_color,
+            activebackground=bg_color).place(x=7,y=10)
     
     def side_menu(self):
         THREELINE_MENU(self.master)
