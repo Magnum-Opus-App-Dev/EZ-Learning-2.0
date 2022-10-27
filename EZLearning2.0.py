@@ -723,8 +723,10 @@ class RECYCLE_BIN(customtkinter.CTk):
         self.master = master
         self.threelinemenu_dark = ImageTk.PhotoImage(Image.open("3line_dark.png"))
         self.threelinemenu_light = ImageTk.PhotoImage(Image.open("3line_light.png"))
+        self.search_dark = ImageTk.PhotoImage(Image.open("search_dark.png"))
+        self.search_light = ImageTk.PhotoImage(Image.open("search_light.png"))
         self.backframe()
-        self.side_menu_icon()    
+        self.features()
         print("OPENED: Recycle Bin")
 
     def backframe(self):
@@ -733,21 +735,50 @@ class RECYCLE_BIN(customtkinter.CTk):
         height=500,
         background=self.master.cget("bg")).place(x=0, y=0)
 
-    def side_menu_icon(self):
-        if self.master.cget("bg") == "#121212":
+    def features(self):
+
+        bg_color = self.master.cget("bg")
+
+        if bg_color == "#121212":
+            Label(self.master,
+            image=self.search_dark,
+            border=0,
+            bg=bg_color).place(x=30,y=12)
+
             Button(self.master,
             image=self.threelinemenu_dark,
             command=self.side_menu,
             border=0,
-            bg=self.master.cget("bg"),
-            activebackground=self.master.cget("bg")).place(x=5,y=8)
-        elif self.master.cget("bg") == "#0d9187":
+            bg=bg_color,
+            activebackground=bg_color).place(x=50,y=24)
+
+            Entry(self.master,
+            width=74,
+            font=("Roboto", 12, "bold"),
+            bg=bg_color,
+            borderwidth=0,
+            fg="#e9e9e9").place(x=100, y=30)
+
+        elif bg_color == "#0d9187":
+
+            Label(self.master,
+            image=self.search_light,
+            border=0,
+            bg=bg_color).place(x=30,y=12)
+
             Button(self.master,
-            image= self.threelinemenu_light,
+            image=self.threelinemenu_light,
             command=self.side_menu,
             border=0,
-            bg=self.master.cget("bg"),
-            activebackground=self.master.cget("bg")).place(x=5,y=8)
+            bg=bg_color,
+            activebackground=bg_color).place(x=50,y=24)
+            
+            Entry(self.master,
+            width=74,
+            font=("Roboto", 12, "bold"),
+            bg=bg_color,
+            borderwidth=0,
+            fg="#e9e9e9").place(x=100, y=30)
     
     def side_menu(self):
         THREELINE_MENU(self.master,visit='Bin')
@@ -822,10 +853,12 @@ class THREELINE_MENU(customtkinter.CTk):
 
         if self.master.cget("bg") == "#121212":
             bg_color = "#3B3838"
-            activebg = "#6B6565"
+            activebg = "#2d2d2d"
+            clickedbg = "#2d2d2d"
         else: 
             bg_color = "#15559B"
             activebg = "#114681"
+            clickedbg = "#114681"
             
         threeline_menu = Frame(self.master,
         width=286,
@@ -848,36 +881,100 @@ class THREELINE_MENU(customtkinter.CTk):
             no_state = []
             for x in state: no_state.append(x)
 
-            Notes = Button(threeline_menu,text="     Notes",command=self.notes_folder,anchor=W,font=fontstyle,border=0,fg=fg_color,activeforeground=activefg,bg=note,activebackground=activebg,width=20, state=no_state[0])
+            Notes = Button(threeline_menu,
+            text="     Notes",
+            command=self.notes_folder,
+            anchor=W,
+            font=fontstyle,
+            border=0,
+            fg=fg_color,
+            activeforeground=activefg,
+            bg=note,
+            activebackground=activebg,
+            width=20, 
+            disabledforeground=fg_color,
+            state=no_state[0])
             Notes.place(x=0,y=75)
+
             if no_state[0] != 'disabled':
                 Notes.bind("<Enter>", lambda _: on_entera(None, Notes))
                 Notes.bind("<Leave>", lambda _: on_leavea(None, Notes))
             else: pass
             
-            Quizzes = Button(threeline_menu,text="     Quizzes",anchor=W,font=fontstyle,command=self.quiz_folder,border=0,fg=fg_color,activeforeground=activefg,bg=quiz,activebackground=activebg,width=20, state=no_state[1])
+            Quizzes = Button(threeline_menu,
+            text="     Quizzes",
+            anchor=W,
+            font=fontstyle,
+            command=self.quiz_folder,
+            border=0,fg=fg_color,
+            activeforeground=activefg,
+            bg=quiz,
+            activebackground=activebg,
+            width=20, 
+            disabledforeground=fg_color,
+            state=no_state[1])
             Quizzes.place(x=0, y=123)
+
             if no_state[1] != 'disabled':
                 Quizzes.bind("<Enter>", lambda _: on_entera(None, Quizzes))
                 Quizzes.bind("<Leave>", lambda _: on_leavea(None, Quizzes))
             else: pass
         
-            Recycle_Bin = Button(threeline_menu,text="     Recycle Bin",anchor=W,font=fontstyle,command=self.recycle_bin,border=0,fg=fg_color,activeforeground=activefg,bg=bin,activebackground=activebg,width=20, state=no_state[2])
+            Recycle_Bin = Button(threeline_menu,
+            text="     Recycle Bin",
+            anchor=W,font=fontstyle,
+            command=self.recycle_bin,
+            border=0,
+            fg=fg_color,
+            activeforeground=activefg,
+            bg=bin,
+            activebackground=activebg,
+            width=20, 
+            disabledforeground=fg_color,
+            state=no_state[2])
             Recycle_Bin.place(x=0, y=171)
+
             if no_state[2] != 'disabled':
                 Recycle_Bin.bind("<Enter>", lambda _: on_entera(None, Recycle_Bin))
                 Recycle_Bin.bind("<Leave>", lambda _: on_leavea(None, Recycle_Bin))
             else: pass
         
-            Profile_Settings = Button(threeline_menu,text="     Profile Settings",anchor=W,font=fontstyle,command=self.profile_settings,border=0,fg=fg_color,activeforeground=activefg,bg=profile,activebackground=activebg,width=20, state=no_state[3])
+            Profile_Settings = Button(threeline_menu,
+            text="     Profile Settings",
+            anchor=W,
+            font=fontstyle,
+            command=self.profile_settings,
+            border=0,
+            fg=fg_color,
+            activeforeground=activefg,
+            bg=profile,
+            activebackground=activebg,
+            width=20,
+            disabledforeground=fg_color,
+            state=no_state[3])
             Profile_Settings.place(x=0, y=219)
+            
             if no_state[3] != 'disabled':
                 Profile_Settings.bind("<Enter>", lambda _: on_entera(None, Profile_Settings))
                 Profile_Settings.bind("<Leave>", lambda _: on_leavea(None, Profile_Settings))
             else: pass
         
-            Logout = Button(threeline_menu,text="     Logout",anchor=W,font=fontstyle,command=self.TBC,border=0,fg=fg_color,activeforeground=activefg,bg=logout,activebackground=activebg,width=20, state=no_state[4])
+            Logout = Button(threeline_menu,
+            text="     Logout",
+            anchor=W,
+            font=fontstyle,
+            command=self.TBC,
+            border=0,
+            fg=fg_color,
+            activeforeground=activefg,
+            bg=logout,
+            activebackground=activebg,
+            disabledforeground=fg_color,
+            width=20,
+            
+            state=no_state[4])
             Logout.place(x=0, y=267)
+
             if no_state[4] != 'disabled':
                 Logout.bind("<Enter>", lambda _: on_entera(None, Logout))
                 Logout.bind("<Leave>", lambda _: on_leavea(None, Logout))
@@ -893,19 +990,19 @@ class THREELINE_MENU(customtkinter.CTk):
     
         if self.visit == 'Note':
             notes_state = ['disabled', 'normal', 'normal', 'normal', 'normal']
-            side_buttons('#0b6177', bg_color, bg_color, bg_color, bg_color, notes_state)
+            side_buttons(clickedbg, bg_color, bg_color, bg_color, bg_color, notes_state)
         elif self.visit == 'Quiz':
             quiz_state = ['normal', 'disabled', 'normal', 'normal', 'normal']
-            side_buttons(bg_color, '#0b6177', bg_color, bg_color, bg_color, quiz_state) 
+            side_buttons(bg_color, clickedbg, bg_color, bg_color, bg_color, quiz_state) 
         elif self.visit == 'Bin':
             bin_state = ['normal', 'normal', 'disabled', 'normal','normal']
-            side_buttons(bg_color, bg_color,'#0b6177', bg_color, bg_color, bin_state) 
+            side_buttons(bg_color, bg_color, clickedbg, bg_color, bg_color, bin_state) 
         elif self.visit == 'Profile':
             profile_state = ['normal','normal','normal','disabled', 'normal']
-            side_buttons(bg_color, bg_color,bg_color, '#0b6177', bg_color, profile_state)
+            side_buttons(bg_color, bg_color, bg_color, clickedbg, bg_color, profile_state)
         else:
             logout_state = ['normal', 'normal','normal','normal', 'disabled']
-            side_buttons(bg_color, bg_color,bg_color, bg_color, '#0b6177', logout_state) 
+            side_buttons(bg_color, bg_color, bg_color, bg_color, clickedbg, logout_state) 
     
 window = Tk()
 window.resizable(False, False)
@@ -919,5 +1016,5 @@ y = (hs/2) - (h/1.7)
 
 window.geometry('%dx%d+%d+%d' % (w, h, x, y))
 if __name__ == "__main__":
-    the_hundreds = SIGNUP(window)
+    the_hundreds = LOGIN(window)
     window.mainloop()
