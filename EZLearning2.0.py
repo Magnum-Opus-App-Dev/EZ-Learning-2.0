@@ -12,8 +12,8 @@ import random
 import shutup;shutup.please()
 
 #SAMPLE EMAIL AND PASSWORD FOR LOGIN:
-#fake@gmail.com
-#1234567
+#2@gmail.com
+#//////
 
 config = {"apiKey": "AIzaSyBARpuvAyruul-wLV0APfAsd0oT7W5rOuU",
   "authDomain": "fir-a97e4.firebaseapp.com",
@@ -291,8 +291,14 @@ class NOTES_FOLDER(customtkinter.CTk):
         self.master = master
         self.threelinemenu_dark = ImageTk.PhotoImage(Image.open("3line_dark.png"))
         self.threelinemenu_light = ImageTk.PhotoImage(Image.open("3line_light.png"))
+        self.search_dark = ImageTk.PhotoImage(Image.open("search_dark.png"))
+        self.search_light = ImageTk.PhotoImage(Image.open("search_light.png"))
+        self.contentbg_dark = ImageTk.PhotoImage(Image.open("notesfolder_dark.png"))
+        self.contentbg_light = ImageTk.PhotoImage(Image.open("notesfolder_light.png"))
+        self.quizbtn_dark = ImageTk.PhotoImage(Image.open("quizzesbutton_dark.png"))
+        self.quizbtn_light = ImageTk.PhotoImage(Image.open("quizzesbutton_light.png"))
         self.backframe()
-        self.side_menu_icon()    
+        self.features()
         print("OPENED: Notes Folder")
 
     def backframe(self):
@@ -301,21 +307,159 @@ class NOTES_FOLDER(customtkinter.CTk):
         height=500,
         background=self.master.cget("bg")).place(x=0, y=0)
 
-    def side_menu_icon(self):
-        if self.master.cget("bg") == "#121212":
+    def features(self):
+
+        bg_color = self.master.cget("bg")
+
+        if bg_color == "#121212":
+            Label(self.master,
+            image=self.search_dark,
+            border=0,
+            bg=bg_color).place(x=30,y=12)
+
+            Label(self.master,
+            image=self.contentbg_dark,
+            border=0,).place(x=23,y=70)
+
             Button(self.master,
             image=self.threelinemenu_dark,
             command=self.side_menu,
             border=0,
-            bg=self.master.cget("bg"),
-            activebackground=self.master.cget("bg")).place(x=5,y=8)
-        elif self.master.cget("bg") == "#0d9187":
+            bg=bg_color,
+            activebackground=bg_color).place(x=50,y=24)
+
+            Entry(self.master,
+            width=74,
+            font=("Roboto", 12, "bold"),
+            bg=bg_color,
+            borderwidth=0,
+            fg="#e9e9e9").place(x=100, y=30)
+
             Button(self.master,
-            image= self.threelinemenu_light,
+            text="Quizzes",
+            fg=bg_color,
+            font=("Roboto", 14, "bold"),
+            command=self.goto_quizzes,
+            bg="#A6A6A6",
+            borderwidth=0,
+            activeforeground=bg_color,
+            activebackground="#A6A6A6").place(x=506, y=85)
+
+            Label(self.master,
+            text="Notes",
+            fg="#F2F2F2",
+            font=("Roboto", 14, "bold"),
+            bg="#2C2C2C",
+            borderwidth=0).place(x=322, y=90)
+        elif bg_color == "#0d9187":
+
+            Label(self.master,
+            image=self.search_light,
+            border=0,
+            bg=bg_color).place(x=30,y=12)
+
+            Label(self.master,
+            image=self.contentbg_light,
+            border=0,).place(x=23,y=70)
+
+            Button(self.master,
+            image=self.threelinemenu_light,
             command=self.side_menu,
             border=0,
-            bg=self.master.cget("bg"),
-            activebackground=self.master.cget("bg")).place(x=5,y=8)
+            bg=bg_color,
+            activebackground=bg_color).place(x=50,y=24)
+            
+            Entry(self.master,
+            width=74,
+            font=("Roboto", 12, "bold"),
+            bg=bg_color,
+            borderwidth=0,
+            fg="#e9e9e9").place(x=100, y=30)
+
+            Button(self.master,
+            text="Quizzes",
+            fg="#F2F2F2",
+            font=("Roboto", 14, "bold"),
+            command=self.goto_quizzes,
+            bg="#0c325c",
+            borderwidth=0,
+            activeforeground="#F2F2F2",
+            activebackground="#0c325c").place(x=506, y=85)
+
+            Label(self.master,
+            text="Notes",
+            fg="#0c325c",
+            font=("Roboto", 14, "bold"),
+            bg="#12c8bb",
+            borderwidth=0).place(x=322, y=90)
+    
+    def side_menu(self):
+        THREELINE_MENU(self.master)
+    
+    def goto_quizzes(self):
+        QUIZ_FOLDER(self.master)
+
+class NOTE_FILES(customtkinter.CTk):
+    def __init__(self, master):
+        self.master = master
+        self.threelinemenu_dark = ImageTk.PhotoImage(Image.open("3line_dark.png"))
+        self.threelinemenu_light = ImageTk.PhotoImage(Image.open("3line_light.png"))
+        self.search_dark = ImageTk.PhotoImage(Image.open("search_dark.png"))
+        self.search_light = ImageTk.PhotoImage(Image.open("search_light.png"))
+        self.backframe()
+        self.features()
+        print("OPENED: Note Files")
+
+    def backframe(self):
+        Frame(self.master,
+        width=900,
+        height=500,
+        background=self.master.cget("bg")).place(x=0, y=0)
+
+    def features(self):
+
+        bg_color = self.master.cget("bg")
+
+        if bg_color == "#121212":
+            Label(self.master,
+            image=self.search_dark,
+            border=0,
+            bg=bg_color).place(x=30,y=12)
+
+            Button(self.master,
+            image=self.threelinemenu_dark,
+            command=self.side_menu,
+            border=0,
+            bg=bg_color,
+            activebackground=bg_color).place(x=50,y=24)
+
+            Entry(self.master,
+            width=74,
+            font=("Roboto", 12, "bold"),
+            bg=bg_color,
+            borderwidth=0,
+            fg="#e9e9e9").place(x=100, y=30)
+
+        elif bg_color == "#0d9187":
+
+            Label(self.master,
+            image=self.search_light,
+            border=0,
+            bg=bg_color).place(x=30,y=12)
+
+            Button(self.master,
+            image=self.threelinemenu_light,
+            command=self.side_menu,
+            border=0,
+            bg=bg_color,
+            activebackground=bg_color).place(x=50,y=24)
+            
+            Entry(self.master,
+            width=74,
+            font=("Roboto", 12, "bold"),
+            bg=bg_color,
+            borderwidth=0,
+            fg="#e9e9e9").place(x=100, y=30)
     
     def side_menu(self):
         THREELINE_MENU(self.master)
@@ -325,9 +469,15 @@ class QUIZ_FOLDER(customtkinter.CTk):
         self.master = master
         self.threelinemenu_dark = ImageTk.PhotoImage(Image.open("3line_dark.png"))
         self.threelinemenu_light = ImageTk.PhotoImage(Image.open("3line_light.png"))
+        self.search_dark = ImageTk.PhotoImage(Image.open("search_dark.png"))
+        self.search_light = ImageTk.PhotoImage(Image.open("search_light.png"))
+        self.contentbg_dark = ImageTk.PhotoImage(Image.open("quizzesfolder_dark.png"))
+        self.contentbg_light = ImageTk.PhotoImage(Image.open("quizzesfolder_light.png"))
+        self.quizbtn_dark = ImageTk.PhotoImage(Image.open("quizzesbutton_dark.png"))
+        self.quizbtn_light = ImageTk.PhotoImage(Image.open("quizzesbutton_light.png"))
         self.backframe()
-        self.side_menu_icon()    
-        print("OPENED: Quiz Folder")
+        self.features()
+        print("OPENED: Quizzes Folder")
 
     def backframe(self):
         Frame(self.master,
@@ -335,21 +485,159 @@ class QUIZ_FOLDER(customtkinter.CTk):
         height=500,
         background=self.master.cget("bg")).place(x=0, y=0)
 
-    def side_menu_icon(self):
-        if self.master.cget("bg") == "#121212":
+    def features(self):
+
+        bg_color = self.master.cget("bg")
+
+        if bg_color == "#121212":
+            Label(self.master,
+            image=self.search_dark,
+            border=0,
+            bg=bg_color).place(x=30,y=12)
+
+            Label(self.master,
+            image=self.contentbg_dark,
+            border=0,).place(x=23,y=70)
+
             Button(self.master,
             image=self.threelinemenu_dark,
             command=self.side_menu,
             border=0,
-            bg=self.master.cget("bg"),
-            activebackground=self.master.cget("bg")).place(x=5,y=8)
-        elif self.master.cget("bg") == "#0d9187":
+            bg=bg_color,
+            activebackground=bg_color).place(x=50,y=24)
+
+            Entry(self.master,
+            width=74,
+            font=("Roboto", 12, "bold"),
+            bg=bg_color,
+            borderwidth=0,
+            fg="#e9e9e9").place(x=100, y=30)
+
             Button(self.master,
-            image= self.threelinemenu_light,
+            text="Notes",
+            fg=bg_color,
+            font=("Roboto", 14, "bold"),
+            command=self.goto_notes,
+            bg="#A6A6A6",
+            borderwidth=0,
+            activeforeground=bg_color,
+            activebackground="#A6A6A6").place(x=315, y=85)
+
+            Label(self.master,
+            text="Quizzes",
+            fg="#F2F2F2",
+            font=("Roboto", 14, "bold"),
+            bg="#2C2C2C",
+            borderwidth=0).place(x=512, y=91)
+        elif bg_color == "#0d9187":
+
+            Label(self.master,
+            image=self.search_light,
+            border=0,
+            bg=bg_color).place(x=30,y=12)
+
+            Label(self.master,
+            image=self.contentbg_light,
+            border=0,).place(x=23,y=70)
+
+            Button(self.master,
+            image=self.threelinemenu_light,
             command=self.side_menu,
             border=0,
-            bg=self.master.cget("bg"),
-            activebackground=self.master.cget("bg")).place(x=5,y=8)
+            bg=bg_color,
+            activebackground=bg_color).place(x=50,y=24)
+            
+            Entry(self.master,
+            width=74,
+            font=("Roboto", 12, "bold"),
+            bg=bg_color,
+            borderwidth=0,
+            fg="#e9e9e9").place(x=100, y=30)
+
+            Button(self.master,
+            text="Notes",
+            fg="#F2F2F2",
+            font=("Roboto", 14, "bold"),
+            command=self.goto_notes,
+            bg="#0c325c",
+            borderwidth=0,
+            activeforeground="#F2F2F2",
+            activebackground="#0c325c").place(x=315, y=85)
+
+            Label(self.master,
+            text="Quizzes",
+            fg="#0c325c",
+            font=("Roboto", 14, "bold"),
+            bg="#12c8bb",
+            borderwidth=0).place(x=512, y=91)
+    
+    def side_menu(self):
+        THREELINE_MENU(self.master)
+    
+    def goto_notes(self):
+        NOTES_FOLDER(self.master)
+
+class QUIZ_FILES(customtkinter.CTk):
+    def __init__(self, master):
+        self.master = master
+        self.threelinemenu_dark = ImageTk.PhotoImage(Image.open("3line_dark.png"))
+        self.threelinemenu_light = ImageTk.PhotoImage(Image.open("3line_light.png"))
+        self.search_dark = ImageTk.PhotoImage(Image.open("search_dark.png"))
+        self.search_light = ImageTk.PhotoImage(Image.open("search_light.png"))
+        self.backframe()
+        self.features()
+        print("OPENED: Quiz Files")
+
+    def backframe(self):
+        Frame(self.master,
+        width=900,
+        height=500,
+        background=self.master.cget("bg")).place(x=0, y=0)
+
+    def features(self):
+
+        bg_color = self.master.cget("bg")
+
+        if bg_color == "#121212":
+            Label(self.master,
+            image=self.search_dark,
+            border=0,
+            bg=bg_color).place(x=30,y=12)
+
+            Button(self.master,
+            image=self.threelinemenu_dark,
+            command=self.side_menu,
+            border=0,
+            bg=bg_color,
+            activebackground=bg_color).place(x=50,y=24)
+
+            Entry(self.master,
+            width=74,
+            font=("Roboto", 12, "bold"),
+            bg=bg_color,
+            borderwidth=0,
+            fg="#e9e9e9").place(x=100, y=30)
+
+        elif bg_color == "#0d9187":
+
+            Label(self.master,
+            image=self.search_light,
+            border=0,
+            bg=bg_color).place(x=30,y=12)
+
+            Button(self.master,
+            image=self.threelinemenu_light,
+            command=self.side_menu,
+            border=0,
+            bg=bg_color,
+            activebackground=bg_color).place(x=50,y=24)
+            
+            Entry(self.master,
+            width=74,
+            font=("Roboto", 12, "bold"),
+            bg=bg_color,
+            borderwidth=0,
+            fg="#e9e9e9").place(x=100, y=30)
     
     def side_menu(self):
         THREELINE_MENU(self.master)
