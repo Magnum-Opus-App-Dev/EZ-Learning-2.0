@@ -300,6 +300,11 @@ class NOTES_FOLDER(customtkinter.CTk):
         self.quizbtn_light = ImageTk.PhotoImage(Image.open("quizzesbutton_light.png"))
         self.folder_dark = ImageTk.PhotoImage(Image.open("folder_dark.png"))
         self.folder_light = ImageTk.PhotoImage(Image.open("folder_light.png"))
+        self.addbtn_dark = ImageTk.PhotoImage(Image.open("add_dark.png"))
+        self.addbtn_light = ImageTk.PhotoImage(Image.open("add_light.png"))
+
+        self.bg_color = self.master.cget("bg")
+        self.rows = 2
         
         self.backframe()
         self.features()
@@ -311,289 +316,154 @@ class NOTES_FOLDER(customtkinter.CTk):
         height=500,
         background=self.master.cget("bg"))
         self.main_frame.place(x=0, y=0)
+    
+    def add_frame(self):
+        self.main_frame = Frame(self.master,
+        width=500,
+        height=200,
+        background=self.master.cget("bg"))
+        self.main_frame.place(x=200, y=150)
+
+        self.add_entry = Entry(self.main_frame,
+        width=40,
+        font=("Roboto", 12, "bold"),
+        bg="#c2c2c2",
+        borderwidth=0,
+        fg="#000000")
+        self.add_entry.place(x=50, y=50)
+
+        self.okay_btn = Button(self.main_frame,
+        text='Submit',
+        font=("Comic Sans MS", 11),
+        fg='#000000',
+        borderwidth=0,
+        relief=FLAT,
+        width=10,)
+        self.okay_btn.place(x=200, y=100)
+
+        self.cancel_btn = Button(self.main_frame,
+        text='Cancel',
+        font=("Comic Sans MS", 11),
+        fg='#000000',
+        borderwidth=0,
+        relief=FLAT,
+        width=10,)
+        self.cancel_btn.place(x=200, y=150)
+
+    def content_features(self, search_img, content_img, folder_img, menu_img, quiz_a_fg, quiz_a_bg, notes_fg, notes_bg, btn_img):
+        
+        search_label =Label(self.master,
+        image=search_img,
+        border=0,
+        bg=self.bg_color)
+        search_label.place(x=30,y=12)
+
+        content_label = Label(self.master,
+        image=content_img,
+        border=0,)
+        content_label.place(x=23,y=70)
+
+        # Create frame and canvas
+        inline_frame = Frame(content_label, width=795, height=343, bg=notes_bg)
+        inline_frame.place(x=23, y=60)
+
+        second_line_frame = Frame(inline_frame, bg=notes_bg)
+        second_line_frame.pack(fill=BOTH, expand= 1)
+
+        inline_canvas = Canvas(second_line_frame, width=795, height=343, background=notes_bg,highlightthickness=0)
+        inline_canvas.pack(side=LEFT, fill=BOTH, expand=1)
+
+        if self.rows > 2:
+
+            # Create scrollbar from the canvas
+            scrollbar = ttk.Scrollbar(second_line_frame,
+                orient=VERTICAL,
+                command=inline_canvas.yview)
+            scrollbar.pack(side=RIGHT, fill=Y, padx=2, pady=1)
+
+            # Configure the canvas
+            inline_canvas.configure(yscrollcommand=scrollbar.set)
+            inline_canvas.bind('<Configure>',
+                lambda e: inline_canvas.configure(scrollregion=inline_canvas.bbox("all")))
+            inline_canvas.bind_all('<MouseWheel>', 
+                lambda event: inline_canvas.yview('scroll', int(-2*(event.delta/120)), 'units'))
+
+        # Create another frame inside the canvas
+
+        another_frame = Frame(inline_canvas, bg=notes_bg)
+        inline_canvas.create_window((0,0), window=another_frame, anchor='nw')
+
+        line_frame = Canvas(another_frame, highlightthickness=0)
+        line_frame.grid(row =0, column=0, pady=5, padx=11)
+        
+        folder = Button(line_frame,
+            image=folder_img,
+            command= None,
+            border=0,
+            bg=notes_bg,)
+        folder.pack()
+
+        foldername = Label(line_frame,
+        text='Mathematics',
+        font=("Comic Sans MS", 11),
+        fg='#ffffff',
+        borderwidth=0,
+        relief=FLAT,
+        width=10,
+        background=notes_bg,
+        activebackground=self.bg_color,
+        height=1)
+        foldername.pack(fill=BOTH, expand= 1)
+
+        line_menu =Button(self.master,
+        image=menu_img,
+        command=self.side_menu,
+        border=0,
+        bg=self.bg_color,
+        activebackground=self.bg_color)
+        line_menu.place(x=50,y=24)
+
+        search_entry = Entry(self.master,
+        width=74,
+        font=("Roboto", 12, "bold"),
+        bg=self.bg_color,
+        borderwidth=0,
+        fg="#e9e9e9")
+        search_entry.place(x=100, y=30)
+
+        add_btn = Button(self.master,
+        image=btn_img,
+        command = self.add_frame,
+        border = 0,
+        bg=self.bg_color,
+        activebackground=self.bg_color)
+        add_btn.place(x=760, y=78)
+
+        quiz_button = Button(self.master,
+        text="Quizzes",
+        fg=quiz_a_fg,
+        font=("Roboto", 14, "bold"),
+        command=self.goto_quizzes,
+        bg=quiz_a_bg,
+        borderwidth=0,
+        activeforeground=quiz_a_fg,
+        activebackground=quiz_a_bg)
+        quiz_button.place(x=506, y=85)
+
+        notes_label = Label(self.master,
+        text="Notes",
+        fg=notes_fg,
+        font=("Roboto", 14, "bold"),
+        bg=notes_bg,
+        borderwidth=0)
+        notes_label.place(x=322, y=90)
         
     def features(self):
 
-        bg_color = self.master.cget("bg")
-        rows = 3
-
-
-        if bg_color == "#121212":
+        if self.bg_color == "#121212": self.content_features(self.search_dark, self.contentbg_dark, self.folder_dark, self.threelinemenu_dark, self.bg_color, "#A6A6A6", "#F2F2F2", "#2C2C2C", self.addbtn_dark)
             
-            search_label =Label(self.master,
-            image=self.search_dark,
-            border=0,
-            bg=bg_color)
-            search_label.place(x=30,y=12)
-
-            content_label = Label(self.master,
-            image=self.contentbg_dark,
-            border=0,)
-            content_label.place(x=23,y=70)
-
-            # Create frame and canvas
-            inline_frame = Frame(content_label, width=795, height=343, bg='#2c2c2c')
-            inline_frame.place(x=23, y=60)
-
-            second_line_frame = Frame(inline_frame, bg='#2c2c2c')
-            second_line_frame.pack(fill=BOTH, expand= 1)
-
-            inline_canvas = Canvas(second_line_frame, width=795, height=343, background='#2c2c2c',highlightthickness=0)
-            inline_canvas.pack(side=LEFT, fill=BOTH, expand=1)
-
-            if rows > 2:
-
-                # Create scrollbar from the canvas
-                scrollbar = ttk.Scrollbar(second_line_frame,
-                    orient=VERTICAL,
-                    command=inline_canvas.yview)
-                scrollbar.pack(side=RIGHT, fill=Y, padx=2, pady=1)
-
-                # Configure the canvas
-                inline_canvas.configure(yscrollcommand=scrollbar.set)
-                inline_canvas.bind('<Configure>',
-                    lambda e: inline_canvas.configure(scrollregion=inline_canvas.bbox("all")))
-                inline_canvas.bind_all('<MouseWheel>', 
-                    lambda event: inline_canvas.yview('scroll', int(-2*(event.delta/120)), 'units'))
-
-            # Create another frame inside the canvas
-
-            another_frame = Frame(inline_canvas, bg='#2c2c2c')
-            inline_canvas.create_window((0,0), window=another_frame, anchor='nw')
-
-            line_frame = Canvas(another_frame, highlightthickness=0)
-            line_frame.grid(row =0, column=0, pady=5, padx=11)
-            
-            folder = Button(line_frame,
-                image=self.folder_dark,
-                command= None,
-                border=0,
-                bg='#2c2c2c',)
-            folder.pack()
-
-            foldername = Label(line_frame,
-            text='Mathematics',
-            font=("Comic Sans MS", 11),
-            fg='#ffffff',
-            borderwidth=0,
-            relief=FLAT,
-            width=10,
-            background='#2c2c2c',
-            activebackground=bg_color,
-            height=1)
-            foldername.pack(fill=BOTH, expand= 1)
-
-            line_frame = Canvas(another_frame, highlightthickness=0)
-            line_frame.grid(row =0, column=1, pady=5, padx=11)
-            
-            folder = Button(line_frame,
-                image=self.folder_dark,
-                command= None,
-                border=0,
-                bg='#2c2c2c',)
-            folder.pack()
-
-            foldername = Label(line_frame,
-            text='Mathematics',
-            font=("Comic Sans MS", 11),
-            fg='#ffffff',
-            borderwidth=0,
-            relief=FLAT,
-            width=10,
-            background='#2c2c2c',
-            activebackground=bg_color,
-            height=1)
-            foldername.pack(fill=BOTH, expand= 1)
-
-            line_frame = Canvas(another_frame, highlightthickness=0)
-            line_frame.grid(row =1,column=0, pady=5, padx=11)
-
-            folder = Button(line_frame,
-                image=self.folder_dark,
-                command= None,
-                border=0,
-                bg='#2c2c2c',)
-            folder.pack()
-
-            foldername = Label(line_frame,
-            text='Mathematics',
-            font=("Comic Sans MS", 11),
-            fg='#ffffff',
-            borderwidth=0,
-            relief=FLAT,
-            width=10,
-            background='#2c2c2c',
-            activebackground=bg_color,
-            height=1)
-            foldername.pack(fill=BOTH, expand= 1)
-
-            line_frame = Canvas(another_frame, 
-            highlightthickness=0)
-            line_frame.grid(row =2,column=0, pady=5, padx=11)
-
-            folder = Button(line_frame,
-                image=self.folder_dark,
-                command= None,
-                border=0,
-                bg='#2c2c2c',)
-            folder.pack(fill=BOTH, expand= 1)
-
-            foldername = Label(line_frame,
-            text='Mathematics',
-            font=("Comic Sans MS", 11),
-            fg='#ffffff',
-            borderwidth=0,
-            relief=FLAT,
-            width=10,
-            background='#2c2c2c',
-            activebackground=bg_color,
-            height=1)
-            foldername.pack(fill=BOTH, expand= 1)
-
-            # line_frame = Canvas(another_frame, 
-            # highlightthickness=0)
-            # line_frame.grid(row =2,column=0, pady=5, padx=11)
-
-            # folder = Button(line_frame,
-            #     image=self.folder_dark,
-            #     command= None,
-            #     border=0,
-            #     bg='#2c2c2c',)
-            # folder.pack(fill=BOTH, expand= 1)
+        elif self.bg_color == "#0d9187": self.content_features(self.search_light, self.contentbg_light, self.folder_light, self.threelinemenu_light, "#F2F2F2", "#0c325c", "#0c325c", "#12c8bb", self.addbtn_light)
         
-            # foldername = Label(line_frame,
-            # text='Mathematics',
-            # font=("Comic Sans MS", 11),
-            # fg='#ffffff',
-            # borderwidth=0,
-            # relief=FLAT,
-            # width=10,
-            # background='#2c2c2c',
-            # activebackground=bg_color,
-            # height=1)
-            # foldername.pack(fill=BOTH, expand= 1)
-
-            # line_frame = Canvas(another_frame, 
-            # highlightthickness=0)
-            # line_frame.grid(row =3,column=0, pady=5, padx=11)
-
-            # folder = Button(line_frame,
-            #     image=self.folder_dark,
-            #     command= None,
-            #     border=0,
-            #     bg='#2c2c2c',)
-            # folder.pack(fill=BOTH, expand= 1)
-
-            # foldername = Label(line_frame,
-            # text='Mathematics',
-            # font=("Comic Sans MS", 11),
-            # fg='#ffffff',
-            # borderwidth=0,
-            # relief=FLAT,
-            # width=10,
-            # background='#2c2c2c',
-            # activebackground=bg_color,
-            # height=1)
-            # foldername.pack(fill=BOTH, expand= 1)
-
-            # folder = Button(line_frame,
-            #     image=self.folder_dark,
-            #     command= None,
-            #     border=0,
-            #     bg='#2c2c2c',)
-            # folder.grid(row=0, column=5)
-
-            # foldername = Label(line_frame,
-            # text='Mathematics',
-            # font=("Comic Sans MS", 11),
-            # fg='#ffffff',
-            # borderwidth=0,
-            # relief=FLAT,
-            # width=10,
-            # background='#2c2c2c',
-            # activebackground=bg_color,
-            # height=1)
-            # foldername.grid(row=0, column=5)
-
-            ########################
-
-            line_menu =Button(self.master,
-            image=self.threelinemenu_dark,
-            command=self.side_menu,
-            border=0,
-            bg=bg_color,
-            activebackground=bg_color)
-            line_menu.place(x=50,y=24)
-
-            search_entry = Entry(self.master,
-            width=74,
-            font=("Roboto", 12, "bold"),
-            bg=bg_color,
-            borderwidth=0,
-            fg="#e9e9e9")
-            search_entry.place(x=100, y=30)
-
-            quiz_button = Button(self.master,
-            text="Quizzes",
-            fg=bg_color,
-            font=("Roboto", 14, "bold"),
-            command=self.goto_quizzes,
-            bg="#A6A6A6",
-            borderwidth=0,
-            activeforeground=bg_color,
-            activebackground="#A6A6A6")
-            quiz_button.place(x=506, y=85)
-
-            notes_label = Label(self.master,
-            text="Notes",
-            fg="#F2F2F2",
-            font=("Roboto", 14, "bold"),
-            bg="#2C2C2C",
-            borderwidth=0)
-            notes_label.place(x=322, y=90)
-        
-        elif bg_color == "#0d9187":
-
-            Label(self.master,
-            image=self.search_light,
-            border=0,
-            bg=bg_color).place(x=30,y=12)
-
-            Label(self.master,
-            image=self.contentbg_light,
-            border=0,).place(x=23,y=70)
-
-            Button(self.master,
-            image=self.threelinemenu_light,
-            command=self.side_menu,
-            border=0,
-            bg=bg_color,
-            activebackground=bg_color).place(x=50,y=24)
-            
-            Entry(self.master,
-            width=74,
-            font=("Roboto", 12, "bold"),
-            bg=bg_color,
-            borderwidth=0,
-            fg="#e9e9e9").place(x=100, y=30)
-
-            Button(self.master,
-            text="Quizzes",
-            fg="#F2F2F2",
-            font=("Roboto", 14, "bold"),
-            command=self.goto_quizzes,
-            bg="#0c325c",
-            borderwidth=0,
-            activeforeground="#F2F2F2",
-            activebackground="#0c325c").place(x=506, y=85)
-
-            Label(self.master,
-            text="Notes",
-            fg="#0c325c",
-            font=("Roboto", 14, "bold"),
-            bg="#12c8bb",
-            borderwidth=0).place(x=322, y=90)
-    
     def side_menu(self):
         THREELINE_MENU(self.master, visit = 'Note')
     
