@@ -16,7 +16,7 @@ import shutup;shutup.please()
 
 config = {"apiKey": "AIzaSyBARpuvAyruul-wLV0APfAsd0oT7W5rOuU",
   "authDomain": "fir-a97e4.firebaseapp.com",
-  "databaseURL": "https://fir-a97e4.firebaseio.com",
+  "databaseURL": "https://fir-a97e4-default-rtdb.asia-southeast1.firebasedatabase.app/",
   "projectId": "fir-a97e4",
   "storageBucket": "fir-a97e4.appspot.com",
   "messagingSenderId": "1093466307621",
@@ -25,6 +25,10 @@ config = {"apiKey": "AIzaSyBARpuvAyruul-wLV0APfAsd0oT7W5rOuU",
 
 firebase = pyrebase.initialize_app(config)
 auth = firebase.auth()
+
+db = firebase.database()
+# data = {'name': 'Angelo', 'age': 20}
+# db.push(data)
 
 customtkinter.set_appearance_mode("Dark")
 customtkinter.set_default_color_theme("green")
