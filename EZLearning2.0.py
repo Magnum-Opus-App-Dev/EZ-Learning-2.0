@@ -851,6 +851,15 @@ class PROFILE_SETTINGS(customtkinter.CTk):
            
     def side_menu(self):
         THREELINE_MENU(self.master, visit='Profile')
+        
+class LOGOUT(customtkinter.CTk):
+    def __init__(self, master):
+        #top = tkinter.Tk()
+        #top.geometry("150x150")
+        #messagebox.askquestion('Log out','Are you sure you want to log out?')
+        #top.mainloop()
+        auth.signOut()
+        print("Logged out")
 
 class THREELINE_MENU(customtkinter.CTk):
     def __init__(self, master, visit):
@@ -874,9 +883,9 @@ class THREELINE_MENU(customtkinter.CTk):
     def profile_settings(self):
         PROFILE_SETTINGS(self.master)
 
-    def TBC(self):
-        pass
-
+    def logout(self):
+        LOGOUT(self.master)
+      
     def burger_menu(self):
 
         def destroy_threeline():
@@ -886,6 +895,8 @@ class THREELINE_MENU(customtkinter.CTk):
             elif self.visit == 'Quiz': self.quiz_folder()
             elif self.visit == 'Bin': self.recycle_bin()
             elif self.visit == 'Profile': self.profile_settings()
+            elif self.visit == "Logout":
+                 self.logout()
             else: pass
 
             print("CLOSED: Three-Line Menu")
@@ -1006,7 +1017,7 @@ class THREELINE_MENU(customtkinter.CTk):
             text="     Logout",
             anchor=W,
             font=fontstyle,
-            command=self.TBC,
+            command=self.logout,
             border=0,
             fg=fg_color,
             activeforeground=activefg,
@@ -1043,9 +1054,11 @@ class THREELINE_MENU(customtkinter.CTk):
         elif self.visit == 'Profile':
             profile_state = ['normal','normal','normal','disabled', 'normal']
             side_buttons(bg_color, bg_color, bg_color, clickedbg, bg_color, profile_state)
+        elif self.visit == 'Logout':
+            logout_state = ['normal', 'normal', 'normal', 'normal', 'disabled']
+            side_buttons(bg_color, bg_color, bg_color, bg_color, clickedbg, logout_state)
         else:
-            logout_state = ['normal', 'normal','normal','normal', 'disabled']
-            side_buttons(bg_color, bg_color, bg_color, bg_color, clickedbg, logout_state) 
+            pass
 
 window = Tk()
 window.resizable(False, False)
