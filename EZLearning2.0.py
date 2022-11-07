@@ -858,7 +858,6 @@ class LOGOUT(customtkinter.CTk):
         #top.geometry("150x150")
         #messagebox.askquestion('Log out','Are you sure you want to log out?')
         #top.mainloop()
-        auth.signOut()
         print("Logged out")
 
 class THREELINE_MENU(customtkinter.CTk):
