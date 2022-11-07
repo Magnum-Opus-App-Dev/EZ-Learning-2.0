@@ -854,10 +854,7 @@ class PROFILE_SETTINGS(customtkinter.CTk):
         
 class LOGOUT(customtkinter.CTk):
     def __init__(self, master):
-        #top = tkinter.Tk()
-        #top.geometry("150x150")
-        #messagebox.askquestion('Log out','Are you sure you want to log out?')
-        #top.mainloop()
+        messagebox.askquestion('Log out','Are you sure you want to log out?')
         print("Logged out")
 
 class THREELINE_MENU(customtkinter.CTk):
