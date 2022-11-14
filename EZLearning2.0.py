@@ -854,8 +854,25 @@ class PROFILE_SETTINGS(customtkinter.CTk):
         
 class LOGOUT(customtkinter.CTk):
     def __init__(self, master):
-        messagebox.askquestion('Log out','Are you sure you want to log out?')
-        print("Logged out")
+        self.master = master
+        self.logout()
+        
+    def backframe(self):
+        self.main_frame = Frame(self.master,
+                                width=900,
+                                height=500,
+                                background=self.master.cget("bg"))
+        self.main_frame.place(x=0, y=0)
+        
+    def logout(self):
+        response = messagebox.askyesno('Log out', 'Are you sure you want to log out?')
+        if response == True:
+            self.backframe()
+            print("Logged out")
+            redirect = LOGIN(self.master)
+        elif response == False:
+            pass
+
 
 class THREELINE_MENU(customtkinter.CTk):
     def __init__(self, master, visit):
