@@ -4,11 +4,11 @@ import customtkinter
 import tkinter.messagebox
 from tkinter import ttk
 from cv2 import line
-# import sys
 #pip install pyrebase4
 import pyrebase
 from pygame import FULLSCREEN
 import shutup;shutup.please()
+from tkinter import messagebox
 
 #SAMPLE EMAIL AND PASSWORD FOR LOGIN:
 #2@gmail.com
@@ -16,7 +16,7 @@ import shutup;shutup.please()
 
 config = {"apiKey": "AIzaSyBARpuvAyruul-wLV0APfAsd0oT7W5rOuU",
   "authDomain": "fir-a97e4.firebaseapp.com",
-  "databaseURL": "https://fir-a97e4-default-rtdb.asia-southeast1.firebasedatabase.app/",
+  "databaseURL": "https://fir-a97e4.firebaseio.com",
   "projectId": "fir-a97e4",
   "storageBucket": "fir-a97e4.appspot.com",
   "messagingSenderId": "1093466307621",
@@ -306,10 +306,12 @@ class NOTES_FOLDER(customtkinter.CTk):
         self.folder_light = ImageTk.PhotoImage(Image.open("folder_light.png"))
         self.addbtn_dark = ImageTk.PhotoImage(Image.open("add_dark.png"))
         self.addbtn_light = ImageTk.PhotoImage(Image.open("add_light.png"))
-
+        self.sidebutton_dark = ImageTk.PhotoImage(Image.open("side_button_dark.png"))
+        self.sidebutton_light = ImageTk.PhotoImage(Image.open("side_button_light.png"))
+        
         self.bg_color = self.master.cget("bg")
         self.rows = 2
-        
+
         self.backframe()
         self.features()
         print("OPENED: Notes Folder")
@@ -320,7 +322,7 @@ class NOTES_FOLDER(customtkinter.CTk):
         height=500,
         background=self.master.cget("bg"))
         self.main_frame.place(x=0, y=0)
-    
+
     def add_frame(self):
         self.main_frame = Frame(self.master,
         width=500,
@@ -354,9 +356,9 @@ class NOTES_FOLDER(customtkinter.CTk):
         width=10,)
         self.cancel_btn.place(x=200, y=150)
 
-    def content_features(self, search_img, content_img, folder_img, menu_img, quiz_a_fg, quiz_a_bg, notes_fg, notes_bg, btn_img):
+    def content_features(self, search_img, content_img, folder_img, menu_img, quiz_a_fg, quiz_a_bg, notes_fg, notes_bg, btn_img, side_btn):
         
-        search_label =Label(self.master,
+        search_label = Label(self.master,
         image=search_img,
         border=0,
         bg=self.bg_color)
@@ -367,50 +369,55 @@ class NOTES_FOLDER(customtkinter.CTk):
         border=0,)
         content_label.place(x=23,y=70)
 
+        add_btn = Button(self.master,
+        image=btn_img,
+        border = 0,
+        bg=self.bg_color,
+        activebackground=self.bg_color)
+        add_btn.place(x=760, y=78)
+
         # Create frame and canvas
-        inline_frame = Frame(content_label, width=795, height=343, bg=notes_bg)
-        inline_frame.place(x=23, y=60)
+        inline_frame = Frame(content_label, width=727, height=340, bg=notes_bg)
+        inline_frame.place(x=90, y=65)
 
         second_line_frame = Frame(inline_frame, bg=notes_bg)
         second_line_frame.pack(fill=BOTH, expand= 1)
 
-        inline_canvas = Canvas(second_line_frame, width=795, height=343, background=notes_bg,highlightthickness=0)
+        inline_canvas = Canvas(second_line_frame, width=727, height=333, background=notes_bg, highlightthickness=0)
         inline_canvas.pack(side=LEFT, fill=BOTH, expand=1)
 
-        if self.rows > 2:
+        if self.rows > 3:
 
-            # Create scrollbar from the canvas
             scrollbar = ttk.Scrollbar(second_line_frame,
                 orient=VERTICAL,
                 command=inline_canvas.yview)
             scrollbar.pack(side=RIGHT, fill=Y, padx=2, pady=1)
 
-            # Configure the canvas
             inline_canvas.configure(yscrollcommand=scrollbar.set)
             inline_canvas.bind('<Configure>',
                 lambda e: inline_canvas.configure(scrollregion=inline_canvas.bbox("all")))
             inline_canvas.bind_all('<MouseWheel>', 
                 lambda event: inline_canvas.yview('scroll', int(-2*(event.delta/120)), 'units'))
 
-        # Create another frame inside the canvas
 
         another_frame = Frame(inline_canvas, bg=notes_bg)
         inline_canvas.create_window((0,0), window=another_frame, anchor='nw')
 
         line_frame = Canvas(another_frame, highlightthickness=0)
         line_frame.grid(row =0, column=0, pady=5, padx=11)
-        
+
         folder = Button(line_frame,
             image=folder_img,
             command= None,
             border=0,
-            bg=notes_bg,)
+            bg=notes_bg,
+            activebackground=notes_bg)
         folder.pack()
 
         foldername = Label(line_frame,
         text='Mathematics',
-        font=("Comic Sans MS", 11),
-        fg='#ffffff',
+        font=("Arial", 10),
+        fg=notes_fg,
         borderwidth=0,
         relief=FLAT,
         width=10,
@@ -437,8 +444,8 @@ class NOTES_FOLDER(customtkinter.CTk):
 
         add_btn = Button(self.master,
         image=btn_img,
-        command = self.add_frame,
-        border = 0,
+        command=self.add_frame,
+        border=0,
         bg=self.bg_color,
         activebackground=self.bg_color)
         add_btn.place(x=760, y=78)
@@ -461,13 +468,69 @@ class NOTES_FOLDER(customtkinter.CTk):
         bg=notes_bg,
         borderwidth=0)
         notes_label.place(x=322, y=90)
-        
+
+        #SIDE BUTTONS
+
+        text_label = Label(self.master,
+        text="Open",
+        bg=notes_bg,
+        fg=notes_fg,
+        )
+        text_label.place(x=53, y=196)
+
+        openside_btn = Button(self.master,
+        image=side_btn,
+        border=0,
+        bg=notes_bg,
+        command=self.notes_list,
+        activebackground=notes_bg)
+        openside_btn.place(x=46, y=150)
+
+        text_label = Label(self.master,
+        text="Rename",
+        bg=notes_bg,
+        fg=notes_fg,
+        )
+        text_label.place(x=46, y=316)
+
+        renameside_btn = Button(self.master,
+        image=side_btn,
+        border=0,
+        bg=notes_bg,
+        command=self.rename,
+        activebackground=notes_bg)
+        renameside_btn.place(x=46, y=270)
+
+        text_label = Label(self.master,
+        text="Delete",
+        bg=notes_bg,
+        fg=notes_fg,
+        )
+        text_label.place(x=51, y=436)
+
+        deleteside_btn = Button(self.master,
+        image=side_btn,
+        border=0,
+        bg=notes_bg,
+        command=self.delete,
+        activebackground=notes_bg)
+        deleteside_btn.place(x=46, y=390)
+
     def features(self):
 
-        if self.bg_color == "#121212": self.content_features(self.search_dark, self.contentbg_dark, self.folder_dark, self.threelinemenu_dark, self.bg_color, "#A6A6A6", "#F2F2F2", "#2C2C2C", self.addbtn_dark)
+        if self.bg_color == "#121212": self.content_features(self.search_dark, self.contentbg_dark, self.folder_dark, self.threelinemenu_dark, self.bg_color, "#A6A6A6", "#F2F2F2", "#2C2C2C", self.addbtn_dark, self.sidebutton_dark)
             
-        elif self.bg_color == "#0d9187": self.content_features(self.search_light, self.contentbg_light, self.folder_light, self.threelinemenu_light, "#F2F2F2", "#0c325c", "#0c325c", "#12c8bb", self.addbtn_light)
-        
+        elif self.bg_color == "#0d9187": self.content_features(self.search_light, self.contentbg_light, self.folder_light, self.threelinemenu_light, "#F2F2F2", "#0c325c", "#0c325c", "#12c8bb", self.addbtn_light, self.sidebutton_light)
+
+    def notes_list(self):
+        NOTE_FILES(self.master)
+    
+    def rename(self):
+        pass
+
+    def delete(self):
+        pass
+
     def side_menu(self):
         THREELINE_MENU(self.master, visit = 'Note')
     
@@ -481,7 +544,13 @@ class NOTE_FILES(customtkinter.CTk):
         self.threelinemenu_light = ImageTk.PhotoImage(Image.open("3line_light.png"))
         self.search_dark = ImageTk.PhotoImage(Image.open("search_dark.png"))
         self.search_light = ImageTk.PhotoImage(Image.open("search_light.png"))
-        self.bg_color =  self.master.cget("bg")
+        self.contentbg_dark = ImageTk.PhotoImage(Image.open("files_dark.png"))
+        self.contentbg_light = ImageTk.PhotoImage(Image.open("files_light.png"))
+        self.sidebutton_dark = ImageTk.PhotoImage(Image.open("side_button_dark.png"))
+        self.sidebutton_light = ImageTk.PhotoImage(Image.open("side_button_light.png"))
+        self.indivfile_dark = ImageTk.PhotoImage(Image.open("filescontent_dark.png"))
+        self.indivfile_light = ImageTk.PhotoImage(Image.open("filescontent_light.png"))
+        self.bg_color = self.master.cget("bg")
 
         self.backframe()
         self.features()
@@ -495,12 +564,17 @@ class NOTE_FILES(customtkinter.CTk):
         background=self.master.cget("bg"))
         self.main_frame.place(x=0, y=0)
     
-    def content_features(self, search_image, three_line_image):
+    def content_features(self, search_image, three_line_image, content_img, side_btn, notes_fg, notes_bg, indiv_file):
         self.files_search = Label(self.master,
         image=search_image,
         border=0,
         bg=self.bg_color)
         self.files_search.place(x=30,y=12)
+
+        content_label = Label(self.master,
+        image=content_img,
+        border=0,)
+        content_label.place(x=23,y=110)
 
         self.files_menu = Button(self.master,
         image=three_line_image,
@@ -518,13 +592,118 @@ class NOTE_FILES(customtkinter.CTk):
         fg="#e9e9e9")
         self.files_entry_search.place(x=100, y=30)
 
+        #SIDE BUTTONS
+
+        text_label = Label(self.master,
+        text="Open",
+        bg=notes_bg,
+        fg=notes_fg,
+        )
+        text_label.place(x=53, y=183)
+
+        openside_btn = Button(self.master,
+        image=side_btn,
+        border=0,
+        bg=notes_bg,
+        command=self.notes_edit,
+        activebackground=notes_bg)
+        openside_btn.place(x=46, y=137)
+
+        text_label = Label(self.master,
+        text="Rename",
+        bg=notes_bg,
+        fg=notes_fg,
+        )
+        text_label.place(x=46, y=250)
+
+        renameside_btn = Button(self.master,
+        image=side_btn,
+        border=0,
+        bg=notes_bg,
+        command=self.rename,
+        activebackground=notes_bg)
+        renameside_btn.place(x=46, y=204)
+
+        text_label = Label(self.master,
+        text="Delete",
+        bg=notes_bg,
+        fg=notes_fg,
+        )
+        text_label.place(x=51, y=316)
+
+        deleteside_btn = Button(self.master,
+        image=side_btn,
+        border=0,
+        bg=notes_bg,
+        command=self.delete,
+        activebackground=notes_bg)
+        deleteside_btn.place(x=46, y=270)
+
+        text_label = Label(self.master,
+        text="Share",
+        bg=notes_bg,
+        fg=notes_fg,
+        )
+        text_label.place(x=53, y=382)
+
+        shareside_btn = Button(self.master,
+        image=side_btn,
+        border=0,
+        bg=notes_bg,
+        command=self.share,
+        activebackground=notes_bg)
+        shareside_btn.place(x=46, y=336)
+
+        text_label = Label(self.master,
+        text="Export",
+        bg=notes_bg,
+        fg=notes_fg,
+        )
+        text_label.place(x=51, y=448)
+
+        exportside_btn = Button(self.master,
+        image=side_btn,
+        border=0,
+        bg=notes_bg,
+        command=self.share,
+        activebackground=notes_bg)
+        exportside_btn.place(x=46, y=402)
+
+        #END OF SIDE BUTTONS
+
+        #INDIVIDUAL FILES
+
+        self.indivfile = Button(self.master,
+        image=indiv_file,
+        border=0,
+        command=None,
+        bg=notes_bg,
+        activebackground=notes_bg)
+        self.indivfile.place(x=121, y=135)
+
+        
     def features(self):
 
-        if self.bg_color == "#121212": self.content_features(self.search_dark, self.threelinemenu_dark)
-        elif self.bg_color == "#0d9187": self.content_features(self.search_light, self.threelinemenu_light)
+        if self.bg_color == "#121212": self.content_features(self.search_dark, self.threelinemenu_dark, self.contentbg_dark, self.sidebutton_dark, "#F2F2F2", "#2C2C2C", self.indivfile_dark)
+        elif self.bg_color == "#0d9187": self.content_features(self.search_light, self.threelinemenu_light, self.contentbg_light, self.sidebutton_light, "#0c325c", "#12c8bb", self.indivfile_light)
 
     def side_menu(self):
-        THREELINE_MENU(self.master)
+        THREELINE_MENU(self.master, visit = "Notes_Files")
+
+    def rename(self):
+        pass
+
+    def delete(self):
+        pass
+
+    def share(self):
+        pass
+
+    def export_PDF(self):
+        pass
+
+    def notes_edit(self):
+        NOTE_EDITOR(self.master)
 
 class NOTE_EDITOR(customtkinter.CTk):
     def __init__(self, master):
@@ -556,6 +735,8 @@ class NOTE_EDITOR(customtkinter.CTk):
         activebackground=self.bg_color)
         self.editor_menu.place(x=7,y=10)
 
+
+
     def features(self):
 
         if self.bg_color == "#121212": self.content_features(self.threelinemenu_dark)
@@ -575,6 +756,10 @@ class QUIZ_FOLDER(customtkinter.CTk):
         self.contentbg_light = ImageTk.PhotoImage(Image.open("quizzesfolder_light.png"))
         self.quizbtn_dark = ImageTk.PhotoImage(Image.open("quizzesbutton_dark.png"))
         self.quizbtn_light = ImageTk.PhotoImage(Image.open("quizzesbutton_light.png"))
+        self.sidebutton_dark = ImageTk.PhotoImage(Image.open("side_button_dark.png"))
+        self.sidebutton_light = ImageTk.PhotoImage(Image.open("side_button_light.png"))
+        self.addbtn_dark = ImageTk.PhotoImage(Image.open("add_dark.png"))
+        self.addbtn_light = ImageTk.PhotoImage(Image.open("add_light.png"))
         self.bg_color = self.master.cget("bg")
         
         self.backframe()
@@ -589,7 +774,8 @@ class QUIZ_FOLDER(customtkinter.CTk):
         background=self.master.cget("bg"))
         self.main_frame.place(x=0, y=0)
 
-    def content_features(self, search_image, content_image, three_line_image, notes_a_fg, notes_a_bg, quiz_fg, quiz_bg):
+    def content_features(self, search_image, content_image, three_line_image, notes_a_fg, notes_a_bg, quiz_fg, quiz_bg, side_btn, btn_img):
+
         self.quiz_search = Label(self.master,
         image=search_image,
         border=0,
@@ -636,24 +822,86 @@ class QUIZ_FOLDER(customtkinter.CTk):
         borderwidth=0)
         self.quiz_label.place(x=512, y=91)
 
+        add_btn = Button(self.master,
+        image=btn_img,
+        border = 0,
+        bg=self.bg_color,
+        activebackground=self.bg_color)
+        add_btn.place(x=760, y=78)
+
+        #SIDE BUTTONS
+
+        text_label = Label(self.master,
+        text="Open",
+        bg=quiz_bg,
+        fg=quiz_fg,
+        )
+        text_label.place(x=53, y=196)
+
+        openside_btn = Button(self.master,
+        image=side_btn,
+        border=0,
+        bg=quiz_bg,
+        command=self.quiz_list,
+        activebackground=quiz_bg)
+        openside_btn.place(x=46, y=150)
+
+        text_label = Label(self.master,
+        text="Rename",
+        bg=quiz_bg,
+        fg=quiz_fg,
+        )
+        text_label.place(x=46, y=316)
+
+        renameside_btn = Button(self.master,
+        image=side_btn,
+        border=0,
+        bg=quiz_bg,
+        command=self.rename,
+        activebackground=quiz_bg)
+        renameside_btn.place(x=46, y=270)
+
+        text_label = Label(self.master,
+        text="Delete",
+        bg=quiz_bg,
+        fg=quiz_fg,
+        )
+        text_label.place(x=51, y=436)
+
+        deleteside_btn = Button(self.master,
+        image=side_btn,
+        border=0,
+        bg=quiz_bg,
+        command=self.delete,
+        activebackground=quiz_bg)
+        deleteside_btn.place(x=46, y=390)
     
     def features(self):
     
         if self.bg_color == "#121212":
 
             self.content_features(self.search_dark, self.contentbg_dark, self.threelinemenu_dark, 
-            self.bg_color, "#A6A6A6", "#F2F2F2","#2C2C2C")
+            self.bg_color, "#A6A6A6", "#F2F2F2","#2C2C2C", self.sidebutton_dark, self.addbtn_dark)
 
         elif self.bg_color == "#0d9187":
 
             self.content_features(self.search_light, self.contentbg_light, self.threelinemenu_light, 
-            "#F2F2F2", "#0c325c", "#0c325c","#12c8bb")
+            "#F2F2F2", "#0c325c", "#0c325c","#12c8bb", self.sidebutton_light, self.addbtn_light)
 
     def side_menu(self):
         THREELINE_MENU(self.master, visit='Quiz')
     
     def goto_notes(self):
         NOTES_FOLDER(self.master)
+
+    def quiz_list(self):
+        QUIZ_FILES(self.master)
+
+    def rename(self):
+        pass
+
+    def delete(self):
+        pass
 
 class QUIZ_FILES(customtkinter.CTk):
     def __init__(self, master):
@@ -718,6 +966,7 @@ class QUIZ_EDITOR(customtkinter.CTk):
 
         self.backframe()
         self.features()
+        self.edit_quiz()
 
         print("OPENED: Quiz Editor")
 
@@ -741,6 +990,156 @@ class QUIZ_EDITOR(customtkinter.CTk):
 
         if self.bg_color == "#121212": self.content_features(self.threelinemenu_dark)
         elif self.bg_color == "#0d9187": self.content_features(self.threelinemenu_light)
+
+    def show_true_false(self):
+        display_true_or_false = self.true_false.get()
+        if display_true_or_false == 1:
+            print("Chose: True")
+        elif display_true_or_false == 2:
+            print("Chose: False")
+        else:
+            print("Something went wrong")
+
+    def show_method(self):
+        display_method = self.r1_v.get()
+        if display_method == 1:
+            self.identfication_frame = LabelFrame(self.label_frame, width=645,
+                                                height=70, bg="#00FFFF",
+                                                highlightbackground="#104E8B",
+                                                highlightthickness=1).grid(row=0, column=0, padx=52, pady=168, sticky="s")
+
+            # self.label_guhit = Label(self.label_frame,bg="red",width=80,height=0).place(x=167,y=303)
+            self.answer_entry1 = Entry(self.identfication_frame, bg="#00FFFF",
+                                    foreground="#00008B", width=55, font=10).place(x=205, y=308)
+
+            print("SHOW: Identification")
+
+        elif display_method == 2:
+            self.identfication_frame = LabelFrame(self.label_frame, width=645, height=70, bg="#00FFFF",
+                                                highlightbackground="#104E8B",
+                                                highlightthickness=1).grid(row=0, column=0, padx=52, pady=168,
+                                                                            sticky="s")
+
+            self.answer_answer = Label(self.identfication_frame, text="Answer:",
+                                    foreground="#00008B",
+                                    bg="#00FFFF",
+                                    font=("arial", 14)
+                                    ).place(x=153, y=300)
+            self.answer_choices = Label(self.identfication_frame, text="Choices:",
+                                        foreground="#00008B",
+                                        bg="#00FFFF",
+                                        font=("arial", 14)
+                                        ).place(x=153, y=324)
+
+            self.answer_entry1 = Entry(self.identfication_frame, bg="#00FFFF",
+                                    foreground="#00008B", width=55, font=10).place(x=235, y=302)
+            self.answer_entry2 = Entry(self.identfication_frame, bg="#00FFFF",
+                                    foreground="#00008B", width=55, font=10).place(x=235, y=324)
+
+            print("SHOW: Multiple Choice")
+        elif display_method == 3:
+            self.identfication_frame = LabelFrame(self.label_frame, width=645, height=70, bg="#00FFFF",
+                                                highlightbackground="#104E8B",
+                                                highlightthickness=1).grid(row=0, column=0, padx=52, pady=168,
+                                                                            sticky="s")
+            self.true_false = IntVar()
+            self.true_false.set(None)
+
+            self.rb1 = Radiobutton(self.label_frame, text="True",
+                                foreground="#00008B",
+                                bg="#00FFFF",
+                                variable=self.true_false, value=1,
+                                font=("arial", 12),
+                                command=self.show_true_false).place(x=275, y=308)
+            self.rb2 = Radiobutton(self.label_frame, text="False",
+                                foreground="#00008B",
+                                bg="#00FFFF",
+                                variable=self.true_false, value=2,
+                                font=("arial", 12),
+                                command=self.show_true_false).place(x=515, y=308)
+
+            print("SHOW: True or False")
+        else:
+            print("something wrong")
+
+
+    def edit_quiz(self):
+        self.label_frame = LabelFrame(self.master, width=831, height=410, bg="#00FFFF", highlightbackground="#104E8B",
+                                    highlightthickness=5).grid(row=0, column=0, padx=32, pady=60)
+
+        self.question_label = Label(self.label_frame,
+                                    text="Question: ",
+                                    bg="#00FFFF",
+                                    foreground="#00008B",
+                                    font=("arial", 17)).place(x=75, y=100)
+
+        self.add_question_entry = Entry(self.label_frame, bg="#00FFFF",
+                                        foreground="#00008B", width=77, font=50).place(x=100, y=145)
+
+        # Quiz method label
+        self.question_label = Label(self.label_frame,
+                                    text="Quiz Method: ",
+                                    bg="#00FFFF",
+                                    foreground="#00008B",
+                                    font=("arial", 17)).place(x=75, y=180)
+        self.r1_v = IntVar()
+        self.r2_v = IntVar()
+        self.r1_v.set(None)
+        self.r2_v.set(None)
+
+        self.r1 = Radiobutton(self.label_frame, text="Identification",
+                            foreground="#00008B",
+                            bg="#00FFFF",
+                            variable=self.r1_v, value=1,
+                            font=("arial", 12),
+                            command=self.show_method).place(x=125, y=220)
+        self.r2 = Radiobutton(self.label_frame, text="Multiple Choice",
+                            foreground="#00008B",
+                            bg="#00FFFF",
+                            variable=self.r1_v, value=2,
+                            font=("arial", 12),
+                            command=self.show_method).place(x=350, y=220)
+        self.r3 = Radiobutton(self.label_frame, text="True or False",
+                            foreground="#00008B",
+                            bg="#00FFFF",
+                            variable=self.r1_v, value=3,
+                            font=("arial", 12),
+                            command=self.show_method).place(x=600, y=220)
+
+        self.r4 = Radiobutton(self.label_frame,
+                            indicatoron=0,
+                            bg="#FF6103",
+                            width=7,
+                            height=2,
+                            activebackground="pink",
+                            variable=self.r2_v, value=1,
+                            font=("arial", 12)).place(x=91, y=385)
+
+        self.r5 = Radiobutton(self.label_frame,
+                            indicatoron=0,
+                            bg="#FF6103",
+                            width=7,
+                            height=2,
+                            activebackground="pink",
+                            variable=self.r2_v, value=2,
+                            font=("arial", 12)).place(x=219, y=385)
+
+        self.r6 = Radiobutton(self.label_frame,
+                            indicatoron=0,
+                            bg="#FF6103",
+                            width=7,
+                            height=2,
+                            activebackground="pink",
+                            variable=self.r2_v, value=3,
+                            font=("arial", 12)).place(x=350, y=385)
+
+        self.answer_method_label = Label(self.label_frame, text="Answer:",
+                                        bg="#00FFFF",
+                                        foreground="#00008B",
+                                        font=("arial", 17)).place(x=75, y=255)
+
+        self.submit_button = Button(self.label_frame, text="Add question", bg="#00FFFF",
+                                    foreground="#00008B", width=20, font=("arial", 13)).place(x=490, y=385)
 
     def side_menu(self):
         THREELINE_MENU(self.master)
@@ -819,8 +1218,6 @@ class PROFILE_SETTINGS(customtkinter.CTk):
     
     def side_menu_icon_content(self, three_line_menu, settings_template):
 
-        # sys.setrecursionlimit(1000)
-
         profile_menu = Button(self.master,
         image=three_line_menu,
         command=self.side_menu,
@@ -843,7 +1240,6 @@ class PROFILE_SETTINGS(customtkinter.CTk):
         # border=0,
         # bg=self.master.cget("bg"),)
         # self.profile.place(x=260, y=75)
-        
 
     def side_menu_icon(self):
         if self.master.cget("bg") == "#121212": self.side_menu_icon_content(self.threelinemenu_dark, self.settings_template_dark)
@@ -851,19 +1247,21 @@ class PROFILE_SETTINGS(customtkinter.CTk):
            
     def side_menu(self):
         THREELINE_MENU(self.master, visit='Profile')
-        
+
 class LOGOUT(customtkinter.CTk):
     def __init__(self, master):
+        messagebox.askquestion('Log out','Are you sure you want to log out?')
+        print("Logged out")
         self.master = master
         self.logout()
-        
+
     def backframe(self):
         self.main_frame = Frame(self.master,
                                 width=900,
                                 height=500,
                                 background=self.master.cget("bg"))
         self.main_frame.place(x=0, y=0)
-        
+
     def logout(self):
         response = messagebox.askyesno('Log out', 'Are you sure you want to log out?')
         if response == True:
@@ -872,7 +1270,6 @@ class LOGOUT(customtkinter.CTk):
             redirect = LOGIN(self.master)
         elif response == False:
             pass
-
 
 class THREELINE_MENU(customtkinter.CTk):
     def __init__(self, master, visit):
@@ -888,7 +1285,7 @@ class THREELINE_MENU(customtkinter.CTk):
         NOTES_FOLDER(self.master)
     
     def quiz_folder(self):
-        QUIZ_FOLDER(self.master)
+        QUIZ_EDITOR(self.master)
     
     def recycle_bin(self):
         RECYCLE_BIN(self.master)
@@ -896,9 +1293,9 @@ class THREELINE_MENU(customtkinter.CTk):
     def profile_settings(self):
         PROFILE_SETTINGS(self.master)
 
-    def logout(self):
-        LOGOUT(self.master)
-      
+    def TBC(self):
+        pass
+
     def burger_menu(self):
 
         def destroy_threeline():
@@ -908,8 +1305,6 @@ class THREELINE_MENU(customtkinter.CTk):
             elif self.visit == 'Quiz': self.quiz_folder()
             elif self.visit == 'Bin': self.recycle_bin()
             elif self.visit == 'Profile': self.profile_settings()
-            elif self.visit == "Logout":
-                 self.logout()
             else: pass
 
             print("CLOSED: Three-Line Menu")
@@ -1030,7 +1425,7 @@ class THREELINE_MENU(customtkinter.CTk):
             text="     Logout",
             anchor=W,
             font=fontstyle,
-            command=self.logout,
+            command=self.TBC,
             border=0,
             fg=fg_color,
             activeforeground=activefg,
@@ -1067,11 +1462,9 @@ class THREELINE_MENU(customtkinter.CTk):
         elif self.visit == 'Profile':
             profile_state = ['normal','normal','normal','disabled', 'normal']
             side_buttons(bg_color, bg_color, bg_color, clickedbg, bg_color, profile_state)
-        elif self.visit == 'Logout':
-            logout_state = ['normal', 'normal', 'normal', 'normal', 'disabled']
-            side_buttons(bg_color, bg_color, bg_color, bg_color, clickedbg, logout_state)
         else:
-            pass
+            logout_state = ['normal', 'normal','normal','normal', 'disabled']
+            side_buttons(bg_color, bg_color, bg_color, bg_color, clickedbg, logout_state) 
 
 window = Tk()
 window.resizable(False, False)
@@ -1084,6 +1477,7 @@ x = (ws/2) - (w/2)
 y = (hs/2) - (h/1.7)
 
 window.geometry('%dx%d+%d+%d' % (w, h, x, y))
+
 if __name__ == "__main__":
     the_hundreds = LOGIN(window)
     window.mainloop()
