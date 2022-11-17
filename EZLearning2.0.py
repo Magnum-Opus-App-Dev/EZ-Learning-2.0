@@ -27,7 +27,7 @@ firebase = pyrebase.initialize_app(config)
 auth = firebase.auth()
 
 db = firebase.database()
-# data = {'name': 'Angelo', 'age': 20}
+# data = {'name': 'Gelo', 'age': 20}
 # db.push(data)
 
 customtkinter.set_appearance_mode("Dark")
