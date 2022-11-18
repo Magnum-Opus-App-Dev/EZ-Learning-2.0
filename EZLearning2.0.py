@@ -13,6 +13,7 @@ from tkinter import messagebox
 #SAMPLE EMAIL AND PASSWORD FOR LOGIN:
 #2@gmail.com
 #//////
+#try lang
 
 config = {"apiKey": "AIzaSyBARpuvAyruul-wLV0APfAsd0oT7W5rOuU",
   "authDomain": "fir-a97e4.firebaseapp.com",
