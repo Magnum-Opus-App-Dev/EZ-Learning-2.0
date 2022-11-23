@@ -4,4 +4,4 @@
 > The next step for the acknowledged EZ Learning: A learning application for students - now available in cloud...
 
 Note: <br />
-The team only made use of **one single python file**; *different features of the system are divided using classes.*
+The team only made use of **one single python file**; different features of the system are *divided using classes.*
