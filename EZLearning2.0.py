@@ -38,14 +38,14 @@ class LOGIN(customtkinter.CTk):
         self.master = master
         self.master.geometry('900x500')
         self.master.title('EZ-Learning 2.0')
-        self.master.iconbitmap("Logo.ico")
+        self.master.iconbitmap("images/Logo.ico")
         self.master.config(bg="#121212")
         print("OPENED: Login Feature")
 
         self._Email = StringVar()
         self._Password = StringVar()
 
-        self.logo = (Image.open("logo_darkmode.png"))
+        self.logo = (Image.open("images/logo_darkmode.png"))
         self.resize_logo = self.logo.resize((80, 80), Image.ANTIALIAS)
         self.photoimage = ImageTk.PhotoImage(self.resize_logo)
         self.canvas = Label(self.master, image=self.photoimage, bd=0)
@@ -115,7 +115,7 @@ class LOGIN(customtkinter.CTk):
         customtkinter.set_appearance_mode(new_appearance_mode)
         if new_appearance_mode == "Dark":
             self.master.config(bg="#121212")
-            self.logo = (Image.open("logo_darkmode.png"))
+            self.logo = (Image.open("images/logo_darkmode.png"))
             self.resize_logo = self.logo.resize((80, 80), Image.ANTIALIAS)
             self.photoimage = ImageTk.PhotoImage(self.resize_logo)
             self.canvas = Label(self.master, image=self.photoimage, bd=0)
@@ -126,7 +126,7 @@ class LOGIN(customtkinter.CTk):
             self.dev_names.place(x=10, y=418)
         elif new_appearance_mode == "Light":
             self.master.config(bg="#0d9187")
-            self.logo = (Image.open("logo_lightmode.png"))
+            self.logo = (Image.open("images/logo_lightmode.png"))
             self.resize_logo = self.logo.resize((80, 80), Image.ANTIALIAS)
             self.photoimage = ImageTk.PhotoImage(self.resize_logo)
             self.canvas = Label(self.master, image=self.photoimage, bd=0)
@@ -154,10 +154,6 @@ class LOGIN(customtkinter.CTk):
 class SIGNUP(customtkinter.CTk):
     def __init__(self, master):
         self.master = master
-        self.master.geometry('900x500')
-        self.master.title('EZ-Learning 2.0')
-        self.master.iconbitmap("Logo.ico")
-        self.master.config(bg="#121212")
         print("OPENED: Signup Feature")
 
         self._Username = StringVar()
@@ -165,7 +161,7 @@ class SIGNUP(customtkinter.CTk):
         self._Password = StringVar()
         self._Confirm_Password = StringVar()
 
-        self.logo = (Image.open("logo_darkmode.png"))
+        self.logo = (Image.open("images/logo_darkmode.png"))
         self.resize_logo = self.logo.resize((80, 80), Image.ANTIALIAS)
         self.photoimage = ImageTk.PhotoImage(self.resize_logo)
         self.canvas = Label(self.master, image=self.photoimage, bd=0)
@@ -256,7 +252,7 @@ class SIGNUP(customtkinter.CTk):
         customtkinter.set_appearance_mode(new_appearance_mode)
         if new_appearance_mode == "Dark":
             self.master.config(bg="#121212")
-            self.logo = (Image.open("logo_darkmode.png"))
+            self.logo = (Image.open("images/logo_darkmode.png"))
             self.resize_logo = self.logo.resize((80, 80), Image.ANTIALIAS)
             self.photoimage = ImageTk.PhotoImage(self.resize_logo)
             self.canvas = Label(self.master, image=self.photoimage, bd=0)
@@ -267,7 +263,7 @@ class SIGNUP(customtkinter.CTk):
             self.dev_names.place(x=10, y=418)
         elif new_appearance_mode == "Light":
             self.master.config(bg="#0d9187")
-            self.logo = (Image.open("logo_lightmode.png"))
+            self.logo = (Image.open("images/logo_lightmode.png"))
             self.resize_logo = self.logo.resize((80, 80), Image.ANTIALIAS)
             self.photoimage = ImageTk.PhotoImage(self.resize_logo)
             self.canvas = Label(self.master, image=self.photoimage, bd=0)
@@ -294,20 +290,20 @@ class SIGNUP(customtkinter.CTk):
 class NOTES_FOLDER(customtkinter.CTk):
     def __init__(self, master):
         self.master = master
-        self.threelinemenu_dark = ImageTk.PhotoImage(Image.open("3line_dark.png"))
-        self.threelinemenu_light = ImageTk.PhotoImage(Image.open("3line_light.png"))
-        self.search_dark = ImageTk.PhotoImage(Image.open("search_dark.png"))
-        self.search_light = ImageTk.PhotoImage(Image.open("search_light.png"))
-        self.contentbg_dark = ImageTk.PhotoImage(Image.open("notesfolder_dark.png"))
-        self.contentbg_light = ImageTk.PhotoImage(Image.open("notesfolder_light.png"))
-        self.quizbtn_dark = ImageTk.PhotoImage(Image.open("quizzesbutton_dark.png"))
-        self.quizbtn_light = ImageTk.PhotoImage(Image.open("quizzesbutton_light.png"))
-        self.folder_dark = ImageTk.PhotoImage(Image.open("folder_dark.png"))
-        self.folder_light = ImageTk.PhotoImage(Image.open("folder_light.png"))
-        self.addbtn_dark = ImageTk.PhotoImage(Image.open("add_dark.png"))
-        self.addbtn_light = ImageTk.PhotoImage(Image.open("add_light.png"))
-        self.sidebutton_dark = ImageTk.PhotoImage(Image.open("side_button_dark.png"))
-        self.sidebutton_light = ImageTk.PhotoImage(Image.open("side_button_light.png"))
+        self.threelinemenu_dark = ImageTk.PhotoImage(Image.open("images/3line_dark.png"))
+        self.threelinemenu_light = ImageTk.PhotoImage(Image.open("images/3line_light.png"))
+        self.search_dark = ImageTk.PhotoImage(Image.open("images/search_dark.png"))
+        self.search_light = ImageTk.PhotoImage(Image.open("images/search_light.png"))
+        self.contentbg_dark = ImageTk.PhotoImage(Image.open("images/notesfolder_dark.png"))
+        self.contentbg_light = ImageTk.PhotoImage(Image.open("images/notesfolder_light.png"))
+        self.quizbtn_dark = ImageTk.PhotoImage(Image.open("images/quizzesbutton_dark.png"))
+        self.quizbtn_light = ImageTk.PhotoImage(Image.open("images/quizzesbutton_light.png"))
+        self.folder_dark = ImageTk.PhotoImage(Image.open("images/folder_dark.png"))
+        self.folder_light = ImageTk.PhotoImage(Image.open("images/folder_light.png"))
+        self.addbtn_dark = ImageTk.PhotoImage(Image.open("images/add_dark.png"))
+        self.addbtn_light = ImageTk.PhotoImage(Image.open("images/add_light.png"))
+        self.sidebutton_dark = ImageTk.PhotoImage(Image.open("images/side_button_dark.png"))
+        self.sidebutton_light = ImageTk.PhotoImage(Image.open("images/side_button_light.png"))
         
         self.bg_color = self.master.cget("bg")
         self.rows = 2
@@ -534,16 +530,16 @@ class NOTES_FOLDER(customtkinter.CTk):
 class NOTE_FILES(customtkinter.CTk):
     def __init__(self, master):
         self.master = master
-        self.threelinemenu_dark = ImageTk.PhotoImage(Image.open("3line_dark.png"))
-        self.threelinemenu_light = ImageTk.PhotoImage(Image.open("3line_light.png"))
-        self.search_dark = ImageTk.PhotoImage(Image.open("search_dark.png"))
-        self.search_light = ImageTk.PhotoImage(Image.open("search_light.png"))
-        self.contentbg_dark = ImageTk.PhotoImage(Image.open("files_dark.png"))
-        self.contentbg_light = ImageTk.PhotoImage(Image.open("files_light.png"))
-        self.sidebutton_dark = ImageTk.PhotoImage(Image.open("side_button_dark.png"))
-        self.sidebutton_light = ImageTk.PhotoImage(Image.open("side_button_light.png"))
-        self.indivfile_dark = ImageTk.PhotoImage(Image.open("filescontent_dark.png"))
-        self.indivfile_light = ImageTk.PhotoImage(Image.open("filescontent_light.png"))
+        self.threelinemenu_dark = ImageTk.PhotoImage(Image.open("images/3line_dark.png"))
+        self.threelinemenu_light = ImageTk.PhotoImage(Image.open("images/3line_light.png"))
+        self.search_dark = ImageTk.PhotoImage(Image.open("images/search_dark.png"))
+        self.search_light = ImageTk.PhotoImage(Image.open("images/search_light.png"))
+        self.contentbg_dark = ImageTk.PhotoImage(Image.open("images/files_dark.png"))
+        self.contentbg_light = ImageTk.PhotoImage(Image.open("images/files_light.png"))
+        self.sidebutton_dark = ImageTk.PhotoImage(Image.open("images/side_button_dark.png"))
+        self.sidebutton_light = ImageTk.PhotoImage(Image.open("images/side_button_light.png"))
+        self.indivfile_dark = ImageTk.PhotoImage(Image.open("images/filescontent_dark.png"))
+        self.indivfile_light = ImageTk.PhotoImage(Image.open("images/filescontent_light.png"))
         self.bg_color = self.master.cget("bg")
 
         self.backframe()
@@ -680,8 +676,8 @@ class NOTE_FILES(customtkinter.CTk):
 class NOTE_EDITOR(customtkinter.CTk):
     def __init__(self, master):
         self.master = master
-        self.threelinemenu_dark = ImageTk.PhotoImage(Image.open("3line_dark.png"))
-        self.threelinemenu_light = ImageTk.PhotoImage(Image.open("3line_light.png"))
+        self.threelinemenu_dark = ImageTk.PhotoImage(Image.open("images/3line_dark.png"))
+        self.threelinemenu_light = ImageTk.PhotoImage(Image.open("images/3line_light.png"))
 
         self.bg_color = self.master.cget("bg")
 
@@ -717,18 +713,18 @@ class NOTE_EDITOR(customtkinter.CTk):
 class QUIZ_FOLDER(customtkinter.CTk):
     def __init__(self, master):
         self.master = master
-        self.threelinemenu_dark = ImageTk.PhotoImage(Image.open("3line_dark.png"))
-        self.threelinemenu_light = ImageTk.PhotoImage(Image.open("3line_light.png"))
-        self.search_dark = ImageTk.PhotoImage(Image.open("search_dark.png"))
-        self.search_light = ImageTk.PhotoImage(Image.open("search_light.png"))
-        self.contentbg_dark = ImageTk.PhotoImage(Image.open("quizzesfolder_dark.png"))
-        self.contentbg_light = ImageTk.PhotoImage(Image.open("quizzesfolder_light.png"))
-        self.quizbtn_dark = ImageTk.PhotoImage(Image.open("quizzesbutton_dark.png"))
-        self.quizbtn_light = ImageTk.PhotoImage(Image.open("quizzesbutton_light.png"))
-        self.sidebutton_dark = ImageTk.PhotoImage(Image.open("side_button_dark.png"))
-        self.sidebutton_light = ImageTk.PhotoImage(Image.open("side_button_light.png"))
-        self.addbtn_dark = ImageTk.PhotoImage(Image.open("add_dark.png"))
-        self.addbtn_light = ImageTk.PhotoImage(Image.open("add_light.png"))
+        self.threelinemenu_dark = ImageTk.PhotoImage(Image.open("images/3line_dark.png"))
+        self.threelinemenu_light = ImageTk.PhotoImage(Image.open("images/3line_light.png"))
+        self.search_dark = ImageTk.PhotoImage(Image.open("images/search_dark.png"))
+        self.search_light = ImageTk.PhotoImage(Image.open("images/search_light.png"))
+        self.contentbg_dark = ImageTk.PhotoImage(Image.open("images/quizzesfolder_dark.png"))
+        self.contentbg_light = ImageTk.PhotoImage(Image.open("images/quizzesfolder_light.png"))
+        self.quizbtn_dark = ImageTk.PhotoImage(Image.open("images/quizzesbutton_dark.png"))
+        self.quizbtn_light = ImageTk.PhotoImage(Image.open("images/quizzesbutton_light.png"))
+        self.sidebutton_dark = ImageTk.PhotoImage(Image.open("images/side_button_dark.png"))
+        self.sidebutton_light = ImageTk.PhotoImage(Image.open("images/side_button_light.png"))
+        self.addbtn_dark = ImageTk.PhotoImage(Image.open("images/add_dark.png"))
+        self.addbtn_light = ImageTk.PhotoImage(Image.open("images/add_light.png"))
         self.bg_color = self.master.cget("bg")
         
         self.backframe()
@@ -853,16 +849,16 @@ class QUIZ_FOLDER(customtkinter.CTk):
 class QUIZ_FILES(customtkinter.CTk):
     def __init__(self, master):
         self.master = master
-        self.threelinemenu_dark = ImageTk.PhotoImage(Image.open("3line_dark.png"))
-        self.threelinemenu_light = ImageTk.PhotoImage(Image.open("3line_light.png"))
-        self.search_dark = ImageTk.PhotoImage(Image.open("search_dark.png"))
-        self.search_light = ImageTk.PhotoImage(Image.open("search_light.png"))
-        self.contentbg_dark = ImageTk.PhotoImage(Image.open("files_dark.png"))
-        self.contentbg_light = ImageTk.PhotoImage(Image.open("files_light.png"))
-        self.sidebutton_dark = ImageTk.PhotoImage(Image.open("side_button_dark.png"))
-        self.sidebutton_light = ImageTk.PhotoImage(Image.open("side_button_light.png"))
-        self.indivfile_dark = ImageTk.PhotoImage(Image.open("filescontent_dark.png"))
-        self.indivfile_light = ImageTk.PhotoImage(Image.open("filescontent_light.png"))
+        self.threelinemenu_dark = ImageTk.PhotoImage(Image.open("images/3line_dark.png"))
+        self.threelinemenu_light = ImageTk.PhotoImage(Image.open("images/3line_light.png"))
+        self.search_dark = ImageTk.PhotoImage(Image.open("images/search_dark.png"))
+        self.search_light = ImageTk.PhotoImage(Image.open("images/search_light.png"))
+        self.contentbg_dark = ImageTk.PhotoImage(Image.open("images/files_dark.png"))
+        self.contentbg_light = ImageTk.PhotoImage(Image.open("images/files_light.png"))
+        self.sidebutton_dark = ImageTk.PhotoImage(Image.open("images/side_button_dark.png"))
+        self.sidebutton_light = ImageTk.PhotoImage(Image.open("images/side_button_light.png"))
+        self.indivfile_dark = ImageTk.PhotoImage(Image.open("images/filescontent_dark.png"))
+        self.indivfile_light = ImageTk.PhotoImage(Image.open("images/filescontent_light.png"))
         self.bg_color = self.master.cget("bg")
 
         self.backframe()
@@ -998,12 +994,12 @@ class QUIZ_FILES(customtkinter.CTk):
 class QUIZ_EDITOR(customtkinter.CTk):
     def __init__(self, master):
         self.master = master
-        self.threelinemenu_dark = ImageTk.PhotoImage(Image.open("3line_dark.png"))
-        self.threelinemenu_light = ImageTk.PhotoImage(Image.open("3line_light.png"))
-        self.contentbg_dark = ImageTk.PhotoImage(Image.open("edquiz_dark.png"))
-        self.contentbg_light = ImageTk.PhotoImage(Image.open("edquiz_light.png"))
-        self.answerbg_dark = ImageTk.PhotoImage(Image.open("ansquiz_dark.png"))
-        self.answerbg_light = ImageTk.PhotoImage(Image.open("ansquiz_light.png"))
+        self.threelinemenu_dark = ImageTk.PhotoImage(Image.open("images/3line_dark.png"))
+        self.threelinemenu_light = ImageTk.PhotoImage(Image.open("images/3line_light.png"))
+        self.contentbg_dark = ImageTk.PhotoImage(Image.open("images/edquiz_dark.png"))
+        self.contentbg_light = ImageTk.PhotoImage(Image.open("images/edquiz_light.png"))
+        self.answerbg_dark = ImageTk.PhotoImage(Image.open("images/ansquiz_dark.png"))
+        self.answerbg_light = ImageTk.PhotoImage(Image.open("images/ansquiz_light.png"))
 
         self.bg_color = self.master.cget("bg")
 
@@ -1198,10 +1194,10 @@ class QUIZ_EDITOR(customtkinter.CTk):
 class RECYCLE_BIN(customtkinter.CTk):
     def __init__(self, master):
         self.master = master
-        self.threelinemenu_dark = ImageTk.PhotoImage(Image.open("3line_dark.png"))
-        self.threelinemenu_light = ImageTk.PhotoImage(Image.open("3line_light.png"))
-        self.search_dark = ImageTk.PhotoImage(Image.open("search_dark.png"))
-        self.search_light = ImageTk.PhotoImage(Image.open("search_light.png"))
+        self.threelinemenu_dark = ImageTk.PhotoImage(Image.open("images/3line_dark.png"))
+        self.threelinemenu_light = ImageTk.PhotoImage(Image.open("images/3line_light.png"))
+        self.search_dark = ImageTk.PhotoImage(Image.open("images/search_dark.png"))
+        self.search_light = ImageTk.PhotoImage(Image.open("images/search_light.png"))
         self.bg_color = self.master.cget("bg")
 
         self.backframe()
@@ -1252,11 +1248,11 @@ class RECYCLE_BIN(customtkinter.CTk):
 class PROFILE_SETTINGS(customtkinter.CTk):
     def __init__(self, master):
         self.master = master
-        self.threelinemenu_dark = ImageTk.PhotoImage(Image.open("3line_dark.png"))
-        self.threelinemenu_light = ImageTk.PhotoImage(Image.open("3line_light.png"))
-        self.settings_template_dark = ImageTk.PhotoImage(Image.open("profilesettings_dark.png"))
-        self.settings_template_light = ImageTk.PhotoImage(Image.open("profilesettings_light.png"))
-        self.usericon = ImageTk.PhotoImage(Image.open("sample_usericon.png"))
+        self.threelinemenu_dark = ImageTk.PhotoImage(Image.open("images/3line_dark.png"))
+        self.threelinemenu_light = ImageTk.PhotoImage(Image.open("images/3line_light.png"))
+        self.settings_template_dark = ImageTk.PhotoImage(Image.open("images/profilesettings_dark.png"))
+        self.settings_template_light = ImageTk.PhotoImage(Image.open("images/profilesettings_light.png"))
+        self.usericon = ImageTk.PhotoImage(Image.open("images/sample_usericon.png"))
         self.backframe()
         self.side_menu_icon()    
         print("OPENED: Profile Settings")
@@ -1282,7 +1278,7 @@ class PROFILE_SETTINGS(customtkinter.CTk):
             border=0,)
         profilesettings_temp.place(x=240,y=45)
 
-        # self.usericon = (Image.open("sample_usericon.png"))
+        # self.usericon = (Image.open("images/sample_usericon.png"))
         # self.resize_usericon = self.usericon.resize((80,80), Image.ANTIALIAS)
         # self.profilephoto = ImageTk.PhotoImage(self.resize_usericon) 
         # self.profile = Label(self.master, 
@@ -1325,8 +1321,8 @@ class LOGOUT(customtkinter.CTk):
 class THREELINE_MENU(customtkinter.CTk):
     def __init__(self, master, visit):
         self.master = master
-        self.closemenu_dark = ImageTk.PhotoImage(Image.open("close_dark.png"))
-        self.closemenu_light = ImageTk.PhotoImage(Image.open("close_light.png"))
+        self.closemenu_dark = ImageTk.PhotoImage(Image.open("images/close_dark.png"))
+        self.closemenu_light = ImageTk.PhotoImage(Image.open("images/close_light.png"))
         self.visit = visit
 
         self.burger_menu()
