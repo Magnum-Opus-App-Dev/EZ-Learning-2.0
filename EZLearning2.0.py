@@ -9,7 +9,7 @@ import pyrebase
 from pygame import FULLSCREEN
 import shutup;shutup.please()
 from tkinter import messagebox
-
+from tkinter import filedialog
 #SAMPLE EMAIL AND PASSWORD FOR LOGIN:
 #2@gmail.com
 #//////
@@ -45,7 +45,16 @@ class LOGIN(customtkinter.CTk):
         self._Email = StringVar()
         self._Password = StringVar()
 
-        self.change_appearance("#121212", "images/logo_darkmode.png", "#bbbbbb")
+        self.logo = (Image.open("images/logo_darkmode.png"))
+        self.resize_logo = self.logo.resize((80, 80), Image.ANTIALIAS)
+        self.photoimage = ImageTk.PhotoImage(self.resize_logo)
+        self.canvas = Label(self.master, image=self.photoimage, bd=0)
+        self.canvas.place(x=410, y=15)
+
+        self.sub = Label(self.master, text = 'IT 105 - Application Development and Emerging Technologies', justify=LEFT, font = ('Arial',7,'bold'), bg = '#121212', fg="#bbbbbb")
+        self.sub.place(x=10, y=474)
+        self.dev_names = Label(self.master, text = 'Dar, John Homer Sayno\nDela Fuente, Ar-Jay\nEchano, Angelo Millares\nMalubay, Arriana Mae Vargas\nMortiga, Renze Meinard', justify=LEFT, font = ('Roboto',7), bg = '#121212', fg="#bbbbbb")
+        self.dev_names.place(x=10, y=418)
 
         self.template = customtkinter.CTkFrame(self.master,
             width=500,
@@ -102,31 +111,39 @@ class LOGIN(customtkinter.CTk):
             command=self.change_appearance_mode)
         self.appearance.place(x=745, y=15)
 
-    def change_appearance(self, bg, image, fg):
-        self.master.config(bg=bg)
-        self.logo = (Image.open(image))
-        self.resize_logo = self.logo.resize((80, 80), Image.ANTIALIAS)
-        self.photoimage = ImageTk.PhotoImage(self.resize_logo)
-        self.canvas = Label(self.master, image=self.photoimage, bd=0)
-        self.canvas.place(x=410, y=15)
-        self.sub = Label(self.master, text = 'IT 105 - Application Development and Emerging Technologies', justify=LEFT, font = ('Arial',7,'bold'), bg = bg, fg=fg)
-        self.sub.place(x=10, y=474)
-        self.dev_names = Label(self.master, text = 'Dar, John Homer Sayno\nDela Fuente, Ar-Jay\nEchano, Angelo Millares\nMalubay, Arriana Mae Vargas\nMortiga, Renze Meinard', justify=LEFT, font = ('Roboto',7), bg=bg, fg=fg)
-        self.dev_names.place(x=10, y=418)
-    
     def change_appearance_mode(self, new_appearance_mode):
         customtkinter.set_appearance_mode(new_appearance_mode)
-
-        if new_appearance_mode == "Dark": self.change_appearance("#121212", "images/logo_darkmode.png", "#bbbbbb")
-        elif new_appearance_mode == "Light": self.change_appearance("#0d9187", "images/logo_lightmode.png", "#2e2e2e")
-  
+        if new_appearance_mode == "Dark":
+            self.master.config(bg="#121212")
+            self.logo = (Image.open("images/logo_darkmode.png"))
+            self.resize_logo = self.logo.resize((80, 80), Image.ANTIALIAS)
+            self.photoimage = ImageTk.PhotoImage(self.resize_logo)
+            self.canvas = Label(self.master, image=self.photoimage, bd=0)
+            self.canvas.place(x=410, y=15)
+            self.sub = Label(self.master, text = 'IT 105 - Application Development and Emerging Technologies', justify=LEFT, font = ('Arial',7,'bold'), bg = '#121212', fg="#bbbbbb")
+            self.sub.place(x=10, y=474)
+            self.dev_names = Label(self.master, text = 'Dar, John Homer Sayno\nDela Fuente, Ar-Jay\nEchano, Angelo Millares\nMalubay, Arriana Mae Vargas\nMortiga, Renze Meinard', justify=LEFT, font = ('Roboto',7), bg = '#121212', fg="#bbbbbb")
+            self.dev_names.place(x=10, y=418)
+        elif new_appearance_mode == "Light":
+            self.master.config(bg="#0d9187")
+            self.logo = (Image.open("images/logo_lightmode.png"))
+            self.resize_logo = self.logo.resize((80, 80), Image.ANTIALIAS)
+            self.photoimage = ImageTk.PhotoImage(self.resize_logo)
+            self.canvas = Label(self.master, image=self.photoimage, bd=0)
+            self.canvas.place(x=410, y=15)
+            self.sub = Label(self.master, text = 'IT 105 - Application Development and Emerging Technologies', justify=LEFT, font = ('Arial',7,'bold'), bg = '#0d9187', fg="#2e2e2e")
+            self.sub.place(x=10, y=474)
+            self.dev_names = Label(self.master, text = 'Dar, John Homer Sayno\nDela Fuente, Ar-Jay\nEchano, Angelo Millares\nMalubay, Arriana Mae Vargas\nMortiga, Renze Meinard', justify=LEFT, font = ('Roboto',7), bg = '#0d9187', fg="#2e2e2e")
+            self.dev_names.place(x=10, y=418)
+    
     def login(self):
         if self._Email.get() == '' or self._Password.get() == '': tkinter.messagebox.showinfo('Try Again', 'Please complete the required fields.')
         else: 
             try:
                 login = auth.sign_in_with_email_and_password(self._Email.get(), self._Password.get())
                 NOTES_FOLDER(self.master)
-            except: tkinter.messagebox.showinfo('Error', 'Invalid Email or Password. Try again')
+            except:
+                tkinter.messagebox.showinfo('Error', 'Invalid Email or Password. Try again')
 
     def quicklogin(self):
         NOTES_FOLDER(self.master)
@@ -144,7 +161,16 @@ class SIGNUP(customtkinter.CTk):
         self._Password = StringVar()
         self._Confirm_Password = StringVar()
 
-        self.change_appearance("#121212", "images/logo_darkmode.png", "#bbbbbb")
+        self.logo = (Image.open("images/logo_darkmode.png"))
+        self.resize_logo = self.logo.resize((80, 80), Image.ANTIALIAS)
+        self.photoimage = ImageTk.PhotoImage(self.resize_logo)
+        self.canvas = Label(self.master, image=self.photoimage, bd=0)
+        self.canvas.place(x=410, y=15)
+
+        self.sub = Label(self.master, text = 'IT 105 - Application Development and Emerging Technologies', justify=LEFT, font = ('Arial',7,'bold'), bg = '#121212', fg="#bbbbbb")
+        self.sub.place(x=10, y=474)
+        self.dev_names = Label(self.master, text = 'Dar, John Homer Sayno\nDela Fuente, Ar-Jay\nEchano, Angelo Millares\nMalubay, Arriana Mae Vargas\nMortiga, Renze Meinard', justify=LEFT, font = ('Roboto',7), bg = '#121212', fg="#bbbbbb")
+        self.dev_names.place(x=10, y=418)
 
         self.template = customtkinter.CTkFrame(self.master,
             width=500,
@@ -222,23 +248,30 @@ class SIGNUP(customtkinter.CTk):
             command=self.change_appearance_mode)
         self.appearance.place(x=745, y=15)
 
-    def change_appearance(self, bg, image, fg):
-        self.master.config(bg=bg)
-        self.logo = (Image.open(image))
-        self.resize_logo = self.logo.resize((80, 80), Image.ANTIALIAS)
-        self.photoimage = ImageTk.PhotoImage(self.resize_logo)
-        self.canvas = Label(self.master, image=self.photoimage, bd=0)
-        self.canvas.place(x=410, y=15)
-        self.sub = Label(self.master, text = 'IT 105 - Application Development and Emerging Technologies', justify=LEFT, font = ('Arial',7,'bold'), bg = bg, fg=fg)
-        self.sub.place(x=10, y=474)
-        self.dev_names = Label(self.master, text = 'Dar, John Homer Sayno\nDela Fuente, Ar-Jay\nEchano, Angelo Millares\nMalubay, Arriana Mae Vargas\nMortiga, Renze Meinard', justify=LEFT, font = ('Roboto',7), bg=bg, fg=fg)
-        self.dev_names.place(x=10, y=418)
-
     def change_appearance_mode(self, new_appearance_mode):
         customtkinter.set_appearance_mode(new_appearance_mode)
-
-        if new_appearance_mode == "Dark": self.change_appearance("#121212", "images/logo_darkmode.png", "#bbbbbb")
-        elif new_appearance_mode == "Light": self.change_appearance("#0d9187", "images/logo_lightmode.png", "#2e2e2e")
+        if new_appearance_mode == "Dark":
+            self.master.config(bg="#121212")
+            self.logo = (Image.open("images/logo_darkmode.png"))
+            self.resize_logo = self.logo.resize((80, 80), Image.ANTIALIAS)
+            self.photoimage = ImageTk.PhotoImage(self.resize_logo)
+            self.canvas = Label(self.master, image=self.photoimage, bd=0)
+            self.canvas.place(x=410, y=15)
+            self.sub = Label(self.master, text = 'IT 105 - Application Development and Emerging Technologies', justify=LEFT, font = ('Arial',7,'bold'), bg = '#121212', fg="#bbbbbb")
+            self.sub.place(x=10, y=474)
+            self.dev_names = Label(self.master, text = 'Dar, John Homer Sayno\nDela Fuente, Ar-Jay\nEchano, Angelo Millares\nMalubay, Arriana Mae Vargas\nMortiga, Renze Meinard', justify=LEFT, font = ('Roboto',7), bg = '#121212', fg="#bbbbbb")
+            self.dev_names.place(x=10, y=418)
+        elif new_appearance_mode == "Light":
+            self.master.config(bg="#0d9187")
+            self.logo = (Image.open("images/logo_lightmode.png"))
+            self.resize_logo = self.logo.resize((80, 80), Image.ANTIALIAS)
+            self.photoimage = ImageTk.PhotoImage(self.resize_logo)
+            self.canvas = Label(self.master, image=self.photoimage, bd=0)
+            self.canvas.place(x=410, y=15)
+            self.sub = Label(self.master, text = 'IT 105 - Application Development and Emerging Technologies', justify=LEFT, font = ('Arial',7,'bold'), bg = '#0d9187', fg="#2e2e2e")
+            self.sub.place(x=10, y=474)
+            self.dev_names = Label(self.master, text = 'Dar, John Homer Sayno\nDela Fuente, Ar-Jay\nEchano, Angelo Millares\nMalubay, Arriana Mae Vargas\nMortiga, Renze Meinard', justify=LEFT, font = ('Roboto',7), bg = '#0d9187', fg="#2e2e2e")
+            self.dev_names.place(x=10, y=418)
     
     def signup(self):
         if self._Username.get() == '' or self._Password.get() == '' or self._Email.get() == '' or self._Password.get() == '' or self._Confirm_Password.get() == '': 
@@ -650,6 +683,7 @@ class NOTE_EDITOR(customtkinter.CTk):
 
         self.backframe()
         self.features()
+        self.main_body()
 
         print("OPENED: Note Editor")
 
@@ -676,6 +710,117 @@ class NOTE_EDITOR(customtkinter.CTk):
 
     def side_menu(self):
         THREELINE_MENU(self.master, visit=None)
+    
+    def main_body(self):
+        self.content_label = LabelFrame(self.master,
+                                   bg="#00FFFF",
+                                   border=0,
+                                   width=800,
+                                   height=420).place(x=55, y=45)
+        self.label = Label(self.content_label, text="APPLICATION DEV",
+                           fg="red",
+                           bg="#00FFFF",
+                           border=8,
+                           font=("roboto",15)).place(x=90,y=55)
+
+        self.textbox1 = Text(self.content_label,bg="#00FFFF",
+                             border=2,
+                             width=100,
+                             height=3,
+                             font=("roboto",10)).place(x=110,y=95)
+
+        self.textbox2 = Text(self.content_label, bg="#00FFFF",
+                             border=2,
+                             width=70,
+                             height=5,
+                             font=("roboto", 10)).place(x=110, y=340)
+
+        self.addimage1 = Button(self.content_label,
+                                text="UPLOAD IMAGE",
+                                bg="grey",
+                                command=self.select_picture1).place(x=110, y=210)
+
+        self.addimage2 = Button(self.content_label,
+                                text="ADD MORE IMAGE",
+                                bg="grey",
+                                command=self.select_picture2).place(x=110, y=240)
+
+        self.Add_new_notes = Button(self.content_label,
+                                    text="ADD NEW NOTES",
+                                    bg="grey",
+                                    command=self.ADD_NEW_NOTES).place(x=680, y=370)
+    def select_picture1(self):
+        global my_image1
+        self.filename = filedialog.askopenfilename(initialdir="/gui/images",
+                                              title="Select Image File",
+                                              filetypes=(("png images","*.png"),
+                                                         ("jpg images","*.jpg"),
+                                                         ("all files","*.*")))
+
+        img = Image.open(self.filename)
+        img = img.resize((250,150))
+        my_image1 = ImageTk.PhotoImage(img)
+
+        image1 = Label(self.master, image=my_image1,
+                       width=250,
+                       height=150).place(x=280,y=170)
+
+    def select_picture2(self):
+        global my_image2
+        self.filename = filedialog.askopenfilename(initialdir="/gui/images",
+                                                   title="Select Image File",
+                                                   filetypes=(("png images", "*.png"),
+                                                              ("jpg images", "*.jpg"),
+                                                              ("all files", "*.*")))
+
+        img = Image.open(self.filename)
+        img = img.resize((250, 150))
+        my_image2 = ImageTk.PhotoImage(img)
+
+        image2 = Label(self.master, image=my_image2,
+                       width=250,
+                       height=150).place(x=530, y=170)
+    def submit(self):
+        print("SHOWED: Submit Done")
+    def ADD_NEW_NOTES(self):
+        print("SHOWED: Submit Done")
+        self.content_label1 = LabelFrame(self.master,
+                                        bg="#00FFFF",
+                                        border=0,
+                                        width=800,
+                                        height=420).place(x=55, y=45)
+        self.label = Label(self.content_label1, text="APPLICATION DEV",
+                           fg="red",
+                           bg="#00FFFF",
+                           border=8,
+                           font=("roboto", 15)).place(x=90, y=55)
+
+        self.textbox1 = Text(self.content_label1, bg="#00FFFF",
+                             border=2,
+                             width=100,
+                             height=3,
+                             font=("roboto", 10)).place(x=110, y=95)
+
+        self.textbox2 = Text(self.content_label1, bg="#00FFFF",
+                             border=2,
+                             width=70,
+                             height=5,
+                             font=("roboto", 10)).place(x=110, y=340)
+
+        self.addimage1 = Button(self.content_label1,
+                                text="UPLOAD IMAGE",
+                                bg="grey",
+                                command=self.select_picture1).place(x=110, y=210)
+
+        self.addimage2 = Button(self.content_label1,
+                                text="ADD MORE IMAGE",
+                                bg="grey",
+                                command=self.select_picture2).place(x=110, y=240)
+
+        self.Add_new_notes = Button(self.content_label1,
+                                    text="ADD NEW NOTES",
+                                    bg="grey",
+                                    command=self.ADD_NEW_NOTES).place(x=680, y=370)
 
 class QUIZ_FOLDER(customtkinter.CTk):
     def __init__(self, master):
