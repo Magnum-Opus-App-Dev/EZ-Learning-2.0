@@ -507,6 +507,8 @@ class NOTE_FILES(customtkinter.CTk):
         self.sidebutton_light = ImageTk.PhotoImage(Image.open("images/side_button_light.png"))
         self.indivfile_dark = ImageTk.PhotoImage(Image.open("images/filescontent_dark.png"))
         self.indivfile_light = ImageTk.PhotoImage(Image.open("images/filescontent_light.png"))
+        self.addbtn_dark = ImageTk.PhotoImage(Image.open("images/add_dark.png"))
+        self.addbtn_light = ImageTk.PhotoImage(Image.open("images/add_light.png"))
         self.bg_color = self.master.cget("bg")
 
         self.backframe()
@@ -520,8 +522,41 @@ class NOTE_FILES(customtkinter.CTk):
             height=500,
             background=self.master.cget("bg"))
         main_frame.place(x=0, y=0)
+
+    def add_frame(self):
+        self.main_frame = Frame(self.master,
+            width=500,
+            height=200,
+            background=self.master.cget("bg"))
+        self.main_frame.place(x=200, y=150)
+
+        add_entry = Entry(self.main_frame,
+            width=40,
+            font=("Roboto", 12, "bold"),
+            bg="#c2c2c2",
+            borderwidth=0,
+            fg="#000000")
+        add_entry.place(x=50, y=50)
+
+        okay_btn = Button(self.main_frame,
+            text='Submit',
+            font=("Comic Sans MS", 11),
+            fg='#000000',
+            borderwidth=0,
+            relief=FLAT,
+            width=10,)
+        okay_btn.place(x=200, y=100)
+
+        cancel_btn = Button(self.main_frame,
+            text='Cancel',
+            font=("Comic Sans MS", 11),
+            fg='#000000',
+            borderwidth=0,
+            relief=FLAT,
+            width=10,)
+        cancel_btn.place(x=200, y=150)
     
-    def content_features(self, search_image, three_line_image, content_img, side_btn, notes_fg, notes_bg, indiv_file):
+    def content_features(self, search_image, three_line_image, content_img, side_btn, notes_fg, notes_bg, indiv_file, btn_img):
         files_search = Label(self.master,
             image=search_image,
             border=0,
@@ -605,6 +640,15 @@ class NOTE_FILES(customtkinter.CTk):
             command=self.share,
             activebackground=notes_bg)
         exportside_btn.place(x=46, y=402)
+
+        add_btn = Button(self.master,
+            image=btn_img,
+            command=self.add_frame,
+            border=0,
+            bg=self.bg_color,
+            activebackground=self.bg_color)
+        add_btn.place(x=760, y=78)
+
         indivfile = Button(self.master,
             image=indiv_file,
             border=0,
@@ -617,10 +661,10 @@ class NOTE_FILES(customtkinter.CTk):
 
         if self.bg_color == "#121212": 
             self.content_features(self.search_dark, self.threelinemenu_dark, self.contentbg_dark,
-            self.sidebutton_dark, "#F2F2F2", "#2C2C2C", self.indivfile_dark)
+            self.sidebutton_dark, "#F2F2F2", "#2C2C2C", self.indivfile_dark, self.addbtn_dark)
         elif self.bg_color == "#0d9187": 
             self.content_features(self.search_light, self.threelinemenu_light, self.contentbg_light, 
-            self.sidebutton_light, "#0c325c", "#12c8bb", self.indivfile_light)
+            self.sidebutton_light, "#0c325c", "#12c8bb", self.indivfile_light, self.addbtn_light)
 
     def side_menu(self):
         THREELINE_MENU(self.master, visit=None)
