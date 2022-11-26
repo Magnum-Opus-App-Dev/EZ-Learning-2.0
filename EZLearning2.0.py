@@ -45,16 +45,7 @@ class LOGIN(customtkinter.CTk):
         self._Email = StringVar()
         self._Password = StringVar()
 
-        self.logo = (Image.open("images/logo_darkmode.png"))
-        self.resize_logo = self.logo.resize((80, 80), Image.ANTIALIAS)
-        self.photoimage = ImageTk.PhotoImage(self.resize_logo)
-        self.canvas = Label(self.master, image=self.photoimage, bd=0)
-        self.canvas.place(x=410, y=15)
-
-        self.sub = Label(self.master, text = 'IT 105 - Application Development and Emerging Technologies', justify=LEFT, font = ('Arial',7,'bold'), bg = '#121212', fg="#bbbbbb")
-        self.sub.place(x=10, y=474)
-        self.dev_names = Label(self.master, text = 'Dar, John Homer Sayno\nDela Fuente, Ar-Jay\nEchano, Angelo Millares\nMalubay, Arriana Mae Vargas\nMortiga, Renze Meinard', justify=LEFT, font = ('Roboto',7), bg = '#121212', fg="#bbbbbb")
-        self.dev_names.place(x=10, y=418)
+        self.change_appearance("#121212", "images/logo_darkmode.png", "#bbbbbb")
 
         self.template = customtkinter.CTkFrame(self.master,
             width=500,
@@ -111,39 +102,31 @@ class LOGIN(customtkinter.CTk):
             command=self.change_appearance_mode)
         self.appearance.place(x=745, y=15)
 
+    def change_appearance(self, bg, image, fg):
+        self.master.config(bg=bg)
+        self.logo = (Image.open(image))
+        self.resize_logo = self.logo.resize((80, 80), Image.ANTIALIAS)
+        self.photoimage = ImageTk.PhotoImage(self.resize_logo)
+        self.canvas = Label(self.master, image=self.photoimage, bd=0)
+        self.canvas.place(x=410, y=15)
+        self.sub = Label(self.master, text = 'IT 105 - Application Development and Emerging Technologies', justify=LEFT, font = ('Arial',7,'bold'), bg = bg, fg=fg)
+        self.sub.place(x=10, y=474)
+        self.dev_names = Label(self.master, text = 'Dar, John Homer Sayno\nDela Fuente, Ar-Jay\nEchano, Angelo Millares\nMalubay, Arriana Mae Vargas\nMortiga, Renze Meinard', justify=LEFT, font = ('Roboto',7), bg=bg, fg=fg)
+        self.dev_names.place(x=10, y=418)
+    
     def change_appearance_mode(self, new_appearance_mode):
         customtkinter.set_appearance_mode(new_appearance_mode)
-        if new_appearance_mode == "Dark":
-            self.master.config(bg="#121212")
-            self.logo = (Image.open("images/logo_darkmode.png"))
-            self.resize_logo = self.logo.resize((80, 80), Image.ANTIALIAS)
-            self.photoimage = ImageTk.PhotoImage(self.resize_logo)
-            self.canvas = Label(self.master, image=self.photoimage, bd=0)
-            self.canvas.place(x=410, y=15)
-            self.sub = Label(self.master, text = 'IT 105 - Application Development and Emerging Technologies', justify=LEFT, font = ('Arial',7,'bold'), bg = '#121212', fg="#bbbbbb")
-            self.sub.place(x=10, y=474)
-            self.dev_names = Label(self.master, text = 'Dar, John Homer Sayno\nDela Fuente, Ar-Jay\nEchano, Angelo Millares\nMalubay, Arriana Mae Vargas\nMortiga, Renze Meinard', justify=LEFT, font = ('Roboto',7), bg = '#121212', fg="#bbbbbb")
-            self.dev_names.place(x=10, y=418)
-        elif new_appearance_mode == "Light":
-            self.master.config(bg="#0d9187")
-            self.logo = (Image.open("images/logo_lightmode.png"))
-            self.resize_logo = self.logo.resize((80, 80), Image.ANTIALIAS)
-            self.photoimage = ImageTk.PhotoImage(self.resize_logo)
-            self.canvas = Label(self.master, image=self.photoimage, bd=0)
-            self.canvas.place(x=410, y=15)
-            self.sub = Label(self.master, text = 'IT 105 - Application Development and Emerging Technologies', justify=LEFT, font = ('Arial',7,'bold'), bg = '#0d9187', fg="#2e2e2e")
-            self.sub.place(x=10, y=474)
-            self.dev_names = Label(self.master, text = 'Dar, John Homer Sayno\nDela Fuente, Ar-Jay\nEchano, Angelo Millares\nMalubay, Arriana Mae Vargas\nMortiga, Renze Meinard', justify=LEFT, font = ('Roboto',7), bg = '#0d9187', fg="#2e2e2e")
-            self.dev_names.place(x=10, y=418)
-    
+
+        if new_appearance_mode == "Dark": self.change_appearance("#121212", "images/logo_darkmode.png", "#bbbbbb")
+        elif new_appearance_mode == "Light": self.change_appearance("#0d9187", "images/logo_lightmode.png", "#2e2e2e")
+  
     def login(self):
         if self._Email.get() == '' or self._Password.get() == '': tkinter.messagebox.showinfo('Try Again', 'Please complete the required fields.')
         else: 
             try:
                 login = auth.sign_in_with_email_and_password(self._Email.get(), self._Password.get())
                 NOTES_FOLDER(self.master)
-            except:
-                tkinter.messagebox.showinfo('Error', 'Invalid Email or Password. Try again')
+            except: tkinter.messagebox.showinfo('Error', 'Invalid Email or Password. Try again')
 
     def quicklogin(self):
         NOTES_FOLDER(self.master)
@@ -161,16 +144,7 @@ class SIGNUP(customtkinter.CTk):
         self._Password = StringVar()
         self._Confirm_Password = StringVar()
 
-        self.logo = (Image.open("images/logo_darkmode.png"))
-        self.resize_logo = self.logo.resize((80, 80), Image.ANTIALIAS)
-        self.photoimage = ImageTk.PhotoImage(self.resize_logo)
-        self.canvas = Label(self.master, image=self.photoimage, bd=0)
-        self.canvas.place(x=410, y=15)
-
-        self.sub = Label(self.master, text = 'IT 105 - Application Development and Emerging Technologies', justify=LEFT, font = ('Arial',7,'bold'), bg = '#121212', fg="#bbbbbb")
-        self.sub.place(x=10, y=474)
-        self.dev_names = Label(self.master, text = 'Dar, John Homer Sayno\nDela Fuente, Ar-Jay\nEchano, Angelo Millares\nMalubay, Arriana Mae Vargas\nMortiga, Renze Meinard', justify=LEFT, font = ('Roboto',7), bg = '#121212', fg="#bbbbbb")
-        self.dev_names.place(x=10, y=418)
+        self.change_appearance("#121212", "images/logo_darkmode.png", "#bbbbbb")
 
         self.template = customtkinter.CTkFrame(self.master,
             width=500,
@@ -248,30 +222,23 @@ class SIGNUP(customtkinter.CTk):
             command=self.change_appearance_mode)
         self.appearance.place(x=745, y=15)
 
+    def change_appearance(self, bg, image, fg):
+        self.master.config(bg=bg)
+        self.logo = (Image.open(image))
+        self.resize_logo = self.logo.resize((80, 80), Image.ANTIALIAS)
+        self.photoimage = ImageTk.PhotoImage(self.resize_logo)
+        self.canvas = Label(self.master, image=self.photoimage, bd=0)
+        self.canvas.place(x=410, y=15)
+        self.sub = Label(self.master, text = 'IT 105 - Application Development and Emerging Technologies', justify=LEFT, font = ('Arial',7,'bold'), bg = bg, fg=fg)
+        self.sub.place(x=10, y=474)
+        self.dev_names = Label(self.master, text = 'Dar, John Homer Sayno\nDela Fuente, Ar-Jay\nEchano, Angelo Millares\nMalubay, Arriana Mae Vargas\nMortiga, Renze Meinard', justify=LEFT, font = ('Roboto',7), bg=bg, fg=fg)
+        self.dev_names.place(x=10, y=418)
+
     def change_appearance_mode(self, new_appearance_mode):
         customtkinter.set_appearance_mode(new_appearance_mode)
-        if new_appearance_mode == "Dark":
-            self.master.config(bg="#121212")
-            self.logo = (Image.open("images/logo_darkmode.png"))
-            self.resize_logo = self.logo.resize((80, 80), Image.ANTIALIAS)
-            self.photoimage = ImageTk.PhotoImage(self.resize_logo)
-            self.canvas = Label(self.master, image=self.photoimage, bd=0)
-            self.canvas.place(x=410, y=15)
-            self.sub = Label(self.master, text = 'IT 105 - Application Development and Emerging Technologies', justify=LEFT, font = ('Arial',7,'bold'), bg = '#121212', fg="#bbbbbb")
-            self.sub.place(x=10, y=474)
-            self.dev_names = Label(self.master, text = 'Dar, John Homer Sayno\nDela Fuente, Ar-Jay\nEchano, Angelo Millares\nMalubay, Arriana Mae Vargas\nMortiga, Renze Meinard', justify=LEFT, font = ('Roboto',7), bg = '#121212', fg="#bbbbbb")
-            self.dev_names.place(x=10, y=418)
-        elif new_appearance_mode == "Light":
-            self.master.config(bg="#0d9187")
-            self.logo = (Image.open("images/logo_lightmode.png"))
-            self.resize_logo = self.logo.resize((80, 80), Image.ANTIALIAS)
-            self.photoimage = ImageTk.PhotoImage(self.resize_logo)
-            self.canvas = Label(self.master, image=self.photoimage, bd=0)
-            self.canvas.place(x=410, y=15)
-            self.sub = Label(self.master, text = 'IT 105 - Application Development and Emerging Technologies', justify=LEFT, font = ('Arial',7,'bold'), bg = '#0d9187', fg="#2e2e2e")
-            self.sub.place(x=10, y=474)
-            self.dev_names = Label(self.master, text = 'Dar, John Homer Sayno\nDela Fuente, Ar-Jay\nEchano, Angelo Millares\nMalubay, Arriana Mae Vargas\nMortiga, Renze Meinard', justify=LEFT, font = ('Roboto',7), bg = '#0d9187', fg="#2e2e2e")
-            self.dev_names.place(x=10, y=418)
+
+        if new_appearance_mode == "Dark": self.change_appearance("#121212", "images/logo_darkmode.png", "#bbbbbb")
+        elif new_appearance_mode == "Light": self.change_appearance("#0d9187", "images/logo_lightmode.png", "#2e2e2e")
     
     def signup(self):
         if self._Username.get() == '' or self._Password.get() == '' or self._Email.get() == '' or self._Password.get() == '' or self._Confirm_Password.get() == '': 
@@ -540,6 +507,8 @@ class NOTE_FILES(customtkinter.CTk):
         self.sidebutton_light = ImageTk.PhotoImage(Image.open("images/side_button_light.png"))
         self.indivfile_dark = ImageTk.PhotoImage(Image.open("images/filescontent_dark.png"))
         self.indivfile_light = ImageTk.PhotoImage(Image.open("images/filescontent_light.png"))
+        self.addbtn_dark = ImageTk.PhotoImage(Image.open("images/add_dark.png"))
+        self.addbtn_light = ImageTk.PhotoImage(Image.open("images/add_light.png"))
         self.bg_color = self.master.cget("bg")
 
         self.backframe()
@@ -553,8 +522,41 @@ class NOTE_FILES(customtkinter.CTk):
             height=500,
             background=self.master.cget("bg"))
         main_frame.place(x=0, y=0)
+
+    def add_frame(self):
+        self.main_frame = Frame(self.master,
+            width=500,
+            height=200,
+            background=self.master.cget("bg"))
+        self.main_frame.place(x=200, y=150)
+
+        add_entry = Entry(self.main_frame,
+            width=40,
+            font=("Roboto", 12, "bold"),
+            bg="#c2c2c2",
+            borderwidth=0,
+            fg="#000000")
+        add_entry.place(x=50, y=50)
+
+        okay_btn = Button(self.main_frame,
+            text='Submit',
+            font=("Comic Sans MS", 11),
+            fg='#000000',
+            borderwidth=0,
+            relief=FLAT,
+            width=10,)
+        okay_btn.place(x=200, y=100)
+
+        cancel_btn = Button(self.main_frame,
+            text='Cancel',
+            font=("Comic Sans MS", 11),
+            fg='#000000',
+            borderwidth=0,
+            relief=FLAT,
+            width=10,)
+        cancel_btn.place(x=200, y=150)
     
-    def content_features(self, search_image, three_line_image, content_img, side_btn, notes_fg, notes_bg, indiv_file):
+    def content_features(self, search_image, three_line_image, content_img, side_btn, notes_fg, notes_bg, indiv_file, btn_img):
         files_search = Label(self.master,
             image=search_image,
             border=0,
@@ -638,6 +640,15 @@ class NOTE_FILES(customtkinter.CTk):
             command=self.share,
             activebackground=notes_bg)
         exportside_btn.place(x=46, y=402)
+
+        add_btn = Button(self.master,
+            image=btn_img,
+            command=self.add_frame,
+            border=0,
+            bg=self.bg_color,
+            activebackground=self.bg_color)
+        add_btn.place(x=760, y=78)
+
         indivfile = Button(self.master,
             image=indiv_file,
             border=0,
@@ -650,10 +661,10 @@ class NOTE_FILES(customtkinter.CTk):
 
         if self.bg_color == "#121212": 
             self.content_features(self.search_dark, self.threelinemenu_dark, self.contentbg_dark,
-            self.sidebutton_dark, "#F2F2F2", "#2C2C2C", self.indivfile_dark)
+            self.sidebutton_dark, "#F2F2F2", "#2C2C2C", self.indivfile_dark, self.addbtn_dark)
         elif self.bg_color == "#0d9187": 
             self.content_features(self.search_light, self.threelinemenu_light, self.contentbg_light, 
-            self.sidebutton_light, "#0c325c", "#12c8bb", self.indivfile_light)
+            self.sidebutton_light, "#0c325c", "#12c8bb", self.indivfile_light, self.addbtn_light)
 
     def side_menu(self):
         THREELINE_MENU(self.master, visit=None)
