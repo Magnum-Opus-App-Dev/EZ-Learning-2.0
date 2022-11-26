@@ -9,7 +9,7 @@ import pyrebase
 from pygame import FULLSCREEN
 import shutup;shutup.please()
 from tkinter import messagebox
-
+from tkinter import filedialog
 #SAMPLE EMAIL AND PASSWORD FOR LOGIN:
 #2@gmail.com
 #//////
@@ -694,6 +694,7 @@ class NOTE_EDITOR(customtkinter.CTk):
 
         self.backframe()
         self.features()
+        self.main_body()
 
         print("OPENED: Note Editor")
 
@@ -720,6 +721,117 @@ class NOTE_EDITOR(customtkinter.CTk):
 
     def side_menu(self):
         THREELINE_MENU(self.master, visit=None)
+    
+    def main_body(self):
+        self.content_label = LabelFrame(self.master,
+                                   bg="#00FFFF",
+                                   border=0,
+                                   width=800,
+                                   height=420).place(x=55, y=45)
+        self.label = Label(self.content_label, text="APPLICATION DEV",
+                           fg="red",
+                           bg="#00FFFF",
+                           border=8,
+                           font=("roboto",15)).place(x=90,y=55)
+
+        self.textbox1 = Text(self.content_label,bg="#00FFFF",
+                             border=2,
+                             width=100,
+                             height=3,
+                             font=("roboto",10)).place(x=110,y=95)
+
+        self.textbox2 = Text(self.content_label, bg="#00FFFF",
+                             border=2,
+                             width=70,
+                             height=5,
+                             font=("roboto", 10)).place(x=110, y=340)
+
+        self.addimage1 = Button(self.content_label,
+                                text="UPLOAD IMAGE",
+                                bg="grey",
+                                command=self.select_picture1).place(x=110, y=210)
+
+        self.addimage2 = Button(self.content_label,
+                                text="ADD MORE IMAGE",
+                                bg="grey",
+                                command=self.select_picture2).place(x=110, y=240)
+
+        self.Add_new_notes = Button(self.content_label,
+                                    text="ADD NEW NOTES",
+                                    bg="grey",
+                                    command=self.ADD_NEW_NOTES).place(x=680, y=370)
+    def select_picture1(self):
+        global my_image1
+        self.filename = filedialog.askopenfilename(initialdir="/gui/images",
+                                              title="Select Image File",
+                                              filetypes=(("png images","*.png"),
+                                                         ("jpg images","*.jpg"),
+                                                         ("all files","*.*")))
+
+        img = Image.open(self.filename)
+        img = img.resize((250,150))
+        my_image1 = ImageTk.PhotoImage(img)
+
+        image1 = Label(self.master, image=my_image1,
+                       width=250,
+                       height=150).place(x=280,y=170)
+
+    def select_picture2(self):
+        global my_image2
+        self.filename = filedialog.askopenfilename(initialdir="/gui/images",
+                                                   title="Select Image File",
+                                                   filetypes=(("png images", "*.png"),
+                                                              ("jpg images", "*.jpg"),
+                                                              ("all files", "*.*")))
+
+        img = Image.open(self.filename)
+        img = img.resize((250, 150))
+        my_image2 = ImageTk.PhotoImage(img)
+
+        image2 = Label(self.master, image=my_image2,
+                       width=250,
+                       height=150).place(x=530, y=170)
+    def submit(self):
+        print("SHOWED: Submit Done")
+    def ADD_NEW_NOTES(self):
+        print("SHOWED: Submit Done")
+        self.content_label1 = LabelFrame(self.master,
+                                        bg="#00FFFF",
+                                        border=0,
+                                        width=800,
+                                        height=420).place(x=55, y=45)
+        self.label = Label(self.content_label1, text="APPLICATION DEV",
+                           fg="red",
+                           bg="#00FFFF",
+                           border=8,
+                           font=("roboto", 15)).place(x=90, y=55)
+
+        self.textbox1 = Text(self.content_label1, bg="#00FFFF",
+                             border=2,
+                             width=100,
+                             height=3,
+                             font=("roboto", 10)).place(x=110, y=95)
+
+        self.textbox2 = Text(self.content_label1, bg="#00FFFF",
+                             border=2,
+                             width=70,
+                             height=5,
+                             font=("roboto", 10)).place(x=110, y=340)
+
+        self.addimage1 = Button(self.content_label1,
+                                text="UPLOAD IMAGE",
+                                bg="grey",
+                                command=self.select_picture1).place(x=110, y=210)
+
+        self.addimage2 = Button(self.content_label1,
+                                text="ADD MORE IMAGE",
+                                bg="grey",
+                                command=self.select_picture2).place(x=110, y=240)
+
+        self.Add_new_notes = Button(self.content_label1,
+                                    text="ADD NEW NOTES",
+                                    bg="grey",
+                                    command=self.ADD_NEW_NOTES).place(x=680, y=370)
 
 class QUIZ_FOLDER(customtkinter.CTk):
     def __init__(self, master):
