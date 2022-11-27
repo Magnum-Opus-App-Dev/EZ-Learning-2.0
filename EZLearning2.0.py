@@ -1,12 +1,19 @@
+import json
+import uuid
 from tkinter import *
 from PIL import ImageTk, Image
 import customtkinter
 import tkinter.messagebox
 from tkinter import ttk
-from cv2 import line
+# from cv2 import line
 import pyrebase
 from pygame import FULLSCREEN
 import shutup;shutup.please()
+
+from model.Editor import Editor
+from model.Folder import Folder
+from model.Topic import Topic
+
 from tkinter import messagebox
 
 config = {"apiKey": "AIzaSyBARpuvAyruul-wLV0APfAsd0oT7W5rOuU",
@@ -20,8 +27,8 @@ config = {"apiKey": "AIzaSyBARpuvAyruul-wLV0APfAsd0oT7W5rOuU",
 
 firebase = pyrebase.initialize_app(config)
 auth = firebase.auth()
-
 db = firebase.database()
+userId = ''
 
 customtkinter.set_appearance_mode("Dark")
 customtkinter.set_default_color_theme("green")
@@ -76,7 +83,7 @@ class LOGIN():
             text="Login",
             border_width=2,
             fg_color=None,
-            command=self.quicklogin)
+            command=self.login)
         self.enter_btn.place(x=270, y=230)
 
         self.signup_btn = customtkinter.CTkButton(self.template,
@@ -118,7 +125,9 @@ class LOGIN():
         if self._Email.get() == '' or self._Password.get() == '': tkinter.messagebox.showinfo('Try Again', 'Please complete the required fields.')
         else: 
             try:
+                global userId
                 login = auth.sign_in_with_email_and_password(self._Email.get(), self._Password.get())
+                userId = login['localId']
                 NOTES_FOLDER(self.master)
             except:
                 tkinter.messagebox.showinfo('Error', 'Invalid Email or Password. Try again')
@@ -230,7 +239,10 @@ class SIGNUP():
             if self._Password.get() != self._Confirm_Password.get():tkinter.messagebox.showinfo('Try Again', 'Your Password do not match')
             else: 
                 try:
+                    global userId
                     signin = auth.create_user_with_email_and_password(self._Email.get(), self._Password.get())
+                    userId = signin['localId']
+                    NOTES_FOLDER(self.master)
                 except:
                     tkinter.messagebox.showinfo('Invalid', 'Email Exist, please input another account')
 
@@ -261,7 +273,10 @@ class NOTES_FOLDER():
         self.rows = []
 
         folders = db.child("Folders").get()
-        self.rows.append(folders.val())
+        if folders.val() is not None:
+            for folder in folders:
+                if folder.val()['userId'] == userId:
+                    self.rows.append(folder.val())
 
         print(len(self.rows))
 
@@ -280,10 +295,14 @@ class NOTES_FOLDER():
     def add_frame(self):
 
         def submit():
-            data = add_entry.get()
-            db.child("Folders").set(data)
-
+            folderId = str(uuid.uuid4())
+            folder = Folder(folderId, add_entry.get(), userId)
+            db.child("Folders").child(folderId).set(folder.__dict__)
             NOTES_FOLDER(self.master)
+
+        def cancel():
+            self.main_frame.destroy()
+
 
         if self.master.cget("bg") == "#121212":
             mesbox_image = self.messageBox_dark
@@ -335,6 +354,7 @@ class NOTES_FOLDER():
         okay_btn.place(x=74, y=122)
         cancel_btn = Button(self.main_frame,
             text='Cancel',
+            command=cancel,
             font=("Roboto", 11),
             fg=fg1,
             bg=bg1,
@@ -399,23 +419,25 @@ class NOTES_FOLDER():
             bg=notes_bg)
         inline_canvas.create_window((0,0), window=another_frame, anchor='nw')
 
+        def files(data):
+            NOTE_FILES(self.master, data)
+
         if self.rows != None:
             print(self.rows)
             for i in self.rows:
-
                 line_frame = Canvas(another_frame, 
                     highlightthickness=0)
                 line_frame.grid(row =row, column=column, pady=5, padx=11)
 
                 folder = Button(line_frame,
                     image=folder_img,
-                    command= None,
+                    command= lambda data=i: files(data),
                     border=0,
                     bg=notes_bg,
                     activebackground=notes_bg)
                 folder.pack()
                 foldername = Label(line_frame,
-                    text=i,
+                    text=i['name'],
                     font=("Arial", 10),
                     fg=notes_fg,
                     borderwidth=0,
@@ -531,7 +553,7 @@ class NOTES_FOLDER():
         QUIZ_FOLDER(self.master)
 
 class NOTE_FILES():
-    def __init__(self, master):
+    def __init__(self, master, data=None):
         self.master = master
         self.threelinemenu_dark = ImageTk.PhotoImage(Image.open("images/3line_dark.png"))
         self.threelinemenu_light = ImageTk.PhotoImage(Image.open("images/3line_light.png"))
@@ -548,6 +570,15 @@ class NOTE_FILES():
         self.messageBox_dark = ImageTk.PhotoImage(Image.open("images/mesbox_dark.png"))
         self.messageBox_light = ImageTk.PhotoImage(Image.open("images/mesbox_light.png"))
 
+        self.data = data
+        self.rows = []
+
+        topics = db.child("Topics").get()
+        if topics.val() is not None:
+            for topic in topics:
+                if topic.val()['folderId'] == self.data['folderId']:
+                    self.rows.append(topic.val())
+        
         self.bg_color = self.master.cget("bg")
         self.backframe()
         self.features()
@@ -562,6 +593,16 @@ class NOTE_FILES():
         main_frame.place(x=0, y=0)
     
     def add_frame(self):
+
+        def submit():
+            topicId = str(uuid.uuid4())
+            topic = Topic(topicId, add_entry.get(), self.data['folderId'])
+            db.child("Topics").child(topicId).set(topic.__dict__)
+            NOTE_FILES(self.master, self.data)
+
+        def cancel():
+            self.main_frame.destroy()
+
         if self.master.cget("bg") == "#121212":
             mesbox_image = self.messageBox_dark
             fg1 = "Black"
@@ -601,6 +642,7 @@ class NOTE_FILES():
         add_entry.place(x=65, y=69)
         okay_btn = Button(self.main_frame,
             text='Submit',
+            command=submit,
             font=("Roboto", 11),
             fg=fg1,
             bg=bg3,
@@ -611,6 +653,7 @@ class NOTE_FILES():
         okay_btn.place(x=74, y=122)
         cancel_btn = Button(self.main_frame,
             text='Cancel',
+            command=cancel,
             font=("Roboto", 11),
             fg=fg1,
             bg=bg1,
@@ -618,7 +661,8 @@ class NOTE_FILES():
             borderwidth=0,
             relief=FLAT,
             width=8,)
-        cancel_btn.place(x=205, y=122)    
+        cancel_btn.place(x=205, y=122) 
+
     def content_features(self, search_image, three_line_image, content_img, side_btn, notes_fg, notes_bg, indiv_file, btn_img):
         files_search = Label(self.master,
             image=search_image,
@@ -648,6 +692,78 @@ class NOTE_FILES():
             bg=notes_bg,
             fg=notes_fg)
         text_label.place(x=53, y=183)
+
+        add_btn = Button(self.master,
+            image=btn_img,
+            command=self.add_frame,
+            border=0,
+            bg=self.bg_color,
+            activebackground=self.bg_color)
+        add_btn.place(x=760, y=78)
+
+        inline_frame = Frame(content_label,
+                             width=727,
+                             height=340,
+                             bg=notes_bg)
+        inline_frame.place(x=90, y=35)
+
+        second_line_frame = Frame(inline_frame,
+                                  bg=notes_bg)
+        second_line_frame.pack(fill=BOTH, expand=1)
+
+        inline_canvas = Canvas(second_line_frame,
+                               width=727,
+                               height=315,
+                               background=notes_bg,
+                               highlightthickness=0)
+        inline_canvas.pack(side=LEFT, fill=BOTH, expand=1)
+
+        if len(self.rows) > 3:
+            scrollbar = ttk.Scrollbar(second_line_frame,
+                                      orient=VERTICAL,
+                                      command=inline_canvas.yview)
+            scrollbar.pack(side=RIGHT, fill=Y, padx=2, pady=1)
+
+            inline_canvas.configure(yscrollcommand=scrollbar.set)
+            inline_canvas.bind('<Configure>',
+                               lambda e: inline_canvas.configure(scrollregion=inline_canvas.bbox("all")))
+            inline_canvas.bind_all('<MouseWheel>',
+                                   lambda event: inline_canvas.yview('scroll', int(-2 * (event.delta / 120)), 'units'))
+
+        another_frame = Frame(inline_canvas,
+                              bg=notes_bg)
+        inline_canvas.create_window((0, 0), window=another_frame, anchor='nw')
+
+        def editor(data):
+            NOTE_EDITOR(self.master, data)
+
+        if self.rows != None:
+            print(self.rows)
+            for i in self.rows:
+                line_frame = Canvas(another_frame,
+                                    highlightthickness=0)
+                line_frame.pack(pady=5, padx=11)
+
+                folder = Label(line_frame,
+                               image=indiv_file,
+                               border=0,
+                               bg=notes_bg,
+                               activebackground=notes_bg).pack()
+                foldername = Button(line_frame,
+                                    text=i['name'],
+                                    font=("Arial", 15),
+                                    justify="left",
+                                    anchor="w",
+                                    fg=notes_fg,
+                                    borderwidth=0,
+                                    relief=FLAT,
+                                    width=20,
+                                    background="#969696",
+                                    command=lambda data=i: editor(data),
+                                    activebackground=self.bg_color,
+                                    height=1).place(x=10, y=5)
+
+
         openside_btn = Button(self.master,
             image=side_btn,
             border=0,
@@ -704,22 +820,6 @@ class NOTE_FILES():
             activebackground=notes_bg)
         exportside_btn.place(x=46, y=402)
 
-        add_btn = Button(self.master,
-            image=btn_img,
-            command=self.add_frame,
-            border=0,
-            bg=self.bg_color,
-            activebackground=self.bg_color)
-        add_btn.place(x=760, y=78)
-
-        indivfile = Button(self.master,
-            image=indiv_file,
-            border=0,
-            command=None,
-            bg=notes_bg,
-            activebackground=notes_bg)
-        indivfile.place(x=121, y=135)
-
     def features(self):
 
         if self.bg_color == "#121212": 
@@ -748,7 +848,7 @@ class NOTE_FILES():
         NOTE_EDITOR(self.master)
 
 class NOTE_EDITOR():
-    def __init__(self, master):
+    def __init__(self, master, data=None):
         self.master = master
         self.threelinemenu_dark = ImageTk.PhotoImage(Image.open("images/3line_dark.png"))
         self.threelinemenu_light = ImageTk.PhotoImage(Image.open("images/3line_light.png"))
@@ -756,6 +856,16 @@ class NOTE_EDITOR():
         self.contentbg_light = ImageTk.PhotoImage(Image.open("images/editor_light.png"))
         self.sidebutton_dark = ImageTk.PhotoImage(Image.open("images/side_button_dark.png"))
         self.sidebutton_light = ImageTk.PhotoImage(Image.open("images/side_button_light.png"))
+        
+        self.data = data
+        self.contents = ''
+
+        editors = db.child("Editors").get()
+        if editors.val() is not None:
+            for editor in editors:
+                if editor.key() == self.data['topicId']:
+                    self.contents = editor.val()['notes']
+        
         self.bg_color = self.master.cget("bg")
         self.backframe()
         self.features()
@@ -770,6 +880,12 @@ class NOTE_EDITOR():
         main_frame.place(x=0, y=0)
     
     def content_features(self, three_line_image, content_img, notes_fg, notes_bg, side_btn):
+        
+        def save():
+            editor = Editor(Text_Entry.get(1.0, "end-1c"))
+            db.child("Editors").child(self.data['topicId']).set(editor.__dict__)
+            NOTE_FILES(self.master, self.data)
+
         editor_menu = Button(self.master,
             image=three_line_image,
             command=self.side_menu,
@@ -794,6 +910,7 @@ class NOTE_EDITOR():
             font=("Roboto", 12),
             fg=foreground,
             borderwidth=0)
+        Text_Entry.insert("end-1c", self.contents)
         Text_Entry.place(x=135, y=80)
         text_label = Label(self.master,
             text="Save",
@@ -804,7 +921,7 @@ class NOTE_EDITOR():
             image=side_btn,
             border=0,
             bg=notes_bg,
-            command=self.save,
+            command=save,
             activebackground=notes_bg)
         saveside_btn.place(x=46, y=80)
         text_label = Label(self.master,
@@ -842,9 +959,6 @@ class NOTE_EDITOR():
     def side_menu(self):
         THREELINE_MENU(self.master, visit=None)
     
-    def save(self):
-        pass
-
     def share(self):
         pass
     
