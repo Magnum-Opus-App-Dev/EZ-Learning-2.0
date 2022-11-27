@@ -545,6 +545,8 @@ class NOTE_FILES():
         self.indivfile_light = ImageTk.PhotoImage(Image.open("images/filescontent_light.png"))
         self.addbtn_dark = ImageTk.PhotoImage(Image.open("images/add_dark.png"))
         self.addbtn_light = ImageTk.PhotoImage(Image.open("images/add_light.png"))
+        self.messageBox_dark = ImageTk.PhotoImage(Image.open("images/mesbox_dark.png"))
+        self.messageBox_light = ImageTk.PhotoImage(Image.open("images/mesbox_light.png"))
 
         self.bg_color = self.master.cget("bg")
         self.backframe()
@@ -560,38 +562,63 @@ class NOTE_FILES():
         main_frame.place(x=0, y=0)
     
     def add_frame(self):
+        if self.master.cget("bg") == "#121212":
+            mesbox_image = self.messageBox_dark
+            fg1 = "Black"
+            bg1 = "#7a7a7a"
+            bg2 = "#959595"
+            bg3 = "#4b4949"
+        else: 
+            mesbox_image = self.messageBox_light
+            fg1 = "White"
+            bg1 = "#005f60"
+            bg2 = "#047a7b"
+            bg3 = "#014344"
+
         self.main_frame = Frame(self.master,
-            width=500,
+            width=350,
             height=200,
             background=self.master.cget("bg"))
-        self.main_frame.place(x=200, y=150)
-
-        add_entry = Entry(self.main_frame,
-            width=40,
-            font=("Roboto", 12, "bold"),
-            bg="#c2c2c2",
+        self.main_frame.place(x=276, y=170)
+        search_label = Label(self.main_frame,
+            image=mesbox_image,
+            border=0,
+            bg=self.master.cget("bg"))
+        search_label.place(x=2,y=2)
+        add_text = Label(self.main_frame,
+            text="File Name",
+            font=("Roboto", 13),
+            bg=bg1,
             borderwidth=0,
-            fg="#000000")
-        add_entry.place(x=50, y=50)
-
+            fg=fg1)
+        add_text.place(x=137, y=35)
+        add_entry = Entry(self.main_frame,
+            width=24,
+            font=("Roboto", 12),
+            bg=bg2,
+            borderwidth=0,
+            fg=fg1)
+        add_entry.place(x=65, y=69)
         okay_btn = Button(self.main_frame,
             text='Submit',
-            font=("Comic Sans MS", 11),
-            fg='#000000',
+            font=("Roboto", 11),
+            fg=fg1,
+            bg=bg3,
+            activebackground=bg3,
             borderwidth=0,
             relief=FLAT,
-            width=10,)
-        okay_btn.place(x=200, y=100)
-
+            width=8,)
+        okay_btn.place(x=74, y=122)
         cancel_btn = Button(self.main_frame,
             text='Cancel',
-            font=("Comic Sans MS", 11),
-            fg='#000000',
+            font=("Roboto", 11),
+            fg=fg1,
+            bg=bg1,
+            activebackground=bg1,
             borderwidth=0,
             relief=FLAT,
-            width=10,)
-        cancel_btn.place(x=200, y=150)
-    
+            width=8,)
+        cancel_btn.place(x=205, y=122)    
     def content_features(self, search_image, three_line_image, content_img, side_btn, notes_fg, notes_bg, indiv_file, btn_img):
         files_search = Label(self.master,
             image=search_image,
@@ -1079,7 +1106,7 @@ class QUIZ_FILES():
             bg=bg1,
             borderwidth=0,
             fg=fg1)
-        add_text.place(x=132, y=35)
+        add_text.place(x=137, y=35)
         add_entry = Entry(self.main_frame,
             width=24,
             font=("Roboto", 12),
