@@ -744,12 +744,13 @@ class NOTE_EDITOR(customtkinter.CTk):
         self.master = master
         self.threelinemenu_dark = ImageTk.PhotoImage(Image.open("images/3line_dark.png"))
         self.threelinemenu_light = ImageTk.PhotoImage(Image.open("images/3line_light.png"))
+        self.contentbg_dark = ImageTk.PhotoImage(Image.open("images/editor_dark.png"))
+        self.contentbg_light = ImageTk.PhotoImage(Image.open("images/editor_light.png"))
 
         self.bg_color = self.master.cget("bg")
 
         self.backframe()
         self.features()
-        self.main_body()
 
         print("OPENED: Note Editor")
 
@@ -760,7 +761,7 @@ class NOTE_EDITOR(customtkinter.CTk):
             background=self.master.cget("bg"))
         main_frame.place(x=0, y=0)
     
-    def content_features(self, three_line_image):
+    def content_features(self, three_line_image, content_img):
         editor_menu = Button(self.master,
             image=three_line_image,
             command=self.side_menu,
@@ -768,125 +769,143 @@ class NOTE_EDITOR(customtkinter.CTk):
             bg=self.bg_color,
             activebackground=self.bg_color)
         editor_menu.place(x=7,y=10)
+        content_label = Label(self.master,
+            image=content_img,
+            border=0,)
+        content_label.place(x=23,y=45)
+        if self.master.cget("bg") == "#121212":
+            background = "#2c2c2c"
+            foreground = "White"
+        else:
+            background = "#12c8bb"
+            foreground = "Black"
+        Text_Entry = Text(self.master,
+            bg=background,
+            height=19,
+            width=78,
+            font=("Roboto", 12),
+            fg=foreground,
+            borderwidth=0)
+        Text_Entry.place(x=135, y=80)
 
     def features(self):
 
-        if self.bg_color == "#121212": self.content_features(self.threelinemenu_dark)
-        elif self.bg_color == "#0d9187": self.content_features(self.threelinemenu_light)
+        if self.bg_color == "#121212": self.content_features(self.threelinemenu_dark, self.contentbg_dark)
+        elif self.bg_color == "#0d9187": self.content_features(self.threelinemenu_light, self.contentbg_light)
 
     def side_menu(self):
         THREELINE_MENU(self.master, visit=None)
     
-    def main_body(self):
-        self.content_label = LabelFrame(self.master,
-                                   bg="#00FFFF",
-                                   border=0,
-                                   width=800,
-                                   height=420).place(x=55, y=45)
-        self.label = Label(self.content_label, text="APPLICATION DEV",
-                           fg="red",
-                           bg="#00FFFF",
-                           border=8,
-                           font=("roboto",15)).place(x=90,y=55)
+    # def main_body(self):
+    #     self.content_label = LabelFrame(self.master,
+    #                                bg="#00FFFF",
+    #                                border=0,
+    #                                width=800,
+    #                                height=420).place(x=55, y=45)
+    #     self.label = Label(self.content_label, text="APPLICATION DEV",
+    #                        fg="red",
+    #                        bg="#00FFFF",
+    #                        border=8,
+    #                        font=("roboto",15)).place(x=90,y=55)
 
-        self.textbox1 = Text(self.content_label,bg="#00FFFF",
-                             border=2,
-                             width=100,
-                             height=3,
-                             font=("roboto",10)).place(x=110,y=95)
+    #     self.textbox1 = Text(self.content_label,bg="#00FFFF",
+    #                          border=2,
+    #                          width=100,
+    #                          height=3,
+    #                          font=("roboto",10)).place(x=110,y=95)
 
-        self.textbox2 = Text(self.content_label, bg="#00FFFF",
-                             border=2,
-                             width=70,
-                             height=5,
-                             font=("roboto", 10)).place(x=110, y=340)
+    #     self.textbox2 = Text(self.content_label, bg="#00FFFF",
+    #                          border=2,
+    #                          width=70,
+    #                          height=5,
+    #                          font=("roboto", 10)).place(x=110, y=340)
 
-        self.addimage1 = Button(self.content_label,
-                                text="UPLOAD IMAGE",
-                                bg="grey",
-                                command=self.select_picture1).place(x=110, y=210)
+    #     self.addimage1 = Button(self.content_label,
+    #                             text="UPLOAD IMAGE",
+    #                             bg="grey",
+    #                             command=self.select_picture1).place(x=110, y=210)
 
-        self.addimage2 = Button(self.content_label,
-                                text="ADD MORE IMAGE",
-                                bg="grey",
-                                command=self.select_picture2).place(x=110, y=240)
+    #     self.addimage2 = Button(self.content_label,
+    #                             text="ADD MORE IMAGE",
+    #                             bg="grey",
+    #                             command=self.select_picture2).place(x=110, y=240)
 
-        self.Add_new_notes = Button(self.content_label,
-                                    text="ADD NEW NOTES",
-                                    bg="grey",
-                                    command=self.ADD_NEW_NOTES).place(x=680, y=370)
-    def select_picture1(self):
-        global my_image1
-        self.filename = filedialog.askopenfilename(initialdir="/gui/images",
-                                              title="Select Image File",
-                                              filetypes=(("png images","*.png"),
-                                                         ("jpg images","*.jpg"),
-                                                         ("all files","*.*")))
+    #     self.Add_new_notes = Button(self.content_label,
+    #                                 text="ADD NEW NOTES",
+    #                                 bg="grey",
+    #                                 command=self.ADD_NEW_NOTES).place(x=680, y=370)
+    # def select_picture1(self):
+    #     global my_image1
+    #     self.filename = filedialog.askopenfilename(initialdir="/gui/images",
+    #                                           title="Select Image File",
+    #                                           filetypes=(("png images","*.png"),
+    #                                                      ("jpg images","*.jpg"),
+    #                                                      ("all files","*.*")))
 
-        img = Image.open(self.filename)
-        img = img.resize((250,150))
-        my_image1 = ImageTk.PhotoImage(img)
+    #     img = Image.open(self.filename)
+    #     img = img.resize((250,150))
+    #     my_image1 = ImageTk.PhotoImage(img)
 
-        image1 = Label(self.master, image=my_image1,
-                       width=250,
-                       height=150).place(x=280,y=170)
+    #     image1 = Label(self.master, image=my_image1,
+    #                    width=250,
+    #                    height=150).place(x=280,y=170)
 
-    def select_picture2(self):
-        global my_image2
-        self.filename = filedialog.askopenfilename(initialdir="/gui/images",
-                                                   title="Select Image File",
-                                                   filetypes=(("png images", "*.png"),
-                                                              ("jpg images", "*.jpg"),
-                                                              ("all files", "*.*")))
+    # def select_picture2(self):
+    #     global my_image2
+    #     self.filename = filedialog.askopenfilename(initialdir="/gui/images",
+    #                                                title="Select Image File",
+    #                                                filetypes=(("png images", "*.png"),
+    #                                                           ("jpg images", "*.jpg"),
+    #                                                           ("all files", "*.*")))
 
-        img = Image.open(self.filename)
-        img = img.resize((250, 150))
-        my_image2 = ImageTk.PhotoImage(img)
+    #     img = Image.open(self.filename)
+    #     img = img.resize((250, 150))
+    #     my_image2 = ImageTk.PhotoImage(img)
 
-        image2 = Label(self.master, image=my_image2,
-                       width=250,
-                       height=150).place(x=530, y=170)
-    def submit(self):
-        print("SHOWED: Submit Done")
-    def ADD_NEW_NOTES(self):
-        print("SHOWED: Submit Done")
-        self.content_label1 = LabelFrame(self.master,
-                                        bg="#00FFFF",
-                                        border=0,
-                                        width=800,
-                                        height=420).place(x=55, y=45)
-        self.label = Label(self.content_label1, text="APPLICATION DEV",
-                           fg="red",
-                           bg="#00FFFF",
-                           border=8,
-                           font=("roboto", 15)).place(x=90, y=55)
+    #     image2 = Label(self.master, image=my_image2,
+    #                    width=250,
+    #                    height=150).place(x=530, y=170)
+    # def submit(self):
+    #     print("SHOWED: Submit Done")
+    # def ADD_NEW_NOTES(self):
+    #     print("SHOWED: Submit Done")
+    #     self.content_label1 = LabelFrame(self.master,
+    #                                     bg="#00FFFF",
+    #                                     border=0,
+    #                                     width=800,
+    #                                     height=420).place(x=55, y=45)
+    #     self.label = Label(self.content_label1, text="APPLICATION DEV",
+    #                        fg="red",
+    #                        bg="#00FFFF",
+    #                        border=8,
+    #                        font=("roboto", 15)).place(x=90, y=55)
 
-        self.textbox1 = Text(self.content_label1, bg="#00FFFF",
-                             border=2,
-                             width=100,
-                             height=3,
-                             font=("roboto", 10)).place(x=110, y=95)
+    #     self.textbox1 = Text(self.content_label1, bg="#00FFFF",
+    #                          border=2,
+    #                          width=100,
+    #                          height=3,
+    #                          font=("roboto", 10)).place(x=110, y=95)
 
-        self.textbox2 = Text(self.content_label1, bg="#00FFFF",
-                             border=2,
-                             width=70,
-                             height=5,
-                             font=("roboto", 10)).place(x=110, y=340)
+    #     self.textbox2 = Text(self.content_label1, bg="#00FFFF",
+    #                          border=2,
+    #                          width=70,
+    #                          height=5,
+    #                          font=("roboto", 10)).place(x=110, y=340)
 
-        self.addimage1 = Button(self.content_label1,
-                                text="UPLOAD IMAGE",
-                                bg="grey",
-                                command=self.select_picture1).place(x=110, y=210)
+    #     self.addimage1 = Button(self.content_label1,
+    #                             text="UPLOAD IMAGE",
+    #                             bg="grey",
+    #                             command=self.select_picture1).place(x=110, y=210)
 
-        self.addimage2 = Button(self.content_label1,
-                                text="ADD MORE IMAGE",
-                                bg="grey",
-                                command=self.select_picture2).place(x=110, y=240)
+    #     self.addimage2 = Button(self.content_label1,
+    #                             text="ADD MORE IMAGE",
+    #                             bg="grey",
+    #                             command=self.select_picture2).place(x=110, y=240)
 
-        self.Add_new_notes = Button(self.content_label1,
-                                    text="ADD NEW NOTES",
-                                    bg="grey",
-                                    command=self.ADD_NEW_NOTES).place(x=680, y=370)
+    #     self.Add_new_notes = Button(self.content_label1,
+    #                                 text="ADD NEW NOTES",
+    #                                 bg="grey",
+    #                                 command=self.ADD_NEW_NOTES).place(x=680, y=370)
 
 class QUIZ_FOLDER(customtkinter.CTk):
     def __init__(self, master):
@@ -1306,8 +1325,8 @@ class QUIZ_EDITOR(customtkinter.CTk):
         self.master = master
         self.threelinemenu_dark = ImageTk.PhotoImage(Image.open("images/3line_dark.png"))
         self.threelinemenu_light = ImageTk.PhotoImage(Image.open("images/3line_light.png"))
-        self.contentbg_dark = ImageTk.PhotoImage(Image.open("images/edquiz_dark.png"))
-        self.contentbg_light = ImageTk.PhotoImage(Image.open("images/edquiz_light.png"))
+        self.contentbg_dark = ImageTk.PhotoImage(Image.open("images/editor_dark.png"))
+        self.contentbg_light = ImageTk.PhotoImage(Image.open("images/editor_light.png"))
         self.answerbg_dark = ImageTk.PhotoImage(Image.open("images/ansquiz_dark.png"))
         self.answerbg_light = ImageTk.PhotoImage(Image.open("images/ansquiz_light.png"))
 
