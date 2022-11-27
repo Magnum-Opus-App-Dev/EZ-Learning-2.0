@@ -347,7 +347,8 @@ class NOTES_FOLDER(customtkinter.CTk):
             width=8,)
         cancel_btn.place(x=205, y=122)
 
-    def content_features(self, search_img, content_img, folder_img, menu_img, quiz_a_fg, quiz_a_bg, notes_fg, notes_bg, btn_img, side_btn):
+    def content_features(self, search_img, content_img, folder_img, menu_img, quiz_a_fg, quiz_a_bg,
+    notes_fg, notes_bg, btn_img, side_btn):
         search_label = Label(self.master,
             image=search_img,
             border=0,
@@ -746,6 +747,8 @@ class NOTE_EDITOR(customtkinter.CTk):
         self.threelinemenu_light = ImageTk.PhotoImage(Image.open("images/3line_light.png"))
         self.contentbg_dark = ImageTk.PhotoImage(Image.open("images/editor_dark.png"))
         self.contentbg_light = ImageTk.PhotoImage(Image.open("images/editor_light.png"))
+        self.sidebutton_dark = ImageTk.PhotoImage(Image.open("images/side_button_dark.png"))
+        self.sidebutton_light = ImageTk.PhotoImage(Image.open("images/side_button_light.png"))
 
         self.bg_color = self.master.cget("bg")
 
@@ -761,7 +764,7 @@ class NOTE_EDITOR(customtkinter.CTk):
             background=self.master.cget("bg"))
         main_frame.place(x=0, y=0)
     
-    def content_features(self, three_line_image, content_img):
+    def content_features(self, three_line_image, content_img, notes_fg, notes_bg, side_btn):
         editor_menu = Button(self.master,
             image=three_line_image,
             command=self.side_menu,
@@ -787,15 +790,61 @@ class NOTE_EDITOR(customtkinter.CTk):
             fg=foreground,
             borderwidth=0)
         Text_Entry.place(x=135, y=80)
+        text_label = Label(self.master,
+            text="Save",
+            bg=notes_bg,
+            fg=notes_fg)
+        text_label.place(x=56, y=126)
+        saveside_btn = Button(self.master,
+            image=side_btn,
+            border=0,
+            bg=notes_bg,
+            command=self.save,
+            activebackground=notes_bg)
+        saveside_btn.place(x=46, y=80)
+        text_label = Label(self.master,
+            text="Share",
+            bg=notes_bg,
+            fg=notes_fg)
+        text_label.place(x=53, y=286)
+        shareside_btn = Button(self.master,
+            image=side_btn,
+            border=0,
+            bg=notes_bg,
+            command=self.share,
+            activebackground=notes_bg)
+        shareside_btn.place(x=46, y=240)
+        text_label = Label(self.master,
+            text="Export",
+            bg=notes_bg,
+            fg=notes_fg)
+        text_label.place(x=51, y=436)
+        exportside_btn = Button(self.master,
+            image=side_btn,
+            border=0,
+            bg=notes_bg,
+            command=self.export,
+            activebackground=notes_bg)
+        exportside_btn.place(x=46, y=390)
 
     def features(self):
 
-        if self.bg_color == "#121212": self.content_features(self.threelinemenu_dark, self.contentbg_dark)
-        elif self.bg_color == "#0d9187": self.content_features(self.threelinemenu_light, self.contentbg_light)
+        if self.bg_color == "#121212": self.content_features(self.threelinemenu_dark,
+        self.contentbg_dark, "#F2F2F2", "#2C2C2C", self.sidebutton_dark)
+        elif self.bg_color == "#0d9187": self.content_features(self.threelinemenu_light,
+        self.contentbg_light, "#0c325c", "#12c8bb", self.sidebutton_light)
 
     def side_menu(self):
         THREELINE_MENU(self.master, visit=None)
     
+    def save(self):
+        pass
+
+    def share(self):
+        pass
+    
+    def export(self):
+        pass
     # def main_body(self):
     #     self.content_label = LabelFrame(self.master,
     #                                bg="#00FFFF",
