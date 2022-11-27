@@ -4,15 +4,10 @@ import customtkinter
 import tkinter.messagebox
 from tkinter import ttk
 from cv2 import line
-#pip install pyrebase4
 import pyrebase
 from pygame import FULLSCREEN
 import shutup;shutup.please()
 from tkinter import messagebox
-from tkinter import filedialog
-#SAMPLE EMAIL AND PASSWORD FOR LOGIN:
-#2@gmail.com
-#//////
 
 config = {"apiKey": "AIzaSyBARpuvAyruul-wLV0APfAsd0oT7W5rOuU",
   "authDomain": "fir-a97e4.firebaseapp.com",
@@ -27,25 +22,33 @@ firebase = pyrebase.initialize_app(config)
 auth = firebase.auth()
 
 db = firebase.database()
-# data = {'name': 'Angelo', 'age': 20}
-# db.push(data)
 
 customtkinter.set_appearance_mode("Dark")
 customtkinter.set_default_color_theme("green")
 
-class LOGIN(customtkinter.CTk):
+class LOGIN():
     def __init__(self, master):
         self.master = master
         self.master.geometry('900x500')
         self.master.title('EZ-Learning 2.0')
         self.master.iconbitmap("images/Logo.ico")
         self.master.config(bg="#121212")
+        
         print("OPENED: Login Feature")
 
         self._Email = StringVar()
         self._Password = StringVar()
 
-        self.change_appearance("#121212", "images/logo_darkmode.png", "#bbbbbb")
+        self.logo = (Image.open("images/logo_darkmode.png"))
+        self.resize_logo = self.logo.resize((80, 80), Image.ANTIALIAS)
+        self.photoimage = ImageTk.PhotoImage(self.resize_logo)
+        self.canvas = Label(self.master, image=self.photoimage, bd=0)
+        self.canvas.place(x=410, y=15)
+
+        self.sub = Label(self.master, text = 'IT 105 - Application Development and Emerging Technologies', justify=LEFT, font = ('Arial',7,'bold'), bg = '#121212', fg="#bbbbbb")
+        self.sub.place(x=10, y=474)
+        self.dev_names = Label(self.master, text = 'Dar, John Homer Sayno\nDela Fuente, Ar-Jay\nEchano, Angelo Millares\nMalubay, Arriana Mae Vargas\nMortiga, Renze Meinard', justify=LEFT, font = ('Roboto',7), bg = '#121212', fg="#bbbbbb")
+        self.dev_names.place(x=10, y=418)
 
         self.template = customtkinter.CTkFrame(self.master,
             width=500,
@@ -102,31 +105,39 @@ class LOGIN(customtkinter.CTk):
             command=self.change_appearance_mode)
         self.appearance.place(x=745, y=15)
 
-    def change_appearance(self, bg, image, fg):
-        self.master.config(bg=bg)
-        self.logo = (Image.open(image))
-        self.resize_logo = self.logo.resize((80, 80), Image.ANTIALIAS)
-        self.photoimage = ImageTk.PhotoImage(self.resize_logo)
-        self.canvas = Label(self.master, image=self.photoimage, bd=0)
-        self.canvas.place(x=410, y=15)
-        self.sub = Label(self.master, text = 'IT 105 - Application Development and Emerging Technologies', justify=LEFT, font = ('Arial',7,'bold'), bg = bg, fg=fg)
-        self.sub.place(x=10, y=474)
-        self.dev_names = Label(self.master, text = 'Dar, John Homer Sayno\nDela Fuente, Ar-Jay\nEchano, Angelo Millares\nMalubay, Arriana Mae Vargas\nMortiga, Renze Meinard', justify=LEFT, font = ('Roboto',7), bg=bg, fg=fg)
-        self.dev_names.place(x=10, y=418)
-    
     def change_appearance_mode(self, new_appearance_mode):
         customtkinter.set_appearance_mode(new_appearance_mode)
-
-        if new_appearance_mode == "Dark": self.change_appearance("#121212", "images/logo_darkmode.png", "#bbbbbb")
-        elif new_appearance_mode == "Light": self.change_appearance("#0d9187", "images/logo_lightmode.png", "#2e2e2e")
-  
+        if new_appearance_mode == "Dark":
+            self.master.config(bg="#121212")
+            self.logo = (Image.open("images/logo_darkmode.png"))
+            self.resize_logo = self.logo.resize((80, 80), Image.ANTIALIAS)
+            self.photoimage = ImageTk.PhotoImage(self.resize_logo)
+            self.canvas = Label(self.master, image=self.photoimage, bd=0)
+            self.canvas.place(x=410, y=15)
+            self.sub = Label(self.master, text = 'IT 105 - Application Development and Emerging Technologies', justify=LEFT, font = ('Arial',7,'bold'), bg = '#121212', fg="#bbbbbb")
+            self.sub.place(x=10, y=474)
+            self.dev_names = Label(self.master, text = 'Dar, John Homer Sayno\nDela Fuente, Ar-Jay\nEchano, Angelo Millares\nMalubay, Arriana Mae Vargas\nMortiga, Renze Meinard', justify=LEFT, font = ('Roboto',7), bg = '#121212', fg="#bbbbbb")
+            self.dev_names.place(x=10, y=418)
+        elif new_appearance_mode == "Light":
+            self.master.config(bg="#0d9187")
+            self.logo = (Image.open("images/logo_lightmode.png"))
+            self.resize_logo = self.logo.resize((80, 80), Image.ANTIALIAS)
+            self.photoimage = ImageTk.PhotoImage(self.resize_logo)
+            self.canvas = Label(self.master, image=self.photoimage, bd=0)
+            self.canvas.place(x=410, y=15)
+            self.sub = Label(self.master, text = 'IT 105 - Application Development and Emerging Technologies', justify=LEFT, font = ('Arial',7,'bold'), bg = '#0d9187', fg="#2e2e2e")
+            self.sub.place(x=10, y=474)
+            self.dev_names = Label(self.master, text = 'Dar, John Homer Sayno\nDela Fuente, Ar-Jay\nEchano, Angelo Millares\nMalubay, Arriana Mae Vargas\nMortiga, Renze Meinard', justify=LEFT, font = ('Roboto',7), bg = '#0d9187', fg="#2e2e2e")
+            self.dev_names.place(x=10, y=418)
+    
     def login(self):
         if self._Email.get() == '' or self._Password.get() == '': tkinter.messagebox.showinfo('Try Again', 'Please complete the required fields.')
         else: 
             try:
                 login = auth.sign_in_with_email_and_password(self._Email.get(), self._Password.get())
                 NOTES_FOLDER(self.master)
-            except: tkinter.messagebox.showinfo('Error', 'Invalid Email or Password. Try again')
+            except:
+                tkinter.messagebox.showinfo('Error', 'Invalid Email or Password. Try again')
 
     def quicklogin(self):
         NOTES_FOLDER(self.master)
@@ -134,9 +145,10 @@ class LOGIN(customtkinter.CTk):
     def signup(self):
         SIGNUP(self.master)
     
-class SIGNUP(customtkinter.CTk):
+class SIGNUP():
     def __init__(self, master):
         self.master = master
+
         print("OPENED: Signup Feature")
 
         self._Username = StringVar()
@@ -144,101 +156,104 @@ class SIGNUP(customtkinter.CTk):
         self._Password = StringVar()
         self._Confirm_Password = StringVar()
 
-        self.change_appearance("#121212", "images/logo_darkmode.png", "#bbbbbb")
+        self.logo = (Image.open("images/logo_darkmode.png"))
+        self.resize_logo = self.logo.resize((80, 80), Image.ANTIALIAS)
+        self.photoimage = ImageTk.PhotoImage(self.resize_logo)
+        self.canvas = Label(self.master, image=self.photoimage, bd=0)
+        self.canvas.place(x=410, y=15)
+
+        self.sub = Label(self.master, text = 'IT 105 - Application Development and Emerging Technologies', justify=LEFT, font = ('Arial',7,'bold'), bg = '#121212', fg="#bbbbbb")
+        self.sub.place(x=10, y=474)
+        self.dev_names = Label(self.master, text = 'Dar, John Homer Sayno\nDela Fuente, Ar-Jay\nEchano, Angelo Millares\nMalubay, Arriana Mae Vargas\nMortiga, Renze Meinard', justify=LEFT, font = ('Roboto',7), bg = '#121212', fg="#bbbbbb")
+        self.dev_names.place(x=10, y=418)
 
         self.template = customtkinter.CTkFrame(self.master,
             width=500,
             height=310)
         self.template.place(x=200, y=100)
-
         self.create_acc = customtkinter.CTkLabel(self.template,
             text="Create New Account:",
             text_font=("Roboto Medium", -16))
         self.create_acc.place(x=180, y=25)
-
         self.acc_name = customtkinter.CTkLabel(self.template,
             text="Username:")
         self.acc_name.place(x=12, y=65)
-
         self.name_entry = customtkinter.CTkEntry(self.template,
             width=180,
             fg_color=None,
             textvariable=self._Username)
         self.name_entry.place(x=50, y=95)
-
         self.acc_email = customtkinter.CTkLabel(self.template,
             text="Email:")
         self.acc_email.place(x=217, y=65)
-
         self.name_entry = customtkinter.CTkEntry(self.template,
             width=180,
             fg_color=None,
             textvariable=self._Email)
         self.name_entry.place(x=270, y=95)
-
         self.acc_name = customtkinter.CTkLabel(self.template,
             text="Password:")
         self.acc_name.place(x=12, y=135)
-
         self.name_entry = customtkinter.CTkEntry(self.template,
             width=180,
             fg_color=None,
             textvariable=self._Password,
             show="*")
         self.name_entry.place(x=50, y=165)
-
         self.acc_pass = customtkinter.CTkLabel(self.template,
             text="Confirm Password:")
         self.acc_pass.place(x=254, y=135)
-
         self.pass_entry = customtkinter.CTkEntry(self.template,
             width=180,
             fg_color=None,
             textvariable=self._Confirm_Password,
             show="*")
         self.pass_entry.place(x=270, y=165)
-
         self.enter_btn = customtkinter.CTkButton(self.template,
             text="Signup Account",
             border_width=2,
             fg_color=None,
             command=self.signup)
         self.enter_btn.place(x=270, y=230)
-
         self.signup_btn = customtkinter.CTkButton(self.template,
             text="Use Existing Account",
             border_width=2,
             fg_color=None,
             command=self.login)
         self.signup_btn.place(x=85, y=230)
-
         self.app_label = customtkinter.CTkLabel(self.master,
             text="Appearance Mode:",
             text_font=("Roboto Medium", 10))
         self.app_label.place(x=605, y=17)        
-
         self.appearance = customtkinter.CTkComboBox(self.master,
             values=["Dark", "Light"],
             command=self.change_appearance_mode)
         self.appearance.place(x=745, y=15)
 
-    def change_appearance(self, bg, image, fg):
-        self.master.config(bg=bg)
-        self.logo = (Image.open(image))
-        self.resize_logo = self.logo.resize((80, 80), Image.ANTIALIAS)
-        self.photoimage = ImageTk.PhotoImage(self.resize_logo)
-        self.canvas = Label(self.master, image=self.photoimage, bd=0)
-        self.canvas.place(x=410, y=15)
-        self.sub = Label(self.master, text = 'IT 105 - Application Development and Emerging Technologies', justify=LEFT, font = ('Arial',7,'bold'), bg = bg, fg=fg)
-        self.sub.place(x=10, y=474)
-        self.dev_names = Label(self.master, text = 'Dar, John Homer Sayno\nDela Fuente, Ar-Jay\nEchano, Angelo Millares\nMalubay, Arriana Mae Vargas\nMortiga, Renze Meinard', justify=LEFT, font = ('Roboto',7), bg=bg, fg=fg)
-        self.dev_names.place(x=10, y=418)
-
     def change_appearance_mode(self, new_appearance_mode):
         customtkinter.set_appearance_mode(new_appearance_mode)
-
-        if new_appearance_mode == "Dark": self.change_appearance("#121212", "images/logo_darkmode.png", "#bbbbbb")
-        elif new_appearance_mode == "Light": self.change_appearance("#0d9187", "images/logo_lightmode.png", "#2e2e2e")
+        if new_appearance_mode == "Dark":
+            self.master.config(bg="#121212")
+            self.logo = (Image.open("images/logo_darkmode.png"))
+            self.resize_logo = self.logo.resize((80, 80), Image.ANTIALIAS)
+            self.photoimage = ImageTk.PhotoImage(self.resize_logo)
+            self.canvas = Label(self.master, image=self.photoimage, bd=0)
+            self.canvas.place(x=410, y=15)
+            self.sub = Label(self.master, text = 'IT 105 - Application Development and Emerging Technologies', justify=LEFT, font = ('Arial',7,'bold'), bg = '#121212', fg="#bbbbbb")
+            self.sub.place(x=10, y=474)
+            self.dev_names = Label(self.master, text = 'Dar, John Homer Sayno\nDela Fuente, Ar-Jay\nEchano, Angelo Millares\nMalubay, Arriana Mae Vargas\nMortiga, Renze Meinard', justify=LEFT, font = ('Roboto',7), bg = '#121212', fg="#bbbbbb")
+            self.dev_names.place(x=10, y=418)
+        elif new_appearance_mode == "Light":
+            self.master.config(bg="#0d9187")
+            self.logo = (Image.open("images/logo_lightmode.png"))
+            self.resize_logo = self.logo.resize((80, 80), Image.ANTIALIAS)
+            self.photoimage = ImageTk.PhotoImage(self.resize_logo)
+            self.canvas = Label(self.master, image=self.photoimage, bd=0)
+            self.canvas.place(x=410, y=15)
+            self.sub = Label(self.master, text = 'IT 105 - Application Development and Emerging Technologies', justify=LEFT, font = ('Arial',7,'bold'), bg = '#0d9187', fg="#2e2e2e")
+            self.sub.place(x=10, y=474)
+            self.dev_names = Label(self.master, text = 'Dar, John Homer Sayno\nDela Fuente, Ar-Jay\nEchano, Angelo Millares\nMalubay, Arriana Mae Vargas\nMortiga, Renze Meinard', justify=LEFT, font = ('Roboto',7), bg = '#0d9187', fg="#2e2e2e")
+            self.dev_names.place(x=10, y=418)
     
     def signup(self):
         if self._Username.get() == '' or self._Password.get() == '' or self._Email.get() == '' or self._Password.get() == '' or self._Confirm_Password.get() == '': 
@@ -254,7 +269,7 @@ class SIGNUP(customtkinter.CTk):
     def login(self):
         LOGIN(self.master)
 
-class NOTES_FOLDER(customtkinter.CTk):
+class NOTES_FOLDER():
     def __init__(self, master):
         self.master = master
         self.threelinemenu_dark = ImageTk.PhotoImage(Image.open("images/3line_dark.png"))
@@ -272,11 +287,13 @@ class NOTES_FOLDER(customtkinter.CTk):
         self.sidebutton_dark = ImageTk.PhotoImage(Image.open("images/side_button_dark.png"))
         self.sidebutton_light = ImageTk.PhotoImage(Image.open("images/side_button_light.png"))
         
+        self.messageBox_dark = ImageTk.PhotoImage(Image.open("images/mesbox_dark.png"))
+        self.messageBox_light = ImageTk.PhotoImage(Image.open("images/mesbox_light.png"))
         self.bg_color = self.master.cget("bg")
         self.rows = 2
-
         self.backframe()
         self.features()
+
         print("OPENED: Notes Folder")
 
     def backframe(self):
@@ -287,39 +304,66 @@ class NOTES_FOLDER(customtkinter.CTk):
         main_frame.place(x=0, y=0)
 
     def add_frame(self):
+        if self.master.cget("bg") == "#121212":
+            mesbox_image = self.messageBox_dark
+            fg1 = "Black"
+            bg1 = "#7a7a7a"
+            bg2 = "#959595"
+            bg3 = "#4b4949"
+        else: 
+            mesbox_image = self.messageBox_light
+            fg1 = "White"
+            bg1 = "#005f60"
+            bg2 = "#047a7b"
+            bg3 = "#014344"
+
         self.main_frame = Frame(self.master,
-            width=500,
+            width=350,
             height=200,
             background=self.master.cget("bg"))
-        self.main_frame.place(x=200, y=150)
-
-        add_entry = Entry(self.main_frame,
-            width=40,
-            font=("Roboto", 12, "bold"),
-            bg="#c2c2c2",
+        self.main_frame.place(x=276, y=170)
+        search_label = Label(self.main_frame,
+            image=mesbox_image,
+            border=0,
+            bg=self.master.cget("bg"))
+        search_label.place(x=2,y=2)
+        add_text = Label(self.main_frame,
+            text="Folder Name",
+            font=("Roboto", 13),
+            bg=bg1,
             borderwidth=0,
-            fg="#000000")
-        add_entry.place(x=50, y=50)
-
+            fg=fg1)
+        add_text.place(x=123, y=35)
+        add_entry = Entry(self.main_frame,
+            width=24,
+            font=("Roboto", 12),
+            bg=bg2,
+            borderwidth=0,
+            fg=fg1)
+        add_entry.place(x=65, y=69)
         okay_btn = Button(self.main_frame,
             text='Submit',
-            font=("Comic Sans MS", 11),
-            fg='#000000',
+            font=("Roboto", 11),
+            fg=fg1,
+            bg=bg3,
+            activebackground=bg3,
             borderwidth=0,
             relief=FLAT,
-            width=10,)
-        okay_btn.place(x=200, y=100)
-
+            width=8,)
+        okay_btn.place(x=74, y=122)
         cancel_btn = Button(self.main_frame,
             text='Cancel',
-            font=("Comic Sans MS", 11),
-            fg='#000000',
+            font=("Roboto", 11),
+            fg=fg1,
+            bg=bg1,
+            activebackground=bg1,
             borderwidth=0,
             relief=FLAT,
-            width=10,)
-        cancel_btn.place(x=200, y=150)
+            width=8,)
+        cancel_btn.place(x=205, y=122)
 
-    def content_features(self, search_img, content_img, folder_img, menu_img, quiz_a_fg, quiz_a_bg, notes_fg, notes_bg, btn_img, side_btn):
+    def content_features(self, search_img, content_img, folder_img, menu_img, quiz_a_fg, quiz_a_bg,
+    notes_fg, notes_bg, btn_img, side_btn):
         search_label = Label(self.master,
             image=search_img,
             border=0,
@@ -336,7 +380,6 @@ class NOTES_FOLDER(customtkinter.CTk):
             activebackground=self.bg_color)
         add_btn.place(x=760, y=78)
 
-        # Create frame and canvas
         inline_frame = Frame(content_label, 
             width=727, 
             height=340, 
@@ -494,7 +537,7 @@ class NOTES_FOLDER(customtkinter.CTk):
     def goto_quizzes(self):
         QUIZ_FOLDER(self.master)
 
-class NOTE_FILES(customtkinter.CTk):
+class NOTE_FILES():
     def __init__(self, master):
         self.master = master
         self.threelinemenu_dark = ImageTk.PhotoImage(Image.open("images/3line_dark.png"))
@@ -507,10 +550,7 @@ class NOTE_FILES(customtkinter.CTk):
         self.sidebutton_light = ImageTk.PhotoImage(Image.open("images/side_button_light.png"))
         self.indivfile_dark = ImageTk.PhotoImage(Image.open("images/filescontent_dark.png"))
         self.indivfile_light = ImageTk.PhotoImage(Image.open("images/filescontent_light.png"))
-        self.addbtn_dark = ImageTk.PhotoImage(Image.open("images/add_dark.png"))
-        self.addbtn_light = ImageTk.PhotoImage(Image.open("images/add_light.png"))
         self.bg_color = self.master.cget("bg")
-
         self.backframe()
         self.features()
 
@@ -522,41 +562,8 @@ class NOTE_FILES(customtkinter.CTk):
             height=500,
             background=self.master.cget("bg"))
         main_frame.place(x=0, y=0)
-
-    def add_frame(self):
-        self.main_frame = Frame(self.master,
-            width=500,
-            height=200,
-            background=self.master.cget("bg"))
-        self.main_frame.place(x=200, y=150)
-
-        add_entry = Entry(self.main_frame,
-            width=40,
-            font=("Roboto", 12, "bold"),
-            bg="#c2c2c2",
-            borderwidth=0,
-            fg="#000000")
-        add_entry.place(x=50, y=50)
-
-        okay_btn = Button(self.main_frame,
-            text='Submit',
-            font=("Comic Sans MS", 11),
-            fg='#000000',
-            borderwidth=0,
-            relief=FLAT,
-            width=10,)
-        okay_btn.place(x=200, y=100)
-
-        cancel_btn = Button(self.main_frame,
-            text='Cancel',
-            font=("Comic Sans MS", 11),
-            fg='#000000',
-            borderwidth=0,
-            relief=FLAT,
-            width=10,)
-        cancel_btn.place(x=200, y=150)
     
-    def content_features(self, search_image, three_line_image, content_img, side_btn, notes_fg, notes_bg, indiv_file, btn_img):
+    def content_features(self, search_image, three_line_image, content_img, side_btn, notes_fg, notes_bg, indiv_file):
         files_search = Label(self.master,
             image=search_image,
             border=0,
@@ -640,15 +647,6 @@ class NOTE_FILES(customtkinter.CTk):
             command=self.share,
             activebackground=notes_bg)
         exportside_btn.place(x=46, y=402)
-
-        add_btn = Button(self.master,
-            image=btn_img,
-            command=self.add_frame,
-            border=0,
-            bg=self.bg_color,
-            activebackground=self.bg_color)
-        add_btn.place(x=760, y=78)
-
         indivfile = Button(self.master,
             image=indiv_file,
             border=0,
@@ -661,10 +659,10 @@ class NOTE_FILES(customtkinter.CTk):
 
         if self.bg_color == "#121212": 
             self.content_features(self.search_dark, self.threelinemenu_dark, self.contentbg_dark,
-            self.sidebutton_dark, "#F2F2F2", "#2C2C2C", self.indivfile_dark, self.addbtn_dark)
+            self.sidebutton_dark, "#F2F2F2", "#2C2C2C", self.indivfile_dark)
         elif self.bg_color == "#0d9187": 
             self.content_features(self.search_light, self.threelinemenu_light, self.contentbg_light, 
-            self.sidebutton_light, "#0c325c", "#12c8bb", self.indivfile_light, self.addbtn_light)
+            self.sidebutton_light, "#0c325c", "#12c8bb", self.indivfile_light)
 
     def side_menu(self):
         THREELINE_MENU(self.master, visit=None)
@@ -684,17 +682,18 @@ class NOTE_FILES(customtkinter.CTk):
     def notes_edit(self):
         NOTE_EDITOR(self.master)
 
-class NOTE_EDITOR(customtkinter.CTk):
+class NOTE_EDITOR():
     def __init__(self, master):
         self.master = master
         self.threelinemenu_dark = ImageTk.PhotoImage(Image.open("images/3line_dark.png"))
         self.threelinemenu_light = ImageTk.PhotoImage(Image.open("images/3line_light.png"))
-
+        self.contentbg_dark = ImageTk.PhotoImage(Image.open("images/editor_dark.png"))
+        self.contentbg_light = ImageTk.PhotoImage(Image.open("images/editor_light.png"))
+        self.sidebutton_dark = ImageTk.PhotoImage(Image.open("images/side_button_dark.png"))
+        self.sidebutton_light = ImageTk.PhotoImage(Image.open("images/side_button_light.png"))
         self.bg_color = self.master.cget("bg")
-
         self.backframe()
         self.features()
-        self.main_body()
 
         print("OPENED: Note Editor")
 
@@ -705,7 +704,7 @@ class NOTE_EDITOR(customtkinter.CTk):
             background=self.master.cget("bg"))
         main_frame.place(x=0, y=0)
     
-    def content_features(self, three_line_image):
+    def content_features(self, three_line_image, content_img, notes_fg, notes_bg, side_btn):
         editor_menu = Button(self.master,
             image=three_line_image,
             command=self.side_menu,
@@ -713,127 +712,81 @@ class NOTE_EDITOR(customtkinter.CTk):
             bg=self.bg_color,
             activebackground=self.bg_color)
         editor_menu.place(x=7,y=10)
+        content_label = Label(self.master,
+            image=content_img,
+            border=0,)
+        content_label.place(x=23,y=45)
+        if self.master.cget("bg") == "#121212":
+            background = "#2c2c2c"
+            foreground = "White"
+        else:
+            background = "#12c8bb"
+            foreground = "Black"
+        Text_Entry = Text(self.master,
+            bg=background,
+            height=19,
+            width=78,
+            font=("Roboto", 12),
+            fg=foreground,
+            borderwidth=0)
+        Text_Entry.place(x=135, y=80)
+        text_label = Label(self.master,
+            text="Save",
+            bg=notes_bg,
+            fg=notes_fg)
+        text_label.place(x=56, y=126)
+        saveside_btn = Button(self.master,
+            image=side_btn,
+            border=0,
+            bg=notes_bg,
+            command=self.save,
+            activebackground=notes_bg)
+        saveside_btn.place(x=46, y=80)
+        text_label = Label(self.master,
+            text="Share",
+            bg=notes_bg,
+            fg=notes_fg)
+        text_label.place(x=53, y=286)
+        shareside_btn = Button(self.master,
+            image=side_btn,
+            border=0,
+            bg=notes_bg,
+            command=self.share,
+            activebackground=notes_bg)
+        shareside_btn.place(x=46, y=240)
+        text_label = Label(self.master,
+            text="Export",
+            bg=notes_bg,
+            fg=notes_fg)
+        text_label.place(x=51, y=436)
+        exportside_btn = Button(self.master,
+            image=side_btn,
+            border=0,
+            bg=notes_bg,
+            command=self.export,
+            activebackground=notes_bg)
+        exportside_btn.place(x=46, y=390)
 
     def features(self):
 
-        if self.bg_color == "#121212": self.content_features(self.threelinemenu_dark)
-        elif self.bg_color == "#0d9187": self.content_features(self.threelinemenu_light)
+        if self.bg_color == "#121212": self.content_features(self.threelinemenu_dark,
+        self.contentbg_dark, "#F2F2F2", "#2C2C2C", self.sidebutton_dark)
+        elif self.bg_color == "#0d9187": self.content_features(self.threelinemenu_light,
+        self.contentbg_light, "#0c325c", "#12c8bb", self.sidebutton_light)
 
     def side_menu(self):
         THREELINE_MENU(self.master, visit=None)
     
-    def main_body(self):
-        self.content_label = LabelFrame(self.master,
-                                   bg="#00FFFF",
-                                   border=0,
-                                   width=800,
-                                   height=420).place(x=55, y=45)
-        self.label = Label(self.content_label, text="APPLICATION DEV",
-                           fg="red",
-                           bg="#00FFFF",
-                           border=8,
-                           font=("roboto",15)).place(x=90,y=55)
+    def save(self):
+        pass
 
-        self.textbox1 = Text(self.content_label,bg="#00FFFF",
-                             border=2,
-                             width=100,
-                             height=3,
-                             font=("roboto",10)).place(x=110,y=95)
+    def share(self):
+        pass
+    
+    def export(self):
+        pass
 
-        self.textbox2 = Text(self.content_label, bg="#00FFFF",
-                             border=2,
-                             width=70,
-                             height=5,
-                             font=("roboto", 10)).place(x=110, y=340)
-
-        self.addimage1 = Button(self.content_label,
-                                text="UPLOAD IMAGE",
-                                bg="grey",
-                                command=self.select_picture1).place(x=110, y=210)
-
-        self.addimage2 = Button(self.content_label,
-                                text="ADD MORE IMAGE",
-                                bg="grey",
-                                command=self.select_picture2).place(x=110, y=240)
-
-        self.Add_new_notes = Button(self.content_label,
-                                    text="ADD NEW NOTES",
-                                    bg="grey",
-                                    command=self.ADD_NEW_NOTES).place(x=680, y=370)
-    def select_picture1(self):
-        global my_image1
-        self.filename = filedialog.askopenfilename(initialdir="/gui/images",
-                                              title="Select Image File",
-                                              filetypes=(("png images","*.png"),
-                                                         ("jpg images","*.jpg"),
-                                                         ("all files","*.*")))
-
-        img = Image.open(self.filename)
-        img = img.resize((250,150))
-        my_image1 = ImageTk.PhotoImage(img)
-
-        image1 = Label(self.master, image=my_image1,
-                       width=250,
-                       height=150).place(x=280,y=170)
-
-    def select_picture2(self):
-        global my_image2
-        self.filename = filedialog.askopenfilename(initialdir="/gui/images",
-                                                   title="Select Image File",
-                                                   filetypes=(("png images", "*.png"),
-                                                              ("jpg images", "*.jpg"),
-                                                              ("all files", "*.*")))
-
-        img = Image.open(self.filename)
-        img = img.resize((250, 150))
-        my_image2 = ImageTk.PhotoImage(img)
-
-        image2 = Label(self.master, image=my_image2,
-                       width=250,
-                       height=150).place(x=530, y=170)
-    def submit(self):
-        print("SHOWED: Submit Done")
-    def ADD_NEW_NOTES(self):
-        print("SHOWED: Submit Done")
-        self.content_label1 = LabelFrame(self.master,
-                                        bg="#00FFFF",
-                                        border=0,
-                                        width=800,
-                                        height=420).place(x=55, y=45)
-        self.label = Label(self.content_label1, text="APPLICATION DEV",
-                           fg="red",
-                           bg="#00FFFF",
-                           border=8,
-                           font=("roboto", 15)).place(x=90, y=55)
-
-        self.textbox1 = Text(self.content_label1, bg="#00FFFF",
-                             border=2,
-                             width=100,
-                             height=3,
-                             font=("roboto", 10)).place(x=110, y=95)
-
-        self.textbox2 = Text(self.content_label1, bg="#00FFFF",
-                             border=2,
-                             width=70,
-                             height=5,
-                             font=("roboto", 10)).place(x=110, y=340)
-
-        self.addimage1 = Button(self.content_label1,
-                                text="UPLOAD IMAGE",
-                                bg="grey",
-                                command=self.select_picture1).place(x=110, y=210)
-
-        self.addimage2 = Button(self.content_label1,
-                                text="ADD MORE IMAGE",
-                                bg="grey",
-                                command=self.select_picture2).place(x=110, y=240)
-
-        self.Add_new_notes = Button(self.content_label1,
-                                    text="ADD NEW NOTES",
-                                    bg="grey",
-                                    command=self.ADD_NEW_NOTES).place(x=680, y=370)
-
-class QUIZ_FOLDER(customtkinter.CTk):
+class QUIZ_FOLDER():
     def __init__(self, master):
         self.master = master
         self.threelinemenu_dark = ImageTk.PhotoImage(Image.open("images/3line_dark.png"))
@@ -848,8 +801,9 @@ class QUIZ_FOLDER(customtkinter.CTk):
         self.sidebutton_light = ImageTk.PhotoImage(Image.open("images/side_button_light.png"))
         self.addbtn_dark = ImageTk.PhotoImage(Image.open("images/add_dark.png"))
         self.addbtn_light = ImageTk.PhotoImage(Image.open("images/add_light.png"))
+        self.messageBox_dark = ImageTk.PhotoImage(Image.open("images/mesbox_dark.png"))
+        self.messageBox_light = ImageTk.PhotoImage(Image.open("images/mesbox_light.png"))
         self.bg_color = self.master.cget("bg")
-        
         self.backframe()
         self.features()
         
@@ -861,6 +815,64 @@ class QUIZ_FOLDER(customtkinter.CTk):
             height=500,
             background=self.master.cget("bg"))
         main_frame.place(x=0, y=0)
+
+    def add_frame(self):
+        if self.master.cget("bg") == "#121212":
+            mesbox_image = self.messageBox_dark
+            fg1 = "Black"
+            bg1 = "#7a7a7a"
+            bg2 = "#959595"
+            bg3 = "#4b4949"
+        else: 
+            mesbox_image = self.messageBox_light
+            fg1 = "White"
+            bg1 = "#005f60"
+            bg2 = "#047a7b"
+            bg3 = "#014344"
+        self.main_frame = Frame(self.master,
+            width=350,
+            height=200,
+            background=self.master.cget("bg"))
+        self.main_frame.place(x=276, y=170)
+        search_label = Label(self.main_frame,
+            image=mesbox_image,
+            border=0,
+            bg=self.master.cget("bg"))
+        search_label.place(x=2,y=2)
+        add_text = Label(self.main_frame,
+            text="Folder Name",
+            font=("Roboto", 13),
+            bg=bg1,
+            borderwidth=0,
+            fg=fg1)
+        add_text.place(x=123, y=35)
+        add_entry = Entry(self.main_frame,
+            width=24,
+            font=("Roboto", 12),
+            bg=bg2,
+            borderwidth=0,
+            fg=fg1)
+        add_entry.place(x=65, y=69)
+        okay_btn = Button(self.main_frame,
+            text='Submit',
+            font=("Roboto", 11),
+            fg=fg1,
+            bg=bg3,
+            activebackground=bg3,
+            borderwidth=0,
+            relief=FLAT,
+            width=8,)
+        okay_btn.place(x=74, y=122)
+        cancel_btn = Button(self.main_frame,
+            text='Cancel',
+            font=("Roboto", 11),
+            fg=fg1,
+            bg=bg1,
+            activebackground=bg1,
+            borderwidth=0,
+            relief=FLAT,
+            width=8,)
+        cancel_btn.place(x=205, y=122)
 
     def content_features(self, search_image, content_image, three_line_image, notes_a_fg, notes_a_bg, quiz_fg, quiz_bg, side_btn, btn_img):
         quiz_search = Label(self.master,
@@ -905,7 +917,8 @@ class QUIZ_FOLDER(customtkinter.CTk):
         quiz_label.place(x=512, y=91)
         add_btn = Button(self.master,
             image=btn_img,
-            border = 0,
+            command=self.add_frame,
+            border=0,
             bg=self.bg_color,
             activebackground=self.bg_color)
         add_btn.place(x=760, y=78)
@@ -969,7 +982,7 @@ class QUIZ_FOLDER(customtkinter.CTk):
     def delete(self):
         pass
 
-class QUIZ_FILES(customtkinter.CTk):
+class QUIZ_FILES():
     def __init__(self, master):
         self.master = master
         self.threelinemenu_dark = ImageTk.PhotoImage(Image.open("images/3line_dark.png"))
@@ -982,8 +995,11 @@ class QUIZ_FILES(customtkinter.CTk):
         self.sidebutton_light = ImageTk.PhotoImage(Image.open("images/side_button_light.png"))
         self.indivfile_dark = ImageTk.PhotoImage(Image.open("images/filescontent_dark.png"))
         self.indivfile_light = ImageTk.PhotoImage(Image.open("images/filescontent_light.png"))
+        self.addbtn_dark = ImageTk.PhotoImage(Image.open("images/add2_dark.png"))
+        self.addbtn_light = ImageTk.PhotoImage(Image.open("images/add2_light.png"))
+        self.messageBox_dark = ImageTk.PhotoImage(Image.open("images/mesbox_dark.png"))
+        self.messageBox_light = ImageTk.PhotoImage(Image.open("images/mesbox_light.png"))
         self.bg_color = self.master.cget("bg")
-
         self.backframe()
         self.features()
 
@@ -995,8 +1011,66 @@ class QUIZ_FILES(customtkinter.CTk):
             height=500,
             background=self.master.cget("bg"))
         main_frame.place(x=0, y=0)
+
+    def add_frame(self):
+        if self.master.cget("bg") == "#121212":
+            mesbox_image = self.messageBox_dark
+            fg1 = "Black"
+            bg1 = "#7a7a7a"
+            bg2 = "#959595"
+            bg3 = "#4b4949"
+        else: 
+            mesbox_image = self.messageBox_light
+            fg1 = "White"
+            bg1 = "#005f60"
+            bg2 = "#047a7b"
+            bg3 = "#014344"
+        self.main_frame = Frame(self.master,
+            width=350,
+            height=200,
+            background=self.master.cget("bg"))
+        self.main_frame.place(x=276, y=170)
+        search_label = Label(self.main_frame,
+            image=mesbox_image,
+            border=0,
+            bg=self.master.cget("bg"))
+        search_label.place(x=2,y=2)
+        add_text = Label(self.main_frame,
+            text="File Name",
+            font=("Roboto", 13),
+            bg=bg1,
+            borderwidth=0,
+            fg=fg1)
+        add_text.place(x=132, y=35)
+        add_entry = Entry(self.main_frame,
+            width=24,
+            font=("Roboto", 12),
+            bg=bg2,
+            borderwidth=0,
+            fg=fg1)
+        add_entry.place(x=65, y=69)
+        okay_btn = Button(self.main_frame,
+            text='Submit',
+            font=("Roboto", 11),
+            fg=fg1,
+            bg=bg3,
+            activebackground=bg3,
+            borderwidth=0,
+            relief=FLAT,
+            width=8,)
+        okay_btn.place(x=74, y=122)
+        cancel_btn = Button(self.main_frame,
+            text='Cancel',
+            font=("Roboto", 11),
+            fg=fg1,
+            bg=bg1,
+            activebackground=bg1,
+            borderwidth=0,
+            relief=FLAT,
+            width=8,)
+        cancel_btn.place(x=205, y=122)
     
-    def content_features(self, search_image, three_line_image, content_img, side_btn, quiz_fg, quiz_bg, indiv_file):
+    def content_features(self, search_image, three_line_image, content_img, side_btn, quiz_fg, quiz_bg, indiv_file, btn_img):
         files_search = Label(self.master,
             image=search_image,
             border=0,
@@ -1087,14 +1161,21 @@ class QUIZ_FILES(customtkinter.CTk):
             bg=quiz_bg,
             activebackground=quiz_bg)
         self.indivfile.place(x=121, y=135)
+        add_btn = Button(self.master,
+            image=btn_img,
+            command=self.add_frame,
+            border=0,
+            bg=self.bg_color,
+            activebackground=self.bg_color)
+        add_btn.place(x=760, y=78)
         
     def features(self):
         if self.bg_color == "#121212": 
             self.content_features(self.search_dark, self.threelinemenu_dark, self.contentbg_dark,
-            self.sidebutton_dark, "#F2F2F2", "#2C2C2C", self.indivfile_dark)
+            self.sidebutton_dark, "#F2F2F2", "#2C2C2C", self.indivfile_dark, self.addbtn_dark)
         elif self.bg_color == "#0d9187": 
             self.content_features(self.search_light, self.threelinemenu_light, self.contentbg_light, 
-            self.sidebutton_light, "#0c325c", "#12c8bb", self.indivfile_light)
+            self.sidebutton_light, "#0c325c", "#12c8bb", self.indivfile_light, self.addbtn_light)
 
     def side_menu(self):
         THREELINE_MENU(self.master, visit=None)
@@ -1114,18 +1195,16 @@ class QUIZ_FILES(customtkinter.CTk):
     def quizzes_edit(self):
         QUIZ_EDITOR(self.master)
 
-class QUIZ_EDITOR(customtkinter.CTk):
+class QUIZ_EDITOR():
     def __init__(self, master):
         self.master = master
         self.threelinemenu_dark = ImageTk.PhotoImage(Image.open("images/3line_dark.png"))
         self.threelinemenu_light = ImageTk.PhotoImage(Image.open("images/3line_light.png"))
-        self.contentbg_dark = ImageTk.PhotoImage(Image.open("images/edquiz_dark.png"))
-        self.contentbg_light = ImageTk.PhotoImage(Image.open("images/edquiz_light.png"))
+        self.contentbg_dark = ImageTk.PhotoImage(Image.open("images/editor_dark.png"))
+        self.contentbg_light = ImageTk.PhotoImage(Image.open("images/editor_light.png"))
         self.answerbg_dark = ImageTk.PhotoImage(Image.open("images/ansquiz_dark.png"))
         self.answerbg_light = ImageTk.PhotoImage(Image.open("images/ansquiz_light.png"))
-
         self.bg_color = self.master.cget("bg")
-
         self.backframe()
         self.features()
         self.blockframe()
@@ -1157,26 +1236,22 @@ class QUIZ_EDITOR(customtkinter.CTk):
             bg=self.bg_color,
             activebackground=self.bg_color)
         search_editor.place(x=7,y=10)
-
         content_label = Label(self.master,
             image=content_img,
             border=0,)
         content_label.place(x=23,y=45)
-
         question_label = Label(self.master,
             text="Question:",
             bg=content_bg,
             foreground=content_fg,
             font=("arial", 15))
         question_label.place(x=130, y=80)
-
         add_question_entry = Entry(self.master,
             bg=content_bg, 
             foreground=content_fg, 
             width=78, 
             font=50)
         add_question_entry.place(x=133, y=120)
-
         question_label = Label(self.master,
             text="Quiz Method: ",
             bg=content_bg,
@@ -1239,7 +1314,6 @@ class QUIZ_EDITOR(customtkinter.CTk):
     def blockframe(self):
         if self.bg_color == "#121212": bg = self.answerbg_dark
         elif self.bg_color == "#0d9187": bg = self.answerbg_light
-
         content_label = Label(self.master,
             image=bg,
             border=0,)
@@ -1252,7 +1326,6 @@ class QUIZ_EDITOR(customtkinter.CTk):
         elif self.bg_color == "#0d9187": 
             color = "#12c8bb"
             fg = "#0c325c"
-
         display_method = self.r1_v.get()
         
         if display_method == 1:
@@ -1314,7 +1387,7 @@ class QUIZ_EDITOR(customtkinter.CTk):
     def side_menu(self):
         THREELINE_MENU(self.master, visit=None)
 
-class RECYCLE_BIN(customtkinter.CTk):
+class RECYCLE_BIN():
     def __init__(self, master):
         self.master = master
         self.threelinemenu_dark = ImageTk.PhotoImage(Image.open("images/3line_dark.png"))
@@ -1322,7 +1395,6 @@ class RECYCLE_BIN(customtkinter.CTk):
         self.search_dark = ImageTk.PhotoImage(Image.open("images/search_dark.png"))
         self.search_light = ImageTk.PhotoImage(Image.open("images/search_light.png"))
         self.bg_color = self.master.cget("bg")
-
         self.backframe()
         self.features()
 
@@ -1368,7 +1440,7 @@ class RECYCLE_BIN(customtkinter.CTk):
     def side_menu(self):
         THREELINE_MENU(self.master,visit='Bin')
 
-class PROFILE_SETTINGS(customtkinter.CTk):
+class PROFILE_SETTINGS():
     def __init__(self, master):
         self.master = master
         self.threelinemenu_dark = ImageTk.PhotoImage(Image.open("images/3line_dark.png"))
@@ -1401,16 +1473,6 @@ class PROFILE_SETTINGS(customtkinter.CTk):
             border=0,)
         profilesettings_temp.place(x=240,y=45)
 
-        # self.usericon = (Image.open("images/sample_usericon.png"))
-        # self.resize_usericon = self.usericon.resize((80,80), Image.ANTIALIAS)
-        # self.profilephoto = ImageTk.PhotoImage(self.resize_usericon) 
-        # self.profile = Label(self.master, 
-        # image=self.profile,
-        # bd=0,
-        # border=0,
-        # bg=self.master.cget("bg"),)
-        # self.profile.place(x=260, y=75)
-
     def side_menu_icon(self):
         if self.master.cget("bg") == "#121212": self.side_menu_icon_content(self.threelinemenu_dark, self.settings_template_dark)
         elif self.master.cget("bg") == "#0d9187": self.side_menu_icon_content(self.threelinemenu_light, self.settings_template_light)
@@ -1418,10 +1480,8 @@ class PROFILE_SETTINGS(customtkinter.CTk):
     def side_menu(self):
         THREELINE_MENU(self.master, visit='Profile')
 
-class LOGOUT(customtkinter.CTk):
+class LOGOUT():
     def __init__(self, master):
-        messagebox.askquestion('Log out','Are you sure you want to log out?')
-        print("Logged out")
         self.master = master
         self.logout()
 
@@ -1436,19 +1496,19 @@ class LOGOUT(customtkinter.CTk):
         response = messagebox.askyesno('Log out', 'Are you sure you want to log out?')
         if response == True:
             self.backframe()
-            print("Logged out")
+            print("CLOSED: Logged Out")
             redirect = LOGIN(self.master)
         elif response == False:
             pass
 
-class THREELINE_MENU(customtkinter.CTk):
+class THREELINE_MENU():
     def __init__(self, master, visit):
         self.master = master
         self.closemenu_dark = ImageTk.PhotoImage(Image.open("images/close_dark.png"))
         self.closemenu_light = ImageTk.PhotoImage(Image.open("images/close_light.png"))
         self.visit = visit
-
         self.burger_menu()
+
         print("OPENED: Three-Line Menu")
 
     def notes_folder(self):
@@ -1463,21 +1523,20 @@ class THREELINE_MENU(customtkinter.CTk):
     def profile_settings(self):
         PROFILE_SETTINGS(self.master)
 
-    def TBC(self):
-        pass
+    def logout(self):
+        LOGOUT(self.master)
 
     def burger_menu(self):
 
         def destroy_threeline():
             threeline_menu.destroy()
-
             if self.visit == 'Note': self.notes_folder()
             elif self.visit == 'Quiz': self.quiz_folder()
             elif self.visit == 'Bin': self.recycle_bin()
             elif self.visit == 'Profile': self.profile_settings()
             else: pass
-
             print("CLOSED: Three-Line Menu")
+
         fg_color = "#ffffff"
         activefg = "#ffffff"
         fontstyle = ("Roboto", 17, "bold")
@@ -1528,7 +1587,7 @@ class THREELINE_MENU(customtkinter.CTk):
                 disabledforeground=fg_color,
                 state=no_state[0])
             Notes.place(x=0,y=75)
-
+            
             if no_state[0] != 'disabled':
                 Notes.bind("<Enter>", lambda _: on_entera(None, Notes))
                 Notes.bind("<Leave>", lambda _: on_leavea(None, Notes))
@@ -1596,7 +1655,7 @@ class THREELINE_MENU(customtkinter.CTk):
                 text="     Logout",
                 anchor=W,
                 font=fontstyle,
-                command=self.TBC,
+                command=self.logout,
                 border=0,
                 fg=fg_color,
                 activeforeground=activefg,
@@ -1645,10 +1704,8 @@ ws = window.winfo_screenwidth()
 hs = window.winfo_screenheight()
 w = 900
 h = 500
-
 x = (ws/2) - (w/2)
 y = (hs/2) - (h/1.7)
-
 window.geometry('%dx%d+%d+%d' % (w, h, x, y))
 
 if __name__ == "__main__":
