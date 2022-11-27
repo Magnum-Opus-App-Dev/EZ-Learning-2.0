@@ -585,6 +585,7 @@ class NOTE_FILES():
 
         print("OPENED: Note Files")
 
+    
     def backframe(self):
         main_frame = Frame(self.master,
             width=900,
