@@ -11,7 +11,7 @@ from tkinter import messagebox
 
 config = {"apiKey": "AIzaSyBARpuvAyruul-wLV0APfAsd0oT7W5rOuU",
   "authDomain": "fir-a97e4.firebaseapp.com",
-  "databaseURL": "https://fir-a97e4.firebaseio.com",
+  "databaseURL": "https://fir-a97e4-default-rtdb.asia-southeast1.firebasedatabase.app/",
   "projectId": "fir-a97e4",
   "storageBucket": "fir-a97e4.appspot.com",
   "messagingSenderId": "1093466307621",
@@ -101,39 +101,27 @@ class LOGIN():
         self.logo = (Image.open(image))
         self.resize_logo = self.logo.resize((80, 80), Image.ANTIALIAS)
         self.photoimage = ImageTk.PhotoImage(self.resize_logo)
-        self.canvas = Label(self.master, 
-            image=self.photoimage, 
-            bd=0)
+        self.canvas = Label(self.master, image=self.photoimage, bd=0)
         self.canvas.place(x=410, y=15)
-        self.sub = Label(self.master, 
-            text = 'IT 105 - Application Development and Emerging Technologies', 
-            justify=LEFT, font = ('Arial',7,'bold'), 
-            bg=bg, 
-            fg=fg)
+        self.sub = Label(self.master, text = 'IT 105 - Application Development and Emerging Technologies', justify=LEFT, font = ('Arial',7,'bold'), bg = bg, fg=fg)
         self.sub.place(x=10, y=474)
-        self.dev_names = Label(self.master, 
-            text = 'Dar, John Homer Sayno\nDela Fuente, Ar-Jay\nEchano, Angelo Millares\nMalubay, Arriana Mae Vargas\nMortiga, Renze Meinard', 
-            justify=LEFT, 
-            font = ('Roboto',7), 
-            bg=bg, 
-            fg=fg)
+        self.dev_names = Label(self.master, text = 'Dar, John Homer Sayno\nDela Fuente, Ar-Jay\nEchano, Angelo Millares\nMalubay, Arriana Mae Vargas\nMortiga, Renze Meinard', justify=LEFT, font = ('Roboto',7), bg=bg, fg=fg)
         self.dev_names.place(x=10, y=418)
     
     def change_appearance_mode(self, new_appearance_mode):
         customtkinter.set_appearance_mode(new_appearance_mode)
 
-        if new_appearance_mode == "Dark": self.change_appearance("#121212", 
-        "images/logo_darkmode.png", "#bbbbbb")
-        elif new_appearance_mode == "Light": self.change_appearance("#0d9187", 
-        "images/logo_lightmode.png", "#2e2e2e")
-  
+        if new_appearance_mode == "Dark": self.change_appearance("#121212", "images/logo_darkmode.png", "#bbbbbb")
+        elif new_appearance_mode == "Light": self.change_appearance("#0d9187", "images/logo_lightmode.png", "#2e2e2e")
+    
     def login(self):
         if self._Email.get() == '' or self._Password.get() == '': tkinter.messagebox.showinfo('Try Again', 'Please complete the required fields.')
         else: 
             try:
                 login = auth.sign_in_with_email_and_password(self._Email.get(), self._Password.get())
                 NOTES_FOLDER(self.master)
-            except: tkinter.messagebox.showinfo('Error', 'Invalid Email or Password. Try again')
+            except:
+                tkinter.messagebox.showinfo('Error', 'Invalid Email or Password. Try again')
 
     def quicklogin(self):
         NOTES_FOLDER(self.master)
@@ -153,6 +141,7 @@ class SIGNUP():
         self._Confirm_Password = StringVar()
 
         self.change_appearance("#121212", "images/logo_darkmode.png", "#bbbbbb")
+
         self.template = customtkinter.CTkFrame(self.master,
             width=500,
             height=310)
@@ -221,22 +210,11 @@ class SIGNUP():
         self.logo = (Image.open(image))
         self.resize_logo = self.logo.resize((80, 80), Image.ANTIALIAS)
         self.photoimage = ImageTk.PhotoImage(self.resize_logo)
-        self.canvas = Label(self.master, 
-            image=self.photoimage, 
-            bd=0)
+        self.canvas = Label(self.master, image=self.photoimage, bd=0)
         self.canvas.place(x=410, y=15)
-        self.sub = Label(self.master, 
-            text = 'IT 105 - Application Development and Emerging Technologies', 
-            justify=LEFT, 
-            font = ('Arial',7,'bold'), 
-            bg=bg, 
-            fg=fg)
+        self.sub = Label(self.master, text = 'IT 105 - Application Development and Emerging Technologies', justify=LEFT, font = ('Arial',7,'bold'), bg = bg, fg=fg)
         self.sub.place(x=10, y=474)
-        self.dev_names = Label(self.master, 
-            text = 'Dar, John Homer Sayno\nDela Fuente, Ar-Jay\nEchano, Angelo Millares\nMalubay, Arriana Mae Vargas\nMortiga, Renze Meinard', 
-            justify=LEFT, font = ('Roboto',7), 
-            bg=bg, 
-            fg=fg)
+        self.dev_names = Label(self.master, text = 'Dar, John Homer Sayno\nDela Fuente, Ar-Jay\nEchano, Angelo Millares\nMalubay, Arriana Mae Vargas\nMortiga, Renze Meinard', justify=LEFT, font = ('Roboto',7), bg=bg, fg=fg)
         self.dev_names.place(x=10, y=418)
 
     def change_appearance_mode(self, new_appearance_mode):
@@ -276,10 +254,17 @@ class NOTES_FOLDER():
         self.addbtn_light = ImageTk.PhotoImage(Image.open("images/add_light.png"))
         self.sidebutton_dark = ImageTk.PhotoImage(Image.open("images/side_button_dark.png"))
         self.sidebutton_light = ImageTk.PhotoImage(Image.open("images/side_button_light.png"))
+        
         self.messageBox_dark = ImageTk.PhotoImage(Image.open("images/mesbox_dark.png"))
         self.messageBox_light = ImageTk.PhotoImage(Image.open("images/mesbox_light.png"))
         self.bg_color = self.master.cget("bg")
-        self.rows = 2
+        self.rows = []
+
+        folders = db.child("Folders").get()
+        self.rows.append(folders.val())
+
+        print(len(self.rows))
+
         self.backframe()
         self.features()
 
@@ -293,6 +278,13 @@ class NOTES_FOLDER():
         main_frame.place(x=0, y=0)
 
     def add_frame(self):
+
+        def submit():
+            data = add_entry.get()
+            db.child("Folders").set(data)
+
+            NOTES_FOLDER(self.master)
+
         if self.master.cget("bg") == "#121212":
             mesbox_image = self.messageBox_dark
             fg1 = "Black"
@@ -333,6 +325,7 @@ class NOTES_FOLDER():
         okay_btn = Button(self.main_frame,
             text='Submit',
             font=("Roboto", 11),
+            command=submit,
             fg=fg1,
             bg=bg3,
             activebackground=bg3,
@@ -353,6 +346,10 @@ class NOTES_FOLDER():
 
     def content_features(self, search_img, content_img, folder_img, menu_img, quiz_a_fg, quiz_a_bg,
     notes_fg, notes_bg, btn_img, side_btn):
+
+        row = 0
+        column = 0
+
         search_label = Label(self.master,
             image=search_img,
             border=0,
@@ -386,7 +383,7 @@ class NOTES_FOLDER():
             highlightthickness=0)
         inline_canvas.pack(side=LEFT, fill=BOTH, expand=1)
 
-        if self.rows > 3:
+        if len(self.rows) > 3:
             scrollbar = ttk.Scrollbar(second_line_frame,
                 orient=VERTICAL,
                 command=inline_canvas.yview)
@@ -402,28 +399,35 @@ class NOTES_FOLDER():
             bg=notes_bg)
         inline_canvas.create_window((0,0), window=another_frame, anchor='nw')
 
-        line_frame = Canvas(another_frame, 
-            highlightthickness=0)
-        line_frame.grid(row =0, column=0, pady=5, padx=11)
+        if self.rows != None:
+            print(self.rows)
+            for i in self.rows:
 
-        folder = Button(line_frame,
-            image=folder_img,
-            command= None,
-            border=0,
-            bg=notes_bg,
-            activebackground=notes_bg)
-        folder.pack()
-        foldername = Label(line_frame,
-            text='Mathematics',
-            font=("Arial", 10),
-            fg=notes_fg,
-            borderwidth=0,
-            relief=FLAT,
-            width=10,
-            background=notes_bg,
-            activebackground=self.bg_color,
-            height=1)
-        foldername.pack(fill=BOTH, expand= 1)
+                line_frame = Canvas(another_frame, 
+                    highlightthickness=0)
+                line_frame.grid(row =row, column=column, pady=5, padx=11)
+
+                folder = Button(line_frame,
+                    image=folder_img,
+                    command= None,
+                    border=0,
+                    bg=notes_bg,
+                    activebackground=notes_bg)
+                folder.pack()
+                foldername = Label(line_frame,
+                    text=i,
+                    font=("Arial", 10),
+                    fg=notes_fg,
+                    borderwidth=0,
+                    relief=FLAT,
+                    width=10,
+                    background=notes_bg,
+                    activebackground=self.bg_color,
+                    height=1)
+                foldername.pack(fill=BOTH, expand= 1)
+
+                column += 1
+
         line_menu = Button(self.master,
             image=menu_img,
             command=self.side_menu,
@@ -539,10 +543,9 @@ class NOTE_FILES():
         self.sidebutton_light = ImageTk.PhotoImage(Image.open("images/side_button_light.png"))
         self.indivfile_dark = ImageTk.PhotoImage(Image.open("images/filescontent_dark.png"))
         self.indivfile_light = ImageTk.PhotoImage(Image.open("images/filescontent_light.png"))
-        self.addbtn_dark = ImageTk.PhotoImage(Image.open("images/add2_dark.png"))
-        self.addbtn_light = ImageTk.PhotoImage(Image.open("images/add2_light.png"))
-        self.messageBox_dark = ImageTk.PhotoImage(Image.open("images/mesbox_dark.png"))
-        self.messageBox_light = ImageTk.PhotoImage(Image.open("images/mesbox_light.png"))
+        self.addbtn_dark = ImageTk.PhotoImage(Image.open("images/add_dark.png"))
+        self.addbtn_light = ImageTk.PhotoImage(Image.open("images/add_light.png"))
+
         self.bg_color = self.master.cget("bg")
         self.backframe()
         self.features()
@@ -555,64 +558,39 @@ class NOTE_FILES():
             height=500,
             background=self.master.cget("bg"))
         main_frame.place(x=0, y=0)
-
+    
     def add_frame(self):
-        if self.master.cget("bg") == "#121212":
-            mesbox_image = self.messageBox_dark
-            fg1 = "Black"
-            bg1 = "#7a7a7a"
-            bg2 = "#959595"
-            bg3 = "#4b4949"
-        else: 
-            mesbox_image = self.messageBox_light
-            fg1 = "White"
-            bg1 = "#005f60"
-            bg2 = "#047a7b"
-            bg3 = "#014344"
         self.main_frame = Frame(self.master,
-            width=350,
+            width=500,
             height=200,
             background=self.master.cget("bg"))
-        self.main_frame.place(x=276, y=170)
-        search_label = Label(self.main_frame,
-            image=mesbox_image,
-            border=0,
-            bg=self.master.cget("bg"))
-        search_label.place(x=2,y=2)
-        add_text = Label(self.main_frame,
-            text="File Name",
-            font=("Roboto", 13),
-            bg=bg1,
-            borderwidth=0,
-            fg=fg1)
-        add_text.place(x=132, y=35)
+        self.main_frame.place(x=200, y=150)
+
         add_entry = Entry(self.main_frame,
-            width=24,
-            font=("Roboto", 12),
-            bg=bg2,
+            width=40,
+            font=("Roboto", 12, "bold"),
+            bg="#c2c2c2",
             borderwidth=0,
-            fg=fg1)
-        add_entry.place(x=65, y=69)
+            fg="#000000")
+        add_entry.place(x=50, y=50)
+
         okay_btn = Button(self.main_frame,
             text='Submit',
-            font=("Roboto", 11),
-            fg=fg1,
-            bg=bg3,
-            activebackground=bg3,
+            font=("Comic Sans MS", 11),
+            fg='#000000',
             borderwidth=0,
             relief=FLAT,
-            width=8,)
-        okay_btn.place(x=74, y=122)
+            width=10,)
+        okay_btn.place(x=200, y=100)
+
         cancel_btn = Button(self.main_frame,
             text='Cancel',
-            font=("Roboto", 11),
-            fg=fg1,
-            bg=bg1,
-            activebackground=bg1,
+            font=("Comic Sans MS", 11),
+            fg='#000000',
             borderwidth=0,
             relief=FLAT,
-            width=8,)
-        cancel_btn.place(x=205, y=122)
+            width=10,)
+        cancel_btn.place(x=200, y=150)
     
     def content_features(self, search_image, three_line_image, content_img, side_btn, notes_fg, notes_bg, indiv_file, btn_img):
         files_search = Label(self.master,
@@ -698,6 +676,7 @@ class NOTE_FILES():
             command=self.share,
             activebackground=notes_bg)
         exportside_btn.place(x=46, y=402)
+
         add_btn = Button(self.master,
             image=btn_img,
             command=self.add_frame,
@@ -705,6 +684,7 @@ class NOTE_FILES():
             bg=self.bg_color,
             activebackground=self.bg_color)
         add_btn.place(x=760, y=78)
+
         indivfile = Button(self.master,
             image=indiv_file,
             border=0,
