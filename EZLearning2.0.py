@@ -9,20 +9,34 @@ import pyrebase
 from pygame import FULLSCREEN
 import shutup;shutup.please()
 from tkinter import messagebox
+from dotenv import load_dotenv
+import os
+
 
 #SAMPLE EMAIL AND PASSWORD FOR LOGIN:
 #2@gmail.com
 #//////
-#try lang
 
-config = {"apiKey": "AIzaSyBARpuvAyruul-wLV0APfAsd0oT7W5rOuU",
-  "authDomain": "fir-a97e4.firebaseapp.com",
-  "databaseURL": "https://fir-a97e4.firebaseio.com",
-  "projectId": "fir-a97e4",
-  "storageBucket": "fir-a97e4.appspot.com",
-  "messagingSenderId": "1093466307621",
-  "appId": "1:1093466307621:web:c15c81e28e2b468d4853cc",
-  "measurementId": "G-LF9NKKBDQ8"}
+load_dotenv()
+
+
+api_key = os.getenv("api_key")
+auth_domain = os.getenv("auth_domain")
+database_url = os.getenv("database_url")
+project_id = os.getenv("project_id")
+storage_bucket = os.getenv("storage_bucket")
+messaging_sender_id = os.getenv("messaging_sender_id")
+app_id = os.getenv("app_id")
+measurement_id = os.getenv("measurement_id")
+
+config = {"apiKey": api_key  ,
+  "authDomain": auth_domain,
+  "databaseURL": database_url ,
+  "projectId": project_id ,
+  "storageBucket": storage_bucket ,
+  "messagingSenderId": messagingsender_id,
+  "appId": app_id ,
+  "measurementId": measurement_id}
 
 firebase = pyrebase.initialize_app(config)
 auth = firebase.auth()
