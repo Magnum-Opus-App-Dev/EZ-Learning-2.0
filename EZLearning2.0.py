@@ -34,7 +34,7 @@ config = {"apiKey": api_key  ,
   "databaseURL": database_url ,
   "projectId": project_id ,
   "storageBucket": storage_bucket ,
-  "messagingSenderId": messagingsender_id,
+  "messagingSenderId": messaging_sender_id,
   "appId": app_id ,
   "measurementId": measurement_id}
 
