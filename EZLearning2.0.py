@@ -142,8 +142,9 @@ class LOGIN():
                 login = auth.sign_in_with_email_and_password(self._Email.get(), self._Password.get())
                 userId = login['localId']
                 NOTES_FOLDER(self.master)
-            except:
+            except Exception as e:
                 tkinter.messagebox.showinfo('Error', 'Invalid Email or Password. Try again')
+                print(e)
 
     def quicklogin(self):
         NOTES_FOLDER(self.master)
