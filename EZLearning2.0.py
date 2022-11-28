@@ -42,6 +42,8 @@ auth = firebase.auth()
 db = firebase.database()
 userId = ''
 
+
+
 customtkinter.set_appearance_mode("Dark")
 customtkinter.set_default_color_theme("green")
 
@@ -142,8 +144,8 @@ class LOGIN():
                 userId = login['localId']
                 NOTES_FOLDER(self.master)
             except Exception as e:
-                tkinter.messagebox.showinfo('Error', 'Invalid Email or Password. Try again')
                 print(e)
+                tkinter.messagebox.showinfo('Error', 'Invalid Email or Password. Try again')
 
     def quicklogin(self):
         NOTES_FOLDER(self.master)
@@ -309,12 +311,13 @@ class NOTES_FOLDER():
 
         def submit():
             folderId = str(uuid.uuid4())
-            folder = Folder(folderId, add_entry.get(), userId)
+            folder = Folder(folderId, add_entry.get().capitalize(), userId)
             db.child("Folders").child(folderId).set(folder.__dict__)
             NOTES_FOLDER(self.master)
 
         def cancel():
             self.main_frame.destroy()
+            NOTES_FOLDER(self.master)
 
 
         if self.master.cget("bg") == "#121212":
@@ -380,9 +383,6 @@ class NOTES_FOLDER():
     def content_features(self, search_img, content_img, folder_img, menu_img, quiz_a_fg, quiz_a_bg,
     notes_fg, notes_bg, btn_img, side_btn):
 
-        row = 0
-        column = 0
-
         search_label = Label(self.master,
             image=search_img,
             border=0,
@@ -416,7 +416,7 @@ class NOTES_FOLDER():
             highlightthickness=0)
         inline_canvas.pack(side=LEFT, fill=BOTH, expand=1)
 
-        if len(self.rows) > 3:
+        if len(self.rows) > 18:
             scrollbar = ttk.Scrollbar(second_line_frame,
                 orient=VERTICAL,
                 command=inline_canvas.yview)
@@ -435,6 +435,9 @@ class NOTES_FOLDER():
         def files(data):
             NOTE_FILES(self.master, data)
 
+        row = 0
+        column = 0
+
         if self.rows != None:
             print(self.rows)
             for i in self.rows:
@@ -451,7 +454,7 @@ class NOTES_FOLDER():
                 folder.pack()
                 foldername = Label(line_frame,
                     text=i['name'],
-                    font=("Arial", 10),
+                    font=("Bahnschrift", 10),
                     fg=notes_fg,
                     borderwidth=0,
                     relief=FLAT,
@@ -461,7 +464,14 @@ class NOTES_FOLDER():
                     height=1)
                 foldername.pack(fill=BOTH, expand= 1)
 
-                column += 1
+                constraints = [x for x in range(6, 500, 6)]
+   
+                if column + 1 in constraints:
+                    row += 1
+                    column = 0
+                    print("row", row)
+                    print("column", column)
+                else: column += 1
 
         line_menu = Button(self.master,
             image=menu_img,
@@ -677,7 +687,7 @@ class NOTE_FILES():
             width=8,)
         cancel_btn.place(x=205, y=122) 
 
-    def content_features(self, search_image, three_line_image, content_img, side_btn, notes_fg, notes_bg, indiv_file, btn_img):
+    def content_features(self, search_image, three_line_image, content_img, side_btn, notes_fg, notes_bg, indiv_file, btn_img, list_img):
         files_search = Label(self.master,
             image=search_image,
             border=0,
@@ -732,7 +742,7 @@ class NOTE_FILES():
                                highlightthickness=0)
         inline_canvas.pack(side=LEFT, fill=BOTH, expand=1)
 
-        if len(self.rows) > 3:
+        if len(self.rows) > 6:
             scrollbar = ttk.Scrollbar(second_line_frame,
                                       orient=VERTICAL,
                                       command=inline_canvas.yview)
@@ -772,9 +782,9 @@ class NOTE_FILES():
                                     borderwidth=0,
                                     relief=FLAT,
                                     width=20,
-                                    background="#969696",
+                                    background=list_img,
                                     command=lambda data=i: editor(data),
-                                    activebackground=self.bg_color,
+                                    activebackground=list_img,
                                     height=1).place(x=10, y=5)
 
 
@@ -838,10 +848,10 @@ class NOTE_FILES():
 
         if self.bg_color == "#121212": 
             self.content_features(self.search_dark, self.threelinemenu_dark, self.contentbg_dark,
-            self.sidebutton_dark, "#F2F2F2", "#2C2C2C", self.indivfile_dark, self.addbtn_dark)
+            self.sidebutton_dark, "#F2F2F2", "#2C2C2C", self.indivfile_dark, self.addbtn_dark, "#969696")
         elif self.bg_color == "#0d9187": 
             self.content_features(self.search_light, self.threelinemenu_light, self.contentbg_light, 
-            self.sidebutton_light, "#0c325c", "#12c8bb", self.indivfile_light, self.addbtn_light)
+            self.sidebutton_light, "#0c325c", "#12c8bb", self.indivfile_light, self.addbtn_light, "#92d050")
 
     def side_menu(self):
         THREELINE_MENU(self.master, visit=None)
@@ -1690,7 +1700,7 @@ class LOGOUT():
         if response == True:
             self.backframe()
             print("CLOSED: Logged Out")
-            redirect = LOGIN(self.master)
+            LOGIN(self.master)
         elif response == False:
             pass
 
@@ -1904,3 +1914,4 @@ window.geometry('%dx%d+%d+%d' % (w, h, x, y))
 if __name__ == "__main__":
     the_hundreds = LOGIN(window)
     window.mainloop()
+
