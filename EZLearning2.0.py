@@ -5,7 +5,6 @@ from PIL import ImageTk, Image
 import customtkinter
 import tkinter.messagebox
 from tkinter import ttk
-# from cv2 import line
 import pyrebase
 from pygame import FULLSCREEN
 import shutup;shutup.please()
