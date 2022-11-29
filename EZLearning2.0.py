@@ -19,7 +19,7 @@ import os
 
 load_dotenv()
 
-
+#content(.env)
 api_key = os.getenv("api_key")
 auth_domain = os.getenv("auth_domain")
 database_url = os.getenv("database_url")
