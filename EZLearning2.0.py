@@ -293,7 +293,7 @@ class NOTES_FOLDER():
                 if folder.val()['userId'] == userId:
                     self.rows.append(folder.val())
 
-        print(len(self.rows))
+        # print(len(self.rows))
 
         self.backframe()
         self.features()
@@ -383,6 +383,9 @@ class NOTES_FOLDER():
     def content_features(self, search_img, content_img, folder_img, menu_img, quiz_a_fg, quiz_a_bg,
     notes_fg, notes_bg, btn_img, side_btn):
 
+        row = 0
+        column = 0
+
         search_label = Label(self.master,
             image=search_img,
             border=0,
@@ -432,14 +435,21 @@ class NOTES_FOLDER():
             bg=notes_bg)
         inline_canvas.create_window((0,0), window=another_frame, anchor='nw')
 
-        def files(data):
-            NOTE_FILES(self.master, data)
 
-        row = 0
-        column = 0
+        def button(data, state):
+            openside_btn.config(state=state)
+            openside_btn.config(command=lambda var = data: self.notes_list(var))
+
+            renameside_btn.config(state=state)
+            renameside_btn.config(command=lambda var = data: self.rename(var))
+
+            deleteside_btn.config(state=state)
+            deleteside_btn.config(command=lambda var = data: self.delete(var))
+
+
 
         if self.rows != None:
-            print(self.rows)
+            # print(self.rows)
             for i in self.rows:
                 line_frame = Canvas(another_frame, 
                     highlightthickness=0)
@@ -447,7 +457,7 @@ class NOTES_FOLDER():
 
                 folder = Button(line_frame,
                     image=folder_img,
-                    command= lambda data=i: files(data),
+                    command= lambda data=i, state='normal': button(data, state),
                     border=0,
                     bg=notes_bg,
                     activebackground=notes_bg)
@@ -513,15 +523,15 @@ class NOTES_FOLDER():
         notes_label.place(x=322, y=90)
 
         text_label = Label(self.master,
-            text="Open",
-            bg=notes_bg,
-            fg=notes_fg)
+                text="Open",
+                bg=notes_bg,
+                fg=notes_fg)
         text_label.place(x=53, y=196)
         openside_btn = Button(self.master,
             image=side_btn,
             border=0,
             bg=notes_bg,
-            command=self.notes_list,
+            state='disabled',
             activebackground=notes_bg)
         openside_btn.place(x=46, y=150)
         text_label = Label(self.master,
@@ -533,7 +543,7 @@ class NOTES_FOLDER():
             image=side_btn,
             border=0,
             bg=notes_bg,
-            command=self.rename,
+            state='disabled',
             activebackground=notes_bg)
         renameside_btn.place(x=46, y=270)
         text_label = Label(self.master,
@@ -545,7 +555,7 @@ class NOTES_FOLDER():
             image=side_btn,
             border=0,
             bg=notes_bg,
-            command=self.delete,
+            state='disabled',
             activebackground=notes_bg)
         deleteside_btn.place(x=46, y=390)
 
@@ -560,15 +570,32 @@ class NOTES_FOLDER():
             self.threelinemenu_light, "#F2F2F2", "#0c325c", "#0c325c", "#12c8bb", self.addbtn_light,
             self.sidebutton_light)
 
-    def notes_list(self):
-        NOTE_FILES(self.master)
+    def notes_list(self, var):
+        NOTE_FILES(self.master, var)
     
-    def rename(self):
+    def rename(self, var):
         pass
 
-    def delete(self):
-        pass
+    def delete(self, var=None):
+        db.child("Folders").child(var['folderId']).remove()
 
+        topics = db.child("Topics").get()
+        edits = db.child("Editors").get()
+        if  topics.val() is not None:
+            for topic in topics:
+                if var['folderId'] == topic.val()['folderId']:
+                    db.child("Topics").child(topic.val()['topicId']).remove()
+    
+                    if  edits.val() is not None:
+                        for edit in edits.each():
+                                if edit.key() == topic.val()['topicId']:
+                                    db.child("Editors").child(edit.key()).remove()
+
+
+
+        
+        NOTES_FOLDER(self.master)
+        
     def side_menu(self):
         THREELINE_MENU(self.master, visit = 'Note')
     
@@ -620,7 +647,7 @@ class NOTE_FILES():
 
         def submit():
             topicId = str(uuid.uuid4())
-            topic = Topic(topicId, add_entry.get(), self.data['folderId'])
+            topic = Topic(topicId, add_entry.get().capitalize(), self.data['folderId'])
             db.child("Topics").child(topicId).set(topic.__dict__)
             NOTE_FILES(self.master, self.data)
 
@@ -758,8 +785,19 @@ class NOTE_FILES():
                               bg=notes_bg)
         inline_canvas.create_window((0, 0), window=another_frame, anchor='nw')
 
-        def editor(data):
-            NOTE_EDITOR(self.master, data)
+        def editor_button(data, state):
+            
+            openside_btn.config(state=state)
+            openside_btn.config(command= lambda var=data: self.notes_edit(var))
+
+            renameside_btn.config(state=state)
+            renameside_btn.config(command= lambda var=data: self.rename(var))
+
+            deleteside_btn.config(state=state)
+            deleteside_btn.config(command= lambda var=data: self.delete(var))
+            
+            shareside_btn.config(state=state)
+            shareside_btn.config(command= lambda var=data: self.share(var))
 
         if self.rows != None:
             print(self.rows)
@@ -783,7 +821,7 @@ class NOTE_FILES():
                                     relief=FLAT,
                                     width=20,
                                     background=list_img,
-                                    command=lambda data=i: editor(data),
+                                    command=lambda data=i, state='normal': editor_button(data, state),
                                     activebackground=list_img,
                                     height=1).place(x=10, y=5)
 
@@ -792,7 +830,7 @@ class NOTE_FILES():
             image=side_btn,
             border=0,
             bg=notes_bg,
-            command=self.notes_edit,
+            state='disabled',
             activebackground=notes_bg)
         openside_btn.place(x=46, y=137)
         text_label = Label(self.master,
@@ -804,7 +842,7 @@ class NOTE_FILES():
             image=side_btn,
             border=0,
             bg=notes_bg,
-            command=self.rename,
+            state='disabled',
             activebackground=notes_bg)
         renameside_btn.place(x=46, y=204)
         text_label = Label(self.master,
@@ -816,7 +854,7 @@ class NOTE_FILES():
             image=side_btn,
             border=0,
             bg=notes_bg,
-            command=self.delete,
+            state='disabled',
             activebackground=notes_bg)
         deleteside_btn.place(x=46, y=270)
         text_label = Label(self.master,
@@ -828,21 +866,21 @@ class NOTE_FILES():
             image=side_btn,
             border=0,
             bg=notes_bg,
-            command=self.share,
+            state='disabled',
             activebackground=notes_bg)
         shareside_btn.place(x=46, y=336)
-        text_label = Label(self.master,
-            text="Export",
-            bg=notes_bg,
-            fg=notes_fg,)
-        text_label.place(x=51, y=448)
-        exportside_btn = Button(self.master,
-            image=side_btn,
-            border=0,
-            bg=notes_bg,
-            command=self.share,
-            activebackground=notes_bg)
-        exportside_btn.place(x=46, y=402)
+        # text_label = Label(self.master,
+        #     text="Export",
+        #     bg=notes_bg,
+        #     fg=notes_fg,)
+        # text_label.place(x=51, y=448)
+        # exportside_btn = Button(self.master,
+        #     image=side_btn,
+        #     border=0,
+        #     bg=notes_bg,
+        #     command=self.share,
+        #     activebackground=notes_bg)
+        # exportside_btn.place(x=46, y=402)
 
     def features(self):
 
@@ -856,20 +894,20 @@ class NOTE_FILES():
     def side_menu(self):
         THREELINE_MENU(self.master, visit=None)
 
-    def rename(self):
+    def rename(self, var):
         pass
 
-    def delete(self):
+    def delete(self, var):
         pass
 
-    def share(self):
+    def share(self, var):
         pass
 
-    def export_PDF(self):
-        pass
+    # def export_PDF(self, var):
+    #     pass
 
-    def notes_edit(self):
-        NOTE_EDITOR(self.master)
+    def notes_edit(self, var):
+        NOTE_EDITOR(self.master, var)
 
 class NOTE_EDITOR():
     def __init__(self, master, data=None):
