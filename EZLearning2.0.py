@@ -307,7 +307,7 @@ class NOTES_FOLDER():
             background=self.master.cget("bg"))
         main_frame.place(x=0, y=0)
 
-    def add_frame(self):
+    def click_button(self, title, command, var=None):
 
         def submit():
             folderId = str(uuid.uuid4())
@@ -318,8 +318,11 @@ class NOTES_FOLDER():
         def cancel():
             self.main_frame.destroy()
             NOTES_FOLDER(self.master)
-
-
+        
+        def update():
+            db.child("Folders").child(var['folderId']).update({'name': f"{add_entry.get()}"})
+            NOTES_FOLDER(self.master)
+        
         if self.master.cget("bg") == "#121212":
             mesbox_image = self.messageBox_dark
             fg1 = "Black"
@@ -344,7 +347,7 @@ class NOTES_FOLDER():
             bg=self.master.cget("bg"))
         search_label.place(x=2,y=2)
         add_text = Label(self.main_frame,
-            text="Folder Name",
+            text=title,
             font=("Roboto", 13),
             bg=bg1,
             borderwidth=0,
@@ -360,7 +363,7 @@ class NOTES_FOLDER():
         okay_btn = Button(self.main_frame,
             text='Submit',
             font=("Roboto", 11),
-            command=submit,
+            command=submit if command == 'submit' else update,
             fg=fg1,
             bg=bg3,
             activebackground=bg3,
@@ -380,6 +383,9 @@ class NOTES_FOLDER():
             width=8,)
         cancel_btn.place(x=205, y=122)
 
+    def add_frame(self):
+        self.click_button("Folder Name", 'submit')
+        
     def content_features(self, search_img, content_img, folder_img, menu_img, quiz_a_fg, quiz_a_bg,
     notes_fg, notes_bg, btn_img, side_btn):
 
@@ -573,8 +579,8 @@ class NOTES_FOLDER():
     def notes_list(self, var):
         NOTE_FILES(self.master, var)
     
-    def rename(self, var):
-        pass
+    def rename(self, var): 
+       self.click_button("Update Folder Name", "update", var)
 
     def delete(self, var=None):
         db.child("Folders").child(var['folderId']).remove()
@@ -591,9 +597,6 @@ class NOTES_FOLDER():
                                 if edit.key() == topic.val()['topicId']:
                                     db.child("Editors").child(edit.key()).remove()
 
-
-
-        
         NOTES_FOLDER(self.master)
         
     def side_menu(self):
