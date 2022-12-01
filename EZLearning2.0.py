@@ -451,6 +451,9 @@ class NOTES_FOLDER():
             deleteside_btn.config(state=state)
             deleteside_btn.config(command=lambda var = data: self.delete(var))
 
+            shareside_btn.config(state=state)
+            shareside_btn.config(command=lambda var = data: self.share(var))
+
         if self.rows != None:
             # print(self.rows)
             for i in self.rows:
@@ -529,38 +532,51 @@ class NOTES_FOLDER():
                 text="Open",
                 bg=notes_bg,
                 fg=notes_fg)
-        text_label.place(x=53, y=196)
+        text_label.place(x=53, y=183)
         openside_btn = Button(self.master,
             image=side_btn,
             border=0,
             bg=notes_bg,
             state='disabled',
             activebackground=notes_bg)
-        openside_btn.place(x=46, y=150)
+        openside_btn.place(x=46, y=137)
         text_label = Label(self.master,
             text="Rename",
             bg=notes_bg,
             fg=notes_fg)
-        text_label.place(x=46, y=316)
+        text_label.place(x=46, y=250)
         renameside_btn = Button(self.master,
             image=side_btn,
             border=0,
             bg=notes_bg,
             state='disabled',
             activebackground=notes_bg)
-        renameside_btn.place(x=46, y=270)
+        renameside_btn.place(x=46, y=204)
         text_label = Label(self.master,
             text="Delete",
             bg=notes_bg,
             fg=notes_fg)
-        text_label.place(x=51, y=436)
+        text_label.place(x=51, y=316)
         deleteside_btn = Button(self.master,
             image=side_btn,
             border=0,
             bg=notes_bg,
             state='disabled',
             activebackground=notes_bg)
-        deleteside_btn.place(x=46, y=390)
+        deleteside_btn.place(x=46, y=270)
+
+        text_label = Label(self.master,
+            text="Share",
+            bg=notes_bg,
+            fg=notes_fg)
+        text_label.place(x=53, y=382)
+        shareside_btn = Button(self.master,
+            image=side_btn,
+            border=0,
+            bg=notes_bg,
+            state='disabled',
+            activebackground=notes_bg)
+        shareside_btn.place(x=46, y=336)
 
     def features(self):
 
@@ -601,6 +617,9 @@ class NOTES_FOLDER():
     
     def goto_quizzes(self):
         QUIZ_FOLDER(self.master)
+    
+    def share(self, var):
+        pass
 
 class NOTE_FILES():
     def __init__(self, master, data=None):
@@ -743,11 +762,6 @@ class NOTE_FILES():
             borderwidth=0,
             fg="#e9e9e9")
         files_entry_search.place(x=100, y=30)
-        text_label = Label(self.master,
-            text="Open",
-            bg=notes_bg,
-            fg=notes_fg)
-        text_label.place(x=53, y=183)
 
         add_btn = Button(self.master,
             image=btn_img,
@@ -831,6 +845,11 @@ class NOTE_FILES():
                                     height=1).place(x=10, y=5)
 
 
+        text_label = Label(self.master,
+            text="Open",
+            bg=notes_bg,
+            fg=notes_fg)
+        text_label.place(x=53, y=183)
         openside_btn = Button(self.master,
             image=side_btn,
             border=0,
