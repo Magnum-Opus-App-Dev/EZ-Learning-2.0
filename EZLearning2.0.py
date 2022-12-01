@@ -42,8 +42,6 @@ auth = firebase.auth()
 db = firebase.database()
 userId = ''
 
-
-
 customtkinter.set_appearance_mode("Dark")
 customtkinter.set_default_color_theme("green")
 
@@ -452,8 +450,6 @@ class NOTES_FOLDER():
             deleteside_btn.config(state=state)
             deleteside_btn.config(command=lambda var = data: self.delete(var))
 
-
-
         if self.rows != None:
             # print(self.rows)
             for i in self.rows:
@@ -638,20 +634,22 @@ class NOTE_FILES():
 
         print("OPENED: Note Files")
 
-    
     def backframe(self):
         main_frame = Frame(self.master,
             width=900,
             height=500,
             background=self.master.cget("bg"))
         main_frame.place(x=0, y=0)
-    
-    def add_frame(self):
 
+    def button_file(self, title, command, var=None):
         def submit():
             topicId = str(uuid.uuid4())
             topic = Topic(topicId, add_entry.get().capitalize(), self.data['folderId'])
             db.child("Topics").child(topicId).set(topic.__dict__)
+            NOTE_FILES(self.master, self.data)
+
+        def update_files():
+            db.child("Topics").child(var['topicId']).update({'name': f"{add_entry.get()}"})
             NOTE_FILES(self.master, self.data)
 
         def cancel():
@@ -663,7 +661,7 @@ class NOTE_FILES():
             bg1 = "#7a7a7a"
             bg2 = "#959595"
             bg3 = "#4b4949"
-        else: 
+        else:
             mesbox_image = self.messageBox_light
             fg1 = "White"
             bg1 = "#005f60"
@@ -681,7 +679,7 @@ class NOTE_FILES():
             bg=self.master.cget("bg"))
         search_label.place(x=2,y=2)
         add_text = Label(self.main_frame,
-            text="File Name",
+            text=title,
             font=("Roboto", 13),
             bg=bg1,
             borderwidth=0,
@@ -696,7 +694,7 @@ class NOTE_FILES():
         add_entry.place(x=65, y=69)
         okay_btn = Button(self.main_frame,
             text='Submit',
-            command=submit,
+            command=submit if command == 'submit' else update_files,
             font=("Roboto", 11),
             fg=fg1,
             bg=bg3,
@@ -715,7 +713,10 @@ class NOTE_FILES():
             borderwidth=0,
             relief=FLAT,
             width=8,)
-        cancel_btn.place(x=205, y=122) 
+        cancel_btn.place(x=205, y=122)
+    
+    def add_frame(self):
+        self.button_file("File Name", 'submit')
 
     def content_features(self, search_image, three_line_image, content_img, side_btn, notes_fg, notes_bg, indiv_file, btn_img, list_img):
         files_search = Label(self.master,
@@ -898,11 +899,17 @@ class NOTE_FILES():
         THREELINE_MENU(self.master, visit=None)
 
     def rename(self, var):
-        pass
+        self.button_file("Update File Name", "update", var)
 
     def delete(self, var):
-        pass
+        db.child("Topics").child(var['topicId']).remove()
+        edits = db.child("Editors").get()
 
+        if edits.val() is not None:
+            for edit in edits.each():
+                if edit.key() == var['topicId']:
+                    db.child("Editors").child(edit.key()).remove()
+        NOTE_FILES(self.master, self.data)
     def share(self, var):
         pass
 
