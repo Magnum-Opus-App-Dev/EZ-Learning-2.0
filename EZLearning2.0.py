@@ -1772,6 +1772,59 @@ class LOGOUT():
         elif response == False:
             pass
 
+class SHARED_FILES():
+    def __init__(self, master):
+        self.master = master
+        self.threelinemenu_dark = ImageTk.PhotoImage(Image.open("images/3line_dark.png"))
+        self.threelinemenu_light = ImageTk.PhotoImage(Image.open("images/3line_light.png"))
+        self.search_dark = ImageTk.PhotoImage(Image.open("images/search_dark.png"))
+        self.search_light = ImageTk.PhotoImage(Image.open("images/search_light.png"))
+        self.bg_color = self.master.cget("bg")
+        self.backframe()
+        self.features()
+
+        print("OPENED: Recycle Bin")
+
+    def backframe(self):
+        self.mainframe = Frame(self.master,
+            width=900,
+            height=500,
+            background=self.master.cget("bg"))
+        self.mainframe.place(x=0, y=0)
+    
+    def content_features(self, search_image, three_line_image):
+        share_search = Label(self.master,
+            image=search_image,
+            border=0,
+            bg=self.bg_color)
+        share_search.place(x=30,y=12)
+
+        share_button = Button(self.master,
+            image=three_line_image,
+            command=self.side_menu,
+            border=0,
+            bg=self.bg_color,
+            activebackground=self.bg_color)
+        share_button.place(x=50,y=24)
+
+        share_entry = Entry(self.master,
+            width=74,
+            font=("Roboto", 12, "bold"),
+            bg=self.bg_color,
+            borderwidth=0,
+            fg="#e9e9e9")
+        share_entry.place(x=100, y=30)
+
+    def features(self):
+
+        if self.bg_color == "#121212": 
+            self.content_features(self.search_dark, self.threelinemenu_dark)
+        elif self.bg_color == "#0d9187": 
+            self.content_features(self.search_light, self.threelinemenu_light)
+
+    def side_menu(self):
+        THREELINE_MENU(self.master,visit='Share')
+
 class THREELINE_MENU():
     def __init__(self, master, visit):
         self.master = master
@@ -1788,9 +1841,12 @@ class THREELINE_MENU():
     def quiz_folder(self):
         QUIZ_FOLDER(self.master)
     
+    def shared_files(self):
+        SHARED_FILES(self.master)
+    
     def recycle_bin(self):
         RECYCLE_BIN(self.master)
-
+    
     def profile_settings(self):
         PROFILE_SETTINGS(self.master)
 
@@ -1803,6 +1859,7 @@ class THREELINE_MENU():
             threeline_menu.destroy()
             if self.visit == 'Note': self.notes_folder()
             elif self.visit == 'Quiz': self.quiz_folder()
+            elif self.visit == 'Share': self.shared_files()
             elif self.visit == 'Bin': self.recycle_bin()
             elif self.visit == 'Profile': self.profile_settings()
             else: pass
@@ -1883,6 +1940,25 @@ class THREELINE_MENU():
                 Quizzes.bind("<Leave>", lambda _: on_leavea(None, Quizzes))
             else: pass
         
+            Shared_files = Button(threeline_menu,
+                text="     Shared Folder",
+                anchor=W,font=fontstyle,
+                command=self.shared_files,
+                border=0,
+                fg=fg_color,
+                activeforeground=activefg,
+                bg=bin,
+                activebackground=activebg,
+                width=20, 
+                disabledforeground=fg_color,
+                state=no_state[2])
+            Shared_files.place(x=0, y=171)
+            
+            if no_state[2] != 'disabled':
+                Shared_files.bind("<Enter>", lambda _: on_entera(None, Shared_files))
+                Shared_files.bind("<Leave>", lambda _: on_leavea(None, Shared_files))
+            else: pass
+            
             Recycle_Bin = Button(threeline_menu,
                 text="     Recycle Bin",
                 anchor=W,font=fontstyle,
@@ -1895,9 +1971,9 @@ class THREELINE_MENU():
                 width=20, 
                 disabledforeground=fg_color,
                 state=no_state[2])
-            Recycle_Bin.place(x=0, y=171)
+            Recycle_Bin.place(x=0, y=219)
 
-            if no_state[2] != 'disabled':
+            if no_state[3] != 'disabled':
                 Recycle_Bin.bind("<Enter>", lambda _: on_entera(None, Recycle_Bin))
                 Recycle_Bin.bind("<Leave>", lambda _: on_leavea(None, Recycle_Bin))
             else: pass
@@ -1915,9 +1991,9 @@ class THREELINE_MENU():
                 width=20,
                 disabledforeground=fg_color,
                 state=no_state[3])
-            Profile_Settings.place(x=0, y=219)
+            Profile_Settings.place(x=0, y=267)
             
-            if no_state[3] != 'disabled':
+            if no_state[4] != 'disabled':
                 Profile_Settings.bind("<Enter>", lambda _: on_entera(None, Profile_Settings))
                 Profile_Settings.bind("<Leave>", lambda _: on_leavea(None, Profile_Settings))
             else: pass
@@ -1935,9 +2011,9 @@ class THREELINE_MENU():
                 disabledforeground=fg_color,
                 width=20,
                 state=no_state[4])
-            Logout.place(x=0, y=267)
+            Logout.place(x=0, y=315)
 
-            if no_state[4] != 'disabled':
+            if no_state[5] != 'disabled':
                 Logout.bind("<Enter>", lambda _: on_entera(None, Logout))
                 Logout.bind("<Leave>", lambda _: on_leavea(None, Logout))
             else: pass
@@ -1951,22 +2027,27 @@ class THREELINE_MENU():
             button['foreground']= activefg
     
         if self.visit == 'Note':
-            notes_state = ['disabled', 'normal', 'normal', 'normal', 'normal']
+            notes_state = ['disabled', 'normal', 'normal', 'normal', 'normal', 'normal']
             side_buttons(clickedbg, bg_color, bg_color, bg_color, bg_color, notes_state)
         elif self.visit == 'Quiz':
-            quiz_state = ['normal', 'disabled', 'normal', 'normal', 'normal']
+            quiz_state = ['normal', 'disabled', 'normal', 'normal', 'normal', 'normal']
             side_buttons(bg_color, clickedbg, bg_color, bg_color, bg_color, quiz_state) 
+        
+        elif self.visit == 'Share':
+            bin_state = ['normal', 'normal', 'disabled', 'normal', 'normal','normal']
+            side_buttons(bg_color, bg_color, clickedbg, bg_color, bg_color, bin_state)
+        
         elif self.visit == 'Bin':
-            bin_state = ['normal', 'normal', 'disabled', 'normal','normal']
+            bin_state = ['normal', 'normal', 'normal', 'disabled', 'normal','normal']
             side_buttons(bg_color, bg_color, clickedbg, bg_color, bg_color, bin_state) 
         elif self.visit == 'Profile':
-            profile_state = ['normal','normal','normal','disabled', 'normal']
+            profile_state = ['normal','normal','normal', 'normal', 'disabled', 'normal']
             side_buttons(bg_color, bg_color, bg_color, clickedbg, bg_color, profile_state)
         elif self.visit == 'Logout':
-            logout_state = ['normal', 'normal','normal','normal', 'disabled']
+            logout_state = ['normal', 'normal','normal','normal', 'normal' 'disabled']
             side_buttons(bg_color, bg_color, bg_color, bg_color, clickedbg, logout_state)         
         else:
-            general_state = ['normal', 'normal','normal','normal', 'normal']
+            general_state = ['normal', 'normal','normal','normal', 'normal', 'normal']
             side_buttons(bg_color, bg_color, bg_color, bg_color, bg_color, general_state) 
 
 window = Tk()
