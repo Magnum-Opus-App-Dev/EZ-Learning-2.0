@@ -321,6 +321,9 @@ class NOTES_FOLDER():
         def update():
             db.child("Folders").child(var['folderId']).update({'name': f"{add_entry.get()}"})
             NOTES_FOLDER(self.master)
+
+        def share_folder():
+            pass
         
         if self.master.cget("bg") == "#121212":
             mesbox_image = self.messageBox_dark
@@ -362,7 +365,7 @@ class NOTES_FOLDER():
         okay_btn = Button(self.main_frame,
             text='Submit',
             font=("Roboto", 11),
-            command=submit if command == 'submit' else update,
+            command=submit if command == 'submit' else update if command == 'update' else share_folder,
             fg=fg1,
             bg=bg3,
             activebackground=bg3,
@@ -619,7 +622,7 @@ class NOTES_FOLDER():
         QUIZ_FOLDER(self.master)
     
     def share(self, var):
-        pass
+        self.click_button("Share your folder to: ", "share", var)
 
 class NOTE_FILES():
     def __init__(self, master, data=None):
