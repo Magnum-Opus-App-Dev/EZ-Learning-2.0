@@ -1,14 +1,10 @@
-import json
-import uuid
+import json, uuid, os, customtkinter, pyrebase
 from tkinter import *
 from PIL import ImageTk, Image
-import customtkinter
 import tkinter.messagebox
 from tkinter import ttk
-import pyrebase
 from pygame import FULLSCREEN
 import shutup;shutup.please()
-import os
 from dotenv import load_dotenv
 
 from model.Editor import Editor
@@ -818,9 +814,6 @@ class NOTE_FILES():
             deleteside_btn.config(state=state)
             deleteside_btn.config(command= lambda var=data: self.delete(var))
             
-            shareside_btn.config(state=state)
-            shareside_btn.config(command= lambda var=data: self.share(var))
-
         if self.rows != None:
             print(self.rows)
             for i in self.rows:
@@ -885,7 +878,7 @@ class NOTE_FILES():
             activebackground=notes_bg)
         deleteside_btn.place(x=46, y=270)
         text_label = Label(self.master,
-            text="Share",
+            text="Back",
             bg=notes_bg,
             fg=notes_fg)
         text_label.place(x=53, y=382)
@@ -893,7 +886,7 @@ class NOTE_FILES():
             image=side_btn,
             border=0,
             bg=notes_bg,
-            state='disabled',
+            command=lambda : NOTES_FOLDER(self.master),
             activebackground=notes_bg)
         shareside_btn.place(x=46, y=336)
         # text_label = Label(self.master,
@@ -1020,7 +1013,7 @@ class NOTE_EDITOR():
             activebackground=notes_bg)
         saveside_btn.place(x=46, y=80)
         text_label = Label(self.master,
-            text="Share",
+            text="Export",
             bg=notes_bg,
             fg=notes_fg)
         text_label.place(x=53, y=286)
@@ -1028,19 +1021,19 @@ class NOTE_EDITOR():
             image=side_btn,
             border=0,
             bg=notes_bg,
-            command=self.share,
+            command=self.export,
             activebackground=notes_bg)
         shareside_btn.place(x=46, y=240)
         text_label = Label(self.master,
-            text="Export",
+            text="Back",
             bg=notes_bg,
             fg=notes_fg)
-        text_label.place(x=51, y=436)
+        text_label.place(x=46, y=436)
         exportside_btn = Button(self.master,
             image=side_btn,
+            command=lambda: NOTE_FILES(self.master, self.data),
             border=0,
             bg=notes_bg,
-            command=self.export,
             activebackground=notes_bg)
         exportside_btn.place(x=46, y=390)
 
@@ -1053,9 +1046,6 @@ class NOTE_EDITOR():
 
     def side_menu(self):
         THREELINE_MENU(self.master, visit=None)
-    
-    def share(self):
-        pass
     
     def export(self):
         pass
@@ -1899,7 +1889,7 @@ class THREELINE_MENU():
             activebackground=bg_color)
         closed.place(x=7,y=10)
 
-        def side_buttons(note, quiz, bin, profile, logout, state):
+        def side_buttons(note, quiz, share, bin, profile, logout, state):
             
             no_state = []
             for x in state: no_state.append(x)
@@ -1950,7 +1940,7 @@ class THREELINE_MENU():
                 border=0,
                 fg=fg_color,
                 activeforeground=activefg,
-                bg=bin,
+                bg=share,
                 activebackground=activebg,
                 width=20, 
                 disabledforeground=fg_color,
@@ -1973,7 +1963,7 @@ class THREELINE_MENU():
                 activebackground=activebg,
                 width=20, 
                 disabledforeground=fg_color,
-                state=no_state[2])
+                state=no_state[3])
             Recycle_Bin.place(x=0, y=219)
 
             if no_state[3] != 'disabled':
@@ -1993,7 +1983,7 @@ class THREELINE_MENU():
                 activebackground=activebg,
                 width=20,
                 disabledforeground=fg_color,
-                state=no_state[3])
+                state=no_state[4])
             Profile_Settings.place(x=0, y=267)
             
             if no_state[4] != 'disabled':
@@ -2013,7 +2003,7 @@ class THREELINE_MENU():
                 activebackground=activebg,
                 disabledforeground=fg_color,
                 width=20,
-                state=no_state[4])
+                state=no_state[5])
             Logout.place(x=0, y=315)
 
             if no_state[5] != 'disabled':
@@ -2031,27 +2021,27 @@ class THREELINE_MENU():
     
         if self.visit == 'Note':
             notes_state = ['disabled', 'normal', 'normal', 'normal', 'normal', 'normal']
-            side_buttons(clickedbg, bg_color, bg_color, bg_color, bg_color, notes_state)
+            side_buttons(clickedbg, bg_color, bg_color, bg_color, bg_color, bg_color, notes_state)
         elif self.visit == 'Quiz':
             quiz_state = ['normal', 'disabled', 'normal', 'normal', 'normal', 'normal']
-            side_buttons(bg_color, clickedbg, bg_color, bg_color, bg_color, quiz_state) 
+            side_buttons(bg_color, clickedbg, bg_color, bg_color, bg_color, bg_color, quiz_state) 
         
         elif self.visit == 'Share':
-            bin_state = ['normal', 'normal', 'disabled', 'normal', 'normal','normal']
-            side_buttons(bg_color, bg_color, clickedbg, bg_color, bg_color, bin_state)
+            share_state = ['normal', 'normal', 'disabled', 'normal', 'normal','normal']
+            side_buttons(bg_color, bg_color, clickedbg, bg_color, bg_color, bg_color, share_state)
         
         elif self.visit == 'Bin':
             bin_state = ['normal', 'normal', 'normal', 'disabled', 'normal','normal']
-            side_buttons(bg_color, bg_color, clickedbg, bg_color, bg_color, bin_state) 
+            side_buttons(bg_color, bg_color, bg_color, clickedbg, bg_color, bg_color, bin_state) 
         elif self.visit == 'Profile':
             profile_state = ['normal','normal','normal', 'normal', 'disabled', 'normal']
-            side_buttons(bg_color, bg_color, bg_color, clickedbg, bg_color, profile_state)
+            side_buttons(bg_color, bg_color, bg_color, bg_color, clickedbg, bg_color, profile_state)
         elif self.visit == 'Logout':
             logout_state = ['normal', 'normal','normal','normal', 'normal' 'disabled']
-            side_buttons(bg_color, bg_color, bg_color, bg_color, clickedbg, logout_state)         
+            side_buttons(bg_color, bg_color, bg_color,bg_color, bg_color, clickedbg, logout_state)         
         else:
             general_state = ['normal', 'normal','normal','normal', 'normal', 'normal']
-            side_buttons(bg_color, bg_color, bg_color, bg_color, bg_color, general_state) 
+            side_buttons(bg_color, bg_color, bg_color, bg_color, bg_color, bg_color, general_state) 
 
 window = Tk()
 window.resizable(False, False)
