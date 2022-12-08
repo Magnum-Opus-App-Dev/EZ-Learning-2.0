@@ -1772,58 +1772,26 @@ class LOGOUT():
         elif response == False:
             pass
 
-class SHARED_FILES():
+class SHARED_FILES(NOTES_FOLDER):
     def __init__(self, master):
-        self.master = master
-        self.threelinemenu_dark = ImageTk.PhotoImage(Image.open("images/3line_dark.png"))
-        self.threelinemenu_light = ImageTk.PhotoImage(Image.open("images/3line_light.png"))
-        self.search_dark = ImageTk.PhotoImage(Image.open("images/search_dark.png"))
-        self.search_light = ImageTk.PhotoImage(Image.open("images/search_light.png"))
-        self.bg_color = self.master.cget("bg")
-        self.backframe()
-        self.features()
-
+        super().__init__(master)
         print("OPENED: Recycle Bin")
 
     def backframe(self):
-        self.mainframe = Frame(self.master,
-            width=900,
-            height=500,
-            background=self.master.cget("bg"))
-        self.mainframe.place(x=0, y=0)
+        super().backframe()
     
-    def content_features(self, search_image, three_line_image):
-        share_search = Label(self.master,
-            image=search_image,
-            border=0,
-            bg=self.bg_color)
-        share_search.place(x=30,y=12)
-
-        share_button = Button(self.master,
-            image=three_line_image,
-            command=self.side_menu,
-            border=0,
-            bg=self.bg_color,
-            activebackground=self.bg_color)
-        share_button.place(x=50,y=24)
-
-        share_entry = Entry(self.master,
-            width=74,
-            font=("Roboto", 12, "bold"),
-            bg=self.bg_color,
-            borderwidth=0,
-            fg="#e9e9e9")
-        share_entry.place(x=100, y=30)
+    def content_features(self, search_img, content_img, folder_img, menu_img, quiz_a_fg, 
+    quiz_a_bg,notes_fg, notes_bg, btn_img, side_btn):
+        pass
 
     def features(self):
-
-        if self.bg_color == "#121212": 
-            self.content_features(self.search_dark, self.threelinemenu_dark)
-        elif self.bg_color == "#0d9187": 
-            self.content_features(self.search_light, self.threelinemenu_light)
+        super().features()
 
     def side_menu(self):
         THREELINE_MENU(self.master,visit='Share')
+    
+    def goto_quizzes(self):
+        return super().goto_quizzes()
 
 class THREELINE_MENU():
     def __init__(self, master, visit):
