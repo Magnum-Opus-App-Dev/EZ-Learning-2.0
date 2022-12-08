@@ -357,7 +357,7 @@ class NOTES_FOLDER():
             bg=bg1,
             borderwidth=0,
             fg=fg1)
-        add_text.place(x=123, y=35)
+        add_text.place(x=100, y=35)
         add_entry = Entry(self.main_frame,
             width=24,
             font=("Roboto", 12),
@@ -710,7 +710,7 @@ class NOTE_FILES():
             bg=bg1,
             borderwidth=0,
             fg=fg1)
-        add_text.place(x=137, y=35)
+        add_text.place(x=100, y=35)
         add_entry = Entry(self.main_frame,
             width=24,
             font=("Roboto", 12),
@@ -888,7 +888,7 @@ class NOTE_FILES():
             text="Back",
             bg=notes_bg,
             fg=notes_fg)
-        text_label.place(x=53, y=382)
+        text_label.place(x=55, y=382)
         shareside_btn = Button(self.master,
             image=side_btn,
             border=0,
@@ -1035,7 +1035,7 @@ class NOTE_EDITOR():
             text="Back",
             bg=notes_bg,
             fg=notes_fg)
-        text_label.place(x=46, y=436)
+        text_label.place(x=55, y=436)
         exportside_btn = Button(self.master,
             image=side_btn,
             command=lambda: NOTE_FILES(self.master, self.data),
