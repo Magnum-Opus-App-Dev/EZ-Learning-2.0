@@ -1775,7 +1775,7 @@ class LOGOUT():
 class SHARED_FILES(NOTES_FOLDER):
     def __init__(self, master):
         super().__init__(master)
-        print("OPENED: Recycle Bin")
+        print("OPENED: Shared Folder")
 
     def backframe(self):
         super().backframe()
