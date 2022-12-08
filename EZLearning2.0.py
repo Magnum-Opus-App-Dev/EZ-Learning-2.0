@@ -6,11 +6,13 @@ from tkinter import ttk
 from pygame import FULLSCREEN
 import shutup;shutup.please()
 from dotenv import load_dotenv
+# from firebase_admin import credentials
+# from firebase_admin import auth
 
 from model.Editor import Editor
 from model.Folder import Folder
 from model.Topic import Topic
-
+from model.User import User
 from tkinter import messagebox
 
 load_dotenv()
@@ -252,7 +254,12 @@ class SIGNUP():
                     global userId
                     signin = auth.create_user_with_email_and_password(self._Email.get(), self._Password.get())
                     userId = signin['localId']
+
+                    profileId = str(uuid.uuid4())
+                    profile = User(profileId, self._Username.get(), self._Email.get(), userId)
+                    db.child("User").child(profileId).set(profile.__dict__)
                     NOTES_FOLDER(self.master)
+                    
                 except:
                     tkinter.messagebox.showinfo('Invalid', 'Email Exist, please input another account')
 
