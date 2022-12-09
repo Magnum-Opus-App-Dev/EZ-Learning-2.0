@@ -4,15 +4,16 @@ from PIL import ImageTk, Image
 import tkinter.messagebox
 from tkinter import ttk
 from pygame import FULLSCREEN
+
 import shutup;shutup.please()
 from dotenv import load_dotenv
-# from firebase_admin import credentials
-# from firebase_admin import auth
 
 from model.Editor import Editor
 from model.Folder import Folder
 from model.Topic import Topic
 from model.User import User
+from model.Shared import Share
+
 from tkinter import messagebox
 
 load_dotenv()
@@ -134,7 +135,7 @@ class LOGIN():
     
     def login(self):
         if self._Email.get() == '' or self._Password.get() == '': tkinter.messagebox.showinfo('Try Again', 'Please complete the required fields.')
-        else: 
+        else:
             try:
                 global userId
                 login = auth.sign_in_with_email_and_password(self._Email.get(), self._Password.get())
@@ -294,6 +295,16 @@ class NOTES_FOLDER():
                 if folder.val()['userId'] == userId:
                     self.rows.append(folder.val())
 
+        files = db.child("Share").get()
+        if files.val() is not None:
+            for file in files:
+                if file.val()['sharedTo'] == userId and file.val()['status'] == 1:
+                    sharedFolders = db.child("Folders").get()
+                    if sharedFolders.val() is not None:
+                        for sharedFolder in sharedFolders:
+                            if sharedFolder.val()['folderId'] == file.val()['folderId']:
+                                self.rows.append(sharedFolder.val())
+
         # print(len(self.rows))
 
         self.backframe()
@@ -325,8 +336,35 @@ class NOTES_FOLDER():
             NOTES_FOLDER(self.master)
 
         def share_folder():
-            pass
-        
+            isUserFound = False
+            users = db.child("User").get()
+            otherUser = None
+            if users.val() is not None:
+                for user in users:
+                    if user.val()['email'] == add_entry.get() and user.val()['token'] != userId:
+                        isUserFound = True
+                        otherUser = user
+                        break
+            if isUserFound is True:
+                isAlreadyShared = False
+                sharedFiles = db.child("Share").get()
+                if sharedFiles.val() is not None:
+                    for item in sharedFiles:
+                        if item.val()['folderId'] == var['folderId'] and (item.val()['sharedTo'] == otherUser.val()['token'] or item.val()['sharedTo'] == userId):
+                            isAlreadyShared = True
+                            break
+                if isAlreadyShared is False:
+                    shareId = var['folderId'] + otherUser.val()['token']
+                    share = Share(shareId, var['folderId'], userId, otherUser.val()['token'], 0)
+                    db.child("Share").child(shareId).set(share.__dict__)
+                    self.main_frame.destroy()
+                    NOTES_FOLDER(self.master)
+                else:
+                    tkinter.messagebox.showinfo('Error', 'Show Message Here.')
+            else:
+                tkinter.messagebox.showinfo('Error', 'Show Message Here.')
+
+
         if self.master.cget("bg") == "#121212":
             mesbox_image = self.messageBox_dark
             fg1 = "Black"
@@ -1764,8 +1802,223 @@ class LOGOUT():
             pass
 
 class SHARED_FILES():
-    pass
-    
+
+    def __init__(self, master, type):
+        self.master = master
+        self.threelinemenu_dark = ImageTk.PhotoImage(Image.open("images/3line_dark.png"))
+        self.threelinemenu_light = ImageTk.PhotoImage(Image.open("images/3line_light.png"))
+        self.search_dark = ImageTk.PhotoImage(Image.open("images/search_dark.png"))
+        self.search_light = ImageTk.PhotoImage(Image.open("images/search_light.png"))
+        self.contentbg_dark = ImageTk.PhotoImage(Image.open("images/notesfolder_dark.png"))
+        self.contentbg_light = ImageTk.PhotoImage(Image.open("images/notesfolder_light.png"))
+        self.quizbtn_dark = ImageTk.PhotoImage(Image.open("images/quizzesfolder_dark.png"))
+        self.quizbtn_light = ImageTk.PhotoImage(Image.open("images/quizzesfolder_light.png"))
+        self.folder_dark = ImageTk.PhotoImage(Image.open("images/folder_dark.png"))
+        self.folder_light = ImageTk.PhotoImage(Image.open("images/folder_light.png"))
+        self.sidebutton_dark = ImageTk.PhotoImage(Image.open("images/side_button_dark.png"))
+        self.sidebutton_light = ImageTk.PhotoImage(Image.open("images/side_button_light.png"))
+
+        self.rows = []
+
+        files = db.child("Share").get()
+        if files.val() is not None:
+            for file in files:
+                if file.val()['sharedTo'] == userId and file.val()['status'] == 0:
+                    topics = db.child("Folders").get()
+                    if topics.val() is not None:
+                        for topic in topics:
+                            if topic.val()['folderId'] == file.val()['folderId']:
+                                self.rows.append({**topic.val(), **file.val()})
+
+        self.bg_color = self.master.cget("bg")
+        self.type = type
+
+        self.backframe()
+        self.features()
+
+        print("OPENED: Shared Folder")
+
+    def backframe(self):
+        main_frame = Frame(self.master,
+                           width=900,
+                           height=500,
+                           background=self.master.cget("bg"))
+        main_frame.place(x=0, y=0)
+
+
+    def click_button(self, title, command, var=None):
+        pass
+
+
+    def add_frame(self):
+        self.click_button("Folder Name", 'submit')
+
+
+    def content_features(self, search_img, content_img, folder_img, menu_img, afg, abg,
+                         fg, bg, side_btn):
+        row = 0
+        column = 0
+
+        search_label = Label(self.master,
+                             image=search_img,
+                             border=0,
+                             bg=self.bg_color)
+        search_label.place(x=30, y=12)
+        content_label = Label(self.master,
+                              image=content_img,
+                              border=0, )
+        content_label.place(x=23, y=70)
+
+        inline_frame = Frame(content_label,
+                             width=727,
+                             height=340,
+                             bg=bg)
+        inline_frame.place(x=90, y=65)
+
+        second_line_frame = Frame(inline_frame,
+                                  bg=bg)
+        second_line_frame.pack(fill=BOTH, expand=1)
+
+        inline_canvas = Canvas(second_line_frame,
+                               width=727,
+                               height=333,
+                               background=bg,
+                               highlightthickness=0)
+        inline_canvas.pack(side=LEFT, fill=BOTH, expand=1)
+
+        if len(self.rows) > 18:
+            scrollbar = ttk.Scrollbar(second_line_frame,
+                                      orient=VERTICAL,
+                                      command=inline_canvas.yview)
+            scrollbar.pack(side=RIGHT, fill=Y, padx=2, pady=1)
+
+            inline_canvas.configure(yscrollcommand=scrollbar.set)
+            inline_canvas.bind('<Configure>',
+                               lambda e: inline_canvas.configure(scrollregion=inline_canvas.bbox("all")))
+            inline_canvas.bind_all('<MouseWheel>',
+                                   lambda event: inline_canvas.yview('scroll', int(-2 * (event.delta / 120)), 'units'))
+
+        another_frame = Frame(inline_canvas,
+                              bg=bg)
+        inline_canvas.create_window((0, 0), window=another_frame, anchor='nw')
+
+        def button(data, state):
+            haha = tkinter.messagebox.askyesno('Error', 'Show Message Here.')
+            if haha:
+                db.child("Share").child(data['folderId'] + data['sharedTo']).update({'status': 1})
+                SHARED_FILES(self.master, 'notes')
+
+        if self.rows != None:
+            # print(self.rows)
+            for i in self.rows:
+                line_frame = Canvas(another_frame,
+                                    highlightthickness=0)
+                line_frame.grid(row=row, column=column, pady=5, padx=11)
+
+                folder = Button(line_frame,
+                                image=folder_img,
+                                command=lambda data=i, state='normal': button(data, state),
+                                border=0,
+                                bg=bg,
+                                activebackground=bg)
+                folder.pack()
+                foldername = Label(line_frame,
+                                   text=i['name'],
+                                   font=("Bahnschrift", 10),
+                                   fg=fg,
+                                   borderwidth=0,
+                                   relief=FLAT,
+                                   width=10,
+                                   background=bg,
+                                   activebackground=self.bg_color,
+                                   height=1)
+                foldername.pack(fill=BOTH, expand=1)
+
+                constraints = [x for x in range(6, 500, 6)]
+
+                if column + 1 in constraints:
+                    row += 1
+                    column = 0
+                    print("row", row)
+                    print("column", column)
+                else:
+                    column += 1
+
+        line_menu = Button(self.master,
+                           image=menu_img,
+                           command=self.side_menu,
+                           border=0,
+                           bg=self.bg_color,
+                           activebackground=self.bg_color)
+        line_menu.place(x=50, y=24)
+        search_entry = Entry(self.master,
+                             width=74,
+                             font=("Roboto", 12, "bold"),
+                             bg=self.bg_color,
+                             borderwidth=0,
+                             fg="#e9e9e9")
+        search_entry.place(x=100, y=30)
+
+        if self.type == 'notes':
+            quiz_button = Button(self.master,
+                                 text="Quizzes",
+                                 fg=afg,
+                                 font=("Roboto", 14, "bold"),
+                                 command=lambda: SHARED_FILES(self.master, 'quiz'),
+                                 bg=abg,
+                                 borderwidth=0,
+                                 activeforeground=afg,
+                                 activebackground=abg)
+            quiz_button.place(x=506, y=85)
+            notes_label = Label(self.master,
+                                text="Notes",
+                                fg=fg,
+                                font=("Roboto", 14, "bold"),
+                                bg=bg,
+                                borderwidth=0)
+            notes_label.place(x=322, y=90)
+        elif self.type == 'quiz':
+            notes_button = Button(self.master,
+                                  text="Notes",
+                                  fg=afg,
+                                  font=("Roboto", 14, "bold"),
+                                  command=lambda: SHARED_FILES(self.master, 'notes'),
+                                  bg=abg,
+                                  borderwidth=0,
+                                  activeforeground=afg,
+                                  activebackground=abg)
+            notes_button.place(x=315, y=85)
+            quiz_label = Label(self.master,
+                               text="Quizzes",
+                               fg=fg,
+                               font=("Roboto", 14, "bold"),
+                               bg=bg,
+                               borderwidth=0)
+            quiz_label.place(x=512, y=91)
+
+
+    def features(self):
+        if self.bg_color == "#121212" and self.type == 'notes':
+            self.content_features(self.search_dark, self.contentbg_dark, self.folder_dark,
+                                  self.threelinemenu_dark, self.bg_color, "#A6A6A6", "#F2F2F2", "#2C2C2C",
+                                  self.sidebutton_dark)
+        elif self.bg_color == "#0d9187" and self.type == 'notes':
+            self.content_features(self.search_light, self.contentbg_light, self.folder_light,
+                                  self.threelinemenu_light, "#F2F2F2", "#0c325c", "#0c325c", "#12c8bb",
+                                  self.sidebutton_light)
+        elif self.bg_color == "#121212" and self.type == 'quiz':
+            self.content_features(self.search_dark, self.quizbtn_dark, self.folder_dark,
+                                  self.threelinemenu_dark, self.bg_color, "#A6A6A6", "#F2F2F2", "#2C2C2C",
+                                  self.sidebutton_dark)
+        elif self.bg_color == "#0d9187" and self.type == 'quiz':
+            self.content_features(self.search_light, self.quizbtn_light, self.folder_light,
+                                  self.threelinemenu_light, "#F2F2F2", "#0c325c", "#0c325c", "#12c8bb",
+                                  self.sidebutton_light)
+
+
+    def side_menu(self):
+        THREELINE_MENU(self.master, visit='Share')
+
 class THREELINE_MENU():
     def __init__(self, master, visit):
         self.master = master
@@ -1784,7 +2037,7 @@ class THREELINE_MENU():
     
     def shared_files(self):
         SHARED_FILES(self.master, 'notes')
-
+    
     def recycle_bin(self):
         RECYCLE_BIN(self.master)
     
