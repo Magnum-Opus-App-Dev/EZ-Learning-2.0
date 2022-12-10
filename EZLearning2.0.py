@@ -44,7 +44,6 @@ userId = ''
 customtkinter.set_appearance_mode("Dark")
 customtkinter.set_default_color_theme("green")
 
-
 class LOGIN():
     def __init__(self, master):
         self.master = master
@@ -640,10 +639,19 @@ class NOTES_FOLDER():
        self.click_button("Update Folder Name", "update", var)
 
     def delete(self, var=None):
-        db.child("Folders").child(var['folderId']).remove()
-
+   
+        files = db.child("Share").get()
         topics = db.child("Topics").get()
         edits = db.child("Editors").get()
+
+        if  files.val() is not None:
+            for file in files:
+                if file.val()['folderId'] == var['folderId'] :
+                    db.child('Share').child(file.val()['shareId']).remove()
+                    break
+
+        db.child("Folders").child(var['folderId']).remove()
+
         if  topics.val() is not None:
             for topic in topics:
                 if var['folderId'] == topic.val()['folderId']:
