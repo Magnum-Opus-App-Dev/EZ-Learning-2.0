@@ -275,12 +275,24 @@ class NOTES_FOLDER():
         self.search_light = ImageTk.PhotoImage(Image.open("images/search_light.png"))
         self.contentbg_dark = ImageTk.PhotoImage(Image.open("images/notesfolder_dark.png"))
         self.contentbg_light = ImageTk.PhotoImage(Image.open("images/notesfolder_light.png"))
+        self.quizbtn_dark = ImageTk.PhotoImage(Image.open("images/quizzesbutton_dark.png"))
+        self.quizbtn_light = ImageTk.PhotoImage(Image.open("images/quizzesbutton_light.png"))
         self.folder_dark = ImageTk.PhotoImage(Image.open("images/folder_dark.png"))
         self.folder_light = ImageTk.PhotoImage(Image.open("images/folder_light.png"))
         self.addbtn_dark = ImageTk.PhotoImage(Image.open("images/add_dark.png"))
         self.addbtn_light = ImageTk.PhotoImage(Image.open("images/add_light.png"))
         self.sidebutton_dark = ImageTk.PhotoImage(Image.open("images/side_button_dark.png"))
         self.sidebutton_light = ImageTk.PhotoImage(Image.open("images/side_button_light.png"))
+        self.SB1_D = ImageTk.PhotoImage(Image.open("images/1SB_D.png"))
+        self.SB1_L = ImageTk.PhotoImage(Image.open("images/1SB_L.png"))
+        self.SB2_D = ImageTk.PhotoImage(Image.open("images/2SB_D.png"))
+        self.SB2_L = ImageTk.PhotoImage(Image.open("images/2SB_L.png"))
+        self.SB3_D = ImageTk.PhotoImage(Image.open("images/3SB_D.png"))
+        self.SB3_L = ImageTk.PhotoImage(Image.open("images/3SB_L.png"))
+        self.SB4_D = ImageTk.PhotoImage(Image.open("images/4SB_D.png"))
+        self.SB4_L = ImageTk.PhotoImage(Image.open("images/4SB_L.png"))
+        # self.SB5_D = ImageTk.PhotoImage(Image.open("images/5SB_D.png"))
+        # self.SB5_L = ImageTk.PhotoImage(Image.open("images/5SB_L.png"))
         
         self.messageBox_dark = ImageTk.PhotoImage(Image.open("images/mesbox_dark.png"))
         self.messageBox_light = ImageTk.PhotoImage(Image.open("images/mesbox_light.png"))
@@ -427,7 +439,7 @@ class NOTES_FOLDER():
         self.click_button("Folder Name", 'submit')
         
     def content_features(self, search_img, content_img, folder_img, menu_img, quiz_a_fg, quiz_a_bg,
-    notes_fg, notes_bg, btn_img, side_btn):
+    notes_fg, notes_bg, btn_img, side_btn1, side_btn2, side_btn3, side_btn4):
 
         row = 0
         column = 0
@@ -484,7 +496,7 @@ class NOTES_FOLDER():
 
         def button(data, state):
             openside_btn.config(state=state)
-            openside_btn.config(command=lambda var = data: self.files_list(var))
+            openside_btn.config(command=lambda var = data: self.notes_list(var))
 
             renameside_btn.config(state=state)
             renameside_btn.config(command=lambda var = data: self.rename(var))
@@ -568,14 +580,13 @@ class NOTES_FOLDER():
             bg=notes_bg,
             borderwidth=0)
         notes_label.place(x=322, y=90)
-
         text_label = Label(self.master,
                 text="Open",
                 bg=notes_bg,
                 fg=notes_fg)
         text_label.place(x=53, y=183)
         openside_btn = Button(self.master,
-            image=side_btn,
+            image=side_btn1,
             border=0,
             bg=notes_bg,
             state='disabled',
@@ -585,52 +596,51 @@ class NOTES_FOLDER():
             text="Rename",
             bg=notes_bg,
             fg=notes_fg)
-        text_label.place(x=46, y=250)
+        text_label.place(x=46, y=271)
         renameside_btn = Button(self.master,
-            image=side_btn,
+            image=side_btn2,
             border=0,
             bg=notes_bg,
             state='disabled',
             activebackground=notes_bg)
-        renameside_btn.place(x=46, y=204)
+        renameside_btn.place(x=46, y=225)
         text_label = Label(self.master,
             text="Delete",
             bg=notes_bg,
             fg=notes_fg)
-        text_label.place(x=51, y=316)
+        text_label.place(x=51, y=359)
         deleteside_btn = Button(self.master,
-            image=side_btn,
+            image=side_btn3,
             border=0,
             bg=notes_bg,
             state='disabled',
             activebackground=notes_bg)
-        deleteside_btn.place(x=46, y=270)
-
+        deleteside_btn.place(x=46, y=313)
         text_label = Label(self.master,
             text="Share",
             bg=notes_bg,
             fg=notes_fg)
-        text_label.place(x=53, y=382)
+        text_label.place(x=53, y=446)
         shareside_btn = Button(self.master,
-            image=side_btn,
+            image=side_btn4,
             border=0,
             bg=notes_bg,
             state='disabled',
             activebackground=notes_bg)
-        shareside_btn.place(x=46, y=336)
+        shareside_btn.place(x=46, y=400)
 
     def features(self):
 
         if self.bg_color == "#121212": 
             self.content_features(self.search_dark, self.contentbg_dark, self.folder_dark,
             self.threelinemenu_dark, self.bg_color, "#A6A6A6", "#F2F2F2", "#2C2C2C", 
-            self.addbtn_dark, self.sidebutton_dark)
+            self.addbtn_dark, self.SB1_D, self.SB2_D, self.SB3_D, self.SB4_D)
         elif self.bg_color == "#0d9187":
             self.content_features(self.search_light, self.contentbg_light, self.folder_light,
-            self.threelinemenu_light, "#F2F2F2", "#0c325c", "#0c325c", "#12c8bb", self.addbtn_light,
-            self.sidebutton_light)
+            self.threelinemenu_light, "#F2F2F2", "#0c325c", "#0c325c", "#12c8bb",
+            self.addbtn_light, self.SB1_L, self.SB2_L, self.SB3_L, self.SB4_L)
 
-    def files_list(self, var):
+    def notes_list(self, var):
         NOTE_FILES(self.master, var)
     
     def rename(self, var): 
@@ -688,6 +698,14 @@ class NOTE_FILES():
         self.addbtn_light = ImageTk.PhotoImage(Image.open("images/add_light.png"))
         self.messageBox_dark = ImageTk.PhotoImage(Image.open("images/mesbox_dark.png"))
         self.messageBox_light = ImageTk.PhotoImage(Image.open("images/mesbox_light.png"))
+        self.SB1_D = ImageTk.PhotoImage(Image.open("images/1SB_D.png"))
+        self.SB1_L = ImageTk.PhotoImage(Image.open("images/1SB_L.png"))
+        self.SB2_D = ImageTk.PhotoImage(Image.open("images/2SB_D.png"))
+        self.SB2_L = ImageTk.PhotoImage(Image.open("images/2SB_L.png"))
+        self.SB3_D = ImageTk.PhotoImage(Image.open("images/3SB_D.png"))
+        self.SB3_L = ImageTk.PhotoImage(Image.open("images/3SB_L.png"))
+        self.SB5_D = ImageTk.PhotoImage(Image.open("images/5SB_D.png"))
+        self.SB5_L = ImageTk.PhotoImage(Image.open("images/5SB_L.png"))
 
         self.data = data
         self.rows = []
@@ -788,7 +806,9 @@ class NOTE_FILES():
     def add_frame(self):
         self.button_file("File Name", 'submit')
 
-    def content_features(self, search_image, three_line_image, content_img, side_btn, notes_fg, notes_bg, indiv_file, btn_img, list_img):
+    def content_features(self, search_image, three_line_image, content_img, 
+    notes_fg, notes_bg, indiv_file, btn_img, list_img, side_btn1, 
+    side_btn2, side_btn3, side_btn5):
         files_search = Label(self.master,
             image=search_image,
             border=0,
@@ -898,7 +918,7 @@ class NOTE_FILES():
             fg=notes_fg)
         text_label.place(x=53, y=183)
         openside_btn = Button(self.master,
-            image=side_btn,
+            image=side_btn1,
             border=0,
             bg=notes_bg,
             state='disabled',
@@ -908,59 +928,49 @@ class NOTE_FILES():
             text="Rename",
             bg=notes_bg,
             fg=notes_fg)
-        text_label.place(x=46, y=250)
+        text_label.place(x=46, y=271)
         renameside_btn = Button(self.master,
-            image=side_btn,
+            image=side_btn2,
             border=0,
             bg=notes_bg,
             state='disabled',
             activebackground=notes_bg)
-        renameside_btn.place(x=46, y=204)
+        renameside_btn.place(x=46, y=225)
         text_label = Label(self.master,
             text="Delete",
             bg=notes_bg,
             fg=notes_fg)
-        text_label.place(x=51, y=316)
+        text_label.place(x=51, y=359)
         deleteside_btn = Button(self.master,
-            image=side_btn,
+            image=side_btn3,
             border=0,
             bg=notes_bg,
             state='disabled',
             activebackground=notes_bg)
-        deleteside_btn.place(x=46, y=270)
+        deleteside_btn.place(x=46, y=313)
         text_label = Label(self.master,
             text="Back",
             bg=notes_bg,
             fg=notes_fg)
-        text_label.place(x=55, y=382)
+        text_label.place(x=55, y=446)
         shareside_btn = Button(self.master,
-            image=side_btn,
+            image=side_btn5,
             border=0,
             bg=notes_bg,
             command=lambda : NOTES_FOLDER(self.master),
             activebackground=notes_bg)
-        shareside_btn.place(x=46, y=336)
-        # text_label = Label(self.master,
-        #     text="Export",
-        #     bg=notes_bg,
-        #     fg=notes_fg,)
-        # text_label.place(x=51, y=448)
-        # exportside_btn = Button(self.master,
-        #     image=side_btn,
-        #     border=0,
-        #     bg=notes_bg,
-        #     command=self.share,
-        #     activebackground=notes_bg)
-        # exportside_btn.place(x=46, y=402)
+        shareside_btn.place(x=46, y=400)
 
     def features(self):
 
         if self.bg_color == "#121212": 
             self.content_features(self.search_dark, self.threelinemenu_dark, self.contentbg_dark,
-            self.sidebutton_dark, "#F2F2F2", "#2C2C2C", self.indivfile_dark, self.addbtn_dark, "#969696")
+            "#F2F2F2", "#2C2C2C", self.indivfile_dark, self.addbtn_dark, "#969696", self.SB1_D, 
+            self.SB2_D, self.SB3_D, self.SB5_D)
         elif self.bg_color == "#0d9187": 
             self.content_features(self.search_light, self.threelinemenu_light, self.contentbg_light, 
-            self.sidebutton_light, "#0c325c", "#12c8bb", self.indivfile_light, self.addbtn_light, "#92d050")
+            "#0c325c", "#12c8bb", self.indivfile_light, self.addbtn_light, "#92d050", self.SB1_L, 
+            self.SB2_L, self.SB3_L, self.SB5_L)
 
     def side_menu(self):
         THREELINE_MENU(self.master, visit=None)
@@ -980,9 +990,6 @@ class NOTE_FILES():
     def share(self, var):
         pass
 
-    # def export_PDF(self, var):
-    #     pass
-
     def notes_edit(self, var):
         NOTE_EDITOR(self.master, var)
 
@@ -995,7 +1002,13 @@ class NOTE_EDITOR():
         self.contentbg_light = ImageTk.PhotoImage(Image.open("images/editor_light.png"))
         self.sidebutton_dark = ImageTk.PhotoImage(Image.open("images/side_button_dark.png"))
         self.sidebutton_light = ImageTk.PhotoImage(Image.open("images/side_button_light.png"))
-        
+        self.SB5_D = ImageTk.PhotoImage(Image.open("images/5SB_D.png"))
+        self.SB5_L = ImageTk.PhotoImage(Image.open("images/5SB_L.png"))
+        self.SB6_D = ImageTk.PhotoImage(Image.open("images/6SB_D.png"))
+        self.SB6_L = ImageTk.PhotoImage(Image.open("images/6SB_L.png"))
+        self.SB7_D = ImageTk.PhotoImage(Image.open("images/7SB_D.png"))
+        self.SB7_L = ImageTk.PhotoImage(Image.open("images/7SB_L.png"))
+
         self.data = data
         self.contents = ''
 
@@ -1018,7 +1031,7 @@ class NOTE_EDITOR():
             background=self.master.cget("bg"))
         main_frame.place(x=0, y=0)
     
-    def content_features(self, three_line_image, content_img, notes_fg, notes_bg, side_btn):
+    def content_features(self, three_line_image, content_img, notes_fg, notes_bg, side_btn5, side_btn6, side_btn7):
         
         def save():
             editor = Editor(Text_Entry.get(1.0, "end-1c"))
@@ -1057,7 +1070,7 @@ class NOTE_EDITOR():
             fg=notes_fg)
         text_label.place(x=56, y=126)
         saveside_btn = Button(self.master,
-            image=side_btn,
+            image=side_btn6,
             border=0,
             bg=notes_bg,
             command=save,
@@ -1067,21 +1080,21 @@ class NOTE_EDITOR():
             text="Export",
             bg=notes_bg,
             fg=notes_fg)
-        text_label.place(x=53, y=286)
+        text_label.place(x=53, y=283)
         shareside_btn = Button(self.master,
-            image=side_btn,
+            image=side_btn7,
             border=0,
             bg=notes_bg,
             command=self.export,
             activebackground=notes_bg)
-        shareside_btn.place(x=46, y=240)
+        shareside_btn.place(x=46, y=237)
         text_label = Label(self.master,
             text="Back",
             bg=notes_bg,
             fg=notes_fg)
         text_label.place(x=55, y=436)
         exportside_btn = Button(self.master,
-            image=side_btn,
+            image=side_btn5,
             command=lambda: NOTE_FILES(self.master, self.data),
             border=0,
             bg=notes_bg,
@@ -1091,9 +1104,9 @@ class NOTE_EDITOR():
     def features(self):
 
         if self.bg_color == "#121212": self.content_features(self.threelinemenu_dark,
-        self.contentbg_dark, "#F2F2F2", "#2C2C2C", self.sidebutton_dark)
+        self.contentbg_dark, "#F2F2F2", "#2C2C2C", self.SB5_D, self.SB6_D, self.SB7_D)
         elif self.bg_color == "#0d9187": self.content_features(self.threelinemenu_light,
-        self.contentbg_light, "#0c325c", "#12c8bb", self.sidebutton_light)
+        self.contentbg_light, "#0c325c", "#12c8bb", self.SB5_L, self.SB6_L, self.SB7_L)
 
     def side_menu(self):
         THREELINE_MENU(self.master, visit=None)
