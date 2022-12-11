@@ -275,8 +275,6 @@ class NOTES_FOLDER():
         self.search_light = ImageTk.PhotoImage(Image.open("images/search_light.png"))
         self.contentbg_dark = ImageTk.PhotoImage(Image.open("images/notesfolder_dark.png"))
         self.contentbg_light = ImageTk.PhotoImage(Image.open("images/notesfolder_light.png"))
-        self.quizbtn_dark = ImageTk.PhotoImage(Image.open("images/quizzesbutton_dark.png"))
-        self.quizbtn_light = ImageTk.PhotoImage(Image.open("images/quizzesbutton_light.png"))
         self.folder_dark = ImageTk.PhotoImage(Image.open("images/folder_dark.png"))
         self.folder_light = ImageTk.PhotoImage(Image.open("images/folder_light.png"))
         self.addbtn_dark = ImageTk.PhotoImage(Image.open("images/add_dark.png"))
@@ -486,7 +484,7 @@ class NOTES_FOLDER():
 
         def button(data, state):
             openside_btn.config(state=state)
-            openside_btn.config(command=lambda var = data: self.notes_list(var))
+            openside_btn.config(command=lambda var = data: self.files_list(var))
 
             renameside_btn.config(state=state)
             renameside_btn.config(command=lambda var = data: self.rename(var))
@@ -632,7 +630,7 @@ class NOTES_FOLDER():
             self.threelinemenu_light, "#F2F2F2", "#0c325c", "#0c325c", "#12c8bb", self.addbtn_light,
             self.sidebutton_light)
 
-    def notes_list(self, var):
+    def files_list(self, var):
         NOTE_FILES(self.master, var)
     
     def rename(self, var): 
@@ -1103,7 +1101,7 @@ class NOTE_EDITOR():
     def export(self):
         pass
 
-class QUIZ_FOLDER():
+class QUIZ_FOLDER(NOTES_FOLDER):
     def __init__(self, master):
         self.master = master
         self.threelinemenu_dark = ImageTk.PhotoImage(Image.open("images/3line_dark.png"))
@@ -1112,28 +1110,86 @@ class QUIZ_FOLDER():
         self.search_light = ImageTk.PhotoImage(Image.open("images/search_light.png"))
         self.contentbg_dark = ImageTk.PhotoImage(Image.open("images/quizzesfolder_dark.png"))
         self.contentbg_light = ImageTk.PhotoImage(Image.open("images/quizzesfolder_light.png"))
-        self.quizbtn_dark = ImageTk.PhotoImage(Image.open("images/quizzesbutton_dark.png"))
-        self.quizbtn_light = ImageTk.PhotoImage(Image.open("images/quizzesbutton_light.png"))
-        self.sidebutton_dark = ImageTk.PhotoImage(Image.open("images/side_button_dark.png"))
-        self.sidebutton_light = ImageTk.PhotoImage(Image.open("images/side_button_light.png"))
+        self.folder_dark = ImageTk.PhotoImage(Image.open("images/folder_dark.png"))
+        self.folder_light = ImageTk.PhotoImage(Image.open("images/folder_light.png"))
         self.addbtn_dark = ImageTk.PhotoImage(Image.open("images/add_dark.png"))
         self.addbtn_light = ImageTk.PhotoImage(Image.open("images/add_light.png"))
+        self.sidebutton_dark = ImageTk.PhotoImage(Image.open("images/side_button_dark.png"))
+        self.sidebutton_light = ImageTk.PhotoImage(Image.open("images/side_button_light.png"))
         self.messageBox_dark = ImageTk.PhotoImage(Image.open("images/mesbox_dark.png"))
         self.messageBox_light = ImageTk.PhotoImage(Image.open("images/mesbox_light.png"))
         self.bg_color = self.master.cget("bg")
+        self.rows = []
+        
+        folders = db.child("Quiz Folders").get()
+        if folders.val() is not None:
+            for folder in folders:
+                if folder.val()['userId'] == userId:
+                    self.rows.append(folder.val())
+        
+        files = db.child("Share").get()
+        if files.val() is not None:
+            for file in files:
+                if file.val()['sharedTo'] == userId and file.val()['status'] == 1:
+                    sharedFolders = db.child("Quiz Folders").get()
+                    if sharedFolders.val() is not None:
+                        for sharedFolder in sharedFolders:
+                            if sharedFolder.val()['folderId'] == file.val()['folderId']:
+                                self.rows.append(sharedFolder.val())
+
         self.backframe()
         self.features()
-        
         print("OPENED: Quizzes Folder")
 
     def backframe(self):
-        main_frame = Frame(self.master,
-            width=900,
-            height=500,
-            background=self.master.cget("bg"))
-        main_frame.place(x=0, y=0)
+        super().backframe()
+    
+    def click_button(self, title, command, var=None):
+        super().click_button(title, command, var)
 
-    def add_frame(self):
+        def submit():
+            folderId = str(uuid.uuid4())
+            folder = Folder(folderId, add_entry.get().capitalize(), userId)
+            db.child("Quiz Folders").child(folderId).set(folder.__dict__)
+            QUIZ_FOLDER(self.master)
+
+        def cancel():
+            self.main_frame.destroy()
+            QUIZ_FOLDER(self.master)
+        
+        def update():
+            db.child("Quiz Folders").child(var['folderId']).update({'name': f"{add_entry.get()}"})
+            QUIZ_FOLDER(self.master)
+
+        def share_folder():
+            isUserFound = False
+            users = db.child("User").get()
+            otherUser = None
+            if users.val() is not None:
+                for user in users:
+                    if user.val()['email'] == add_entry.get() and user.val()['token'] != userId:
+                        isUserFound = True
+                        otherUser = user
+                        break
+            if isUserFound is True:
+                isAlreadyShared = False
+                sharedFiles = db.child("Share").get()
+                if sharedFiles.val() is not None:
+                    for item in sharedFiles:
+                        if item.val()['folderId'] == var['folderId'] and (item.val()['sharedTo'] == otherUser.val()['token'] or item.val()['sharedTo'] == userId):
+                            isAlreadyShared = True
+                            break
+                if isAlreadyShared is False:
+                    shareId = var['folderId'] + otherUser.val()['token']
+                    share = Share(shareId, var['folderId'], userId, otherUser.val()['token'], 0)
+                    db.child("Share").child(shareId).set(share.__dict__)
+                    self.main_frame.destroy()
+                    QUIZ_FOLDER(self.master)
+                else:
+                    tkinter.messagebox.showinfo('Error', 'Show Message Here.')
+            else:
+                tkinter.messagebox.showinfo('Error', 'Show Message Here.')
+            
         if self.master.cget("bg") == "#121212":
             mesbox_image = self.messageBox_dark
             fg1 = "Black"
@@ -1146,6 +1202,7 @@ class QUIZ_FOLDER():
             bg1 = "#005f60"
             bg2 = "#047a7b"
             bg3 = "#014344"
+
         self.main_frame = Frame(self.master,
             width=350,
             height=200,
@@ -1157,12 +1214,12 @@ class QUIZ_FOLDER():
             bg=self.master.cget("bg"))
         search_label.place(x=2,y=2)
         add_text = Label(self.main_frame,
-            text="Folder Name",
+            text=title,
             font=("Roboto", 13),
             bg=bg1,
             borderwidth=0,
             fg=fg1)
-        add_text.place(x=123, y=35)
+        add_text.place(x=100, y=35)
         add_entry = Entry(self.main_frame,
             width=24,
             font=("Roboto", 12),
@@ -1173,6 +1230,7 @@ class QUIZ_FOLDER():
         okay_btn = Button(self.main_frame,
             text='Submit',
             font=("Roboto", 11),
+            command=submit if command == 'submit' else update if command == 'update' else share_folder,
             fg=fg1,
             bg=bg3,
             activebackground=bg3,
@@ -1182,6 +1240,7 @@ class QUIZ_FOLDER():
         okay_btn.place(x=74, y=122)
         cancel_btn = Button(self.main_frame,
             text='Cancel',
+            command=cancel,
             font=("Roboto", 11),
             fg=fg1,
             bg=bg1,
@@ -1191,30 +1250,132 @@ class QUIZ_FOLDER():
             width=8,)
         cancel_btn.place(x=205, y=122)
 
-    def content_features(self, search_image, content_image, three_line_image, notes_a_fg, notes_a_bg, quiz_fg, quiz_bg, side_btn, btn_img):
-        quiz_search = Label(self.master,
-            image=search_image,
+    def add_frame(self):
+        super().add_frame()
+
+    def content_features(self, search_img, content_img, folder_img, menu_img, notes_a_fg, notes_a_bg, quiz_fg, quiz_bg, btn_img, side_btn):
+        row = 0
+        column = 0
+
+        search_label = Label(self.master,
+            image=search_img,
             border=0,
             bg=self.bg_color)
-        quiz_search.place(x=30,y=12)
-        quiz_content = Label(self.master,
-            image=content_image,
+        search_label.place(x=30,y=12)
+        content_label = Label(self.master,
+            image=content_img,
             border=0,)
-        quiz_content.place(x=23,y=70)
-        quiz_line_menu = Button(self.master,
-            image=three_line_image,
+        content_label.place(x=23,y=70)
+        add_btn = Button(self.master,
+            image=btn_img,
+            border = 0,
+            bg=self.bg_color,
+            activebackground=self.bg_color)
+        add_btn.place(x=760, y=78)
+
+        inline_frame = Frame(content_label, 
+            width=727, 
+            height=340, 
+            bg=quiz_bg)
+        inline_frame.place(x=90, y=65)
+
+        second_line_frame = Frame(inline_frame,
+            bg=quiz_bg)
+        second_line_frame.pack(fill=BOTH, expand= 1)
+
+        inline_canvas = Canvas(second_line_frame, 
+            width=727, 
+            height=333, 
+            background=quiz_bg, 
+            highlightthickness=0)
+        inline_canvas.pack(side=LEFT, fill=BOTH, expand=1)
+
+        if len(self.rows) > 18:
+            scrollbar = ttk.Scrollbar(second_line_frame,
+                orient=VERTICAL,
+                command=inline_canvas.yview)
+            scrollbar.pack(side=RIGHT, fill=Y, padx=2, pady=1)
+
+            inline_canvas.configure(yscrollcommand=scrollbar.set)
+            inline_canvas.bind('<Configure>',
+                lambda e: inline_canvas.configure(scrollregion=inline_canvas.bbox("all")))
+            inline_canvas.bind_all('<MouseWheel>', 
+                lambda event: inline_canvas.yview('scroll', int(-2*(event.delta/120)), 'units'))
+
+        another_frame = Frame(inline_canvas, 
+            bg=quiz_bg)
+        inline_canvas.create_window((0,0), window=another_frame, anchor='nw')
+
+
+        def button(data, state):
+            openside_btn.config(state=state)
+            openside_btn.config(command=lambda var = data: self.files_list(var))
+
+            renameside_btn.config(state=state)
+            renameside_btn.config(command=lambda var = data: self.rename(var))
+
+            deleteside_btn.config(state=state)
+            deleteside_btn.config(command=lambda var = data: self.delete(var))
+
+            shareside_btn.config(state=state)
+            shareside_btn.config(command=lambda var = data: self.share(var))
+
+        if self.rows != None:
+            # print(self.rows)
+            for i in self.rows:
+                line_frame = Canvas(another_frame, 
+                    highlightthickness=0)
+                line_frame.grid(row =row, column=column, pady=5, padx=11)
+
+                folder = Button(line_frame,
+                    image=folder_img,
+                    command= lambda data=i, state='normal': button(data, state),
+                    border=0,
+                    bg=quiz_bg,
+                    activebackground=quiz_bg)
+                folder.pack()
+                foldername = Label(line_frame,
+                    text=i['name'],
+                    font=("Bahnschrift", 10),
+                    fg=quiz_fg,
+                    borderwidth=0,
+                    relief=FLAT,
+                    width=10,
+                    background=quiz_bg,
+                    activebackground=self.bg_color,
+                    height=1)
+                foldername.pack(fill=BOTH, expand= 1)
+
+                constraints = [x for x in range(6, 500, 6)]
+   
+                if column + 1 in constraints:
+                    row += 1
+                    column = 0
+                    print("row", row)
+                    print("column", column)
+                else: column += 1
+
+        line_menu = Button(self.master,
+            image=menu_img,
             command=self.side_menu,
             border=0,
             bg=self.bg_color,
             activebackground=self.bg_color)
-        quiz_line_menu.place(x=50,y=24)
-        quiz_search_entry = Entry(self.master,
+        line_menu.place(x=50,y=24)
+        search_entry = Entry(self.master,
             width=74,
             font=("Roboto", 12, "bold"),
             bg=self.bg_color,
             borderwidth=0,
             fg="#e9e9e9")
-        quiz_search_entry.place(x=100, y=30)
+        search_entry.place(x=100, y=30)
+        add_btn = Button(self.master,
+            image=btn_img,
+            command=self.add_frame,
+            border=0,
+            bg=self.bg_color,
+            activebackground=self.bg_color)
+        add_btn.place(x=760, y=78)
         notes_button = Button(self.master,
             text="Notes",
             fg=notes_a_fg,
@@ -1232,75 +1393,80 @@ class QUIZ_FOLDER():
             bg=quiz_bg,
             borderwidth=0)
         quiz_label.place(x=512, y=91)
-        add_btn = Button(self.master,
-            image=btn_img,
-            command=self.add_frame,
-            border=0,
-            bg=self.bg_color,
-            activebackground=self.bg_color)
-        add_btn.place(x=760, y=78)
+
         text_label = Label(self.master,
-            text="Open",
-            bg=quiz_bg,
-            fg=quiz_fg)
-        text_label.place(x=53, y=196)
+                text="Open",
+                bg=quiz_bg,
+                fg=quiz_fg)
+        text_label.place(x=53, y=183)
         openside_btn = Button(self.master,
             image=side_btn,
             border=0,
             bg=quiz_bg,
-            command=self.quiz_list,
+            state='disabled',
             activebackground=quiz_bg)
-        openside_btn.place(x=46, y=150)
+        openside_btn.place(x=46, y=137)
         text_label = Label(self.master,
             text="Rename",
             bg=quiz_bg,
             fg=quiz_fg)
-        text_label.place(x=46, y=316)
+        text_label.place(x=46, y=250)
         renameside_btn = Button(self.master,
             image=side_btn,
             border=0,
             bg=quiz_bg,
-            command=self.rename,
+            state='disabled',
             activebackground=quiz_bg)
-        renameside_btn.place(x=46, y=270)
+        renameside_btn.place(x=46, y=204)
         text_label = Label(self.master,
             text="Delete",
             bg=quiz_bg,
             fg=quiz_fg)
-        text_label.place(x=51, y=436)
+        text_label.place(x=51, y=316)
         deleteside_btn = Button(self.master,
             image=side_btn,
             border=0,
             bg=quiz_bg,
-            command=self.delete,
+            state='disabled',
             activebackground=quiz_bg)
-        deleteside_btn.place(x=46, y=390)
-    
+        deleteside_btn.place(x=46, y=270)
+
+        text_label = Label(self.master,
+            text="Share",
+            bg=quiz_bg,
+            fg=quiz_fg)
+        text_label.place(x=53, y=382)
+        shareside_btn = Button(self.master,
+            image=side_btn,
+            border=0,
+            bg=quiz_bg,
+            state='disabled',
+            activebackground=quiz_bg)
+        shareside_btn.place(x=46, y=336)
+
     def features(self):
-        if self.bg_color == "#121212":
-            self.content_features(self.search_dark, self.contentbg_dark, self.threelinemenu_dark, 
-            self.bg_color, "#A6A6A6", "#F2F2F2","#2C2C2C", self.sidebutton_dark, self.addbtn_dark)
-        elif self.bg_color == "#0d9187":
-            self.content_features(self.search_light, self.contentbg_light, self.threelinemenu_light, 
-            "#F2F2F2", "#0c325c", "#0c325c","#12c8bb", self.sidebutton_light, self.addbtn_light)
+        super().features()
 
     def side_menu(self):
         THREELINE_MENU(self.master, visit='Quiz')
-    
+
+    def files_list(self, var):
+        QUIZ_FILES(self.master, var)
+        
     def goto_notes(self):
         NOTES_FOLDER(self.master)
 
-    def quiz_list(self):
-        QUIZ_FILES(self.master)
+    def rename(self, var):
+        return super().rename(var)
 
-    def rename(self):
-        pass
+    def delete(self, var=None):
+        return super().delete(var)
+    
+    def share(self, var):
+        return super().share(var)
 
-    def delete(self):
-        pass
-
-class QUIZ_FILES():
-    def __init__(self, master):
+class QUIZ_FILES(NOTE_FILES):
+    def __init__(self, master, data=None):
         self.master = master
         self.threelinemenu_dark = ImageTk.PhotoImage(Image.open("images/3line_dark.png"))
         self.threelinemenu_light = ImageTk.PhotoImage(Image.open("images/3line_light.png"))
@@ -1312,36 +1478,54 @@ class QUIZ_FILES():
         self.sidebutton_light = ImageTk.PhotoImage(Image.open("images/side_button_light.png"))
         self.indivfile_dark = ImageTk.PhotoImage(Image.open("images/filescontent_dark.png"))
         self.indivfile_light = ImageTk.PhotoImage(Image.open("images/filescontent_light.png"))
-        self.addbtn_dark = ImageTk.PhotoImage(Image.open("images/add2_dark.png"))
-        self.addbtn_light = ImageTk.PhotoImage(Image.open("images/add2_light.png"))
+        self.addbtn_dark = ImageTk.PhotoImage(Image.open("images/add_dark.png"))
+        self.addbtn_light = ImageTk.PhotoImage(Image.open("images/add_light.png"))
         self.messageBox_dark = ImageTk.PhotoImage(Image.open("images/mesbox_dark.png"))
         self.messageBox_light = ImageTk.PhotoImage(Image.open("images/mesbox_light.png"))
         self.bg_color = self.master.cget("bg")
+        self.data = data
+        self.rows = []
+
+        topics = db.child("Quiz Topics").get()
+        if topics.val() is not None:
+            for topic in topics:
+                if topic.val()['folderId'] == self.data['folderId']:
+                    self.rows.append(topic.val())
+        
         self.backframe()
         self.features()
-
         print("OPENED: Quiz Files")
 
     def backframe(self):
-        main_frame = Frame(self.master,
-            width=900,
-            height=500,
-            background=self.master.cget("bg"))
-        main_frame.place(x=0, y=0)
+        super().backframe()
 
-    def add_frame(self):
+    def button_file(self, title, command, var=None):
+        def submit():
+            topicId = str(uuid.uuid4())
+            topic = Topic(topicId, add_entry.get().capitalize(), self.data['folderId'])
+            db.child("Quiz Topics").child(topicId).set(topic.__dict__)
+            QUIZ_FILES(self.master, self.data)
+
+        def update_files():
+            db.child("Quiz Topics").child(var['topicId']).update({'name': f"{add_entry.get()}"})
+            QUIZ_FILES(self.master, self.data)
+
+        def cancel():
+            self.main_frame.destroy()
+
         if self.master.cget("bg") == "#121212":
             mesbox_image = self.messageBox_dark
             fg1 = "Black"
             bg1 = "#7a7a7a"
             bg2 = "#959595"
             bg3 = "#4b4949"
-        else: 
+        else:
             mesbox_image = self.messageBox_light
             fg1 = "White"
             bg1 = "#005f60"
             bg2 = "#047a7b"
             bg3 = "#014344"
+
         self.main_frame = Frame(self.master,
             width=350,
             height=200,
@@ -1353,12 +1537,12 @@ class QUIZ_FILES():
             bg=self.master.cget("bg"))
         search_label.place(x=2,y=2)
         add_text = Label(self.main_frame,
-            text="File Name",
+            text=title,
             font=("Roboto", 13),
             bg=bg1,
             borderwidth=0,
             fg=fg1)
-        add_text.place(x=137, y=35)
+        add_text.place(x=100, y=35)
         add_entry = Entry(self.main_frame,
             width=24,
             font=("Roboto", 12),
@@ -1368,6 +1552,7 @@ class QUIZ_FILES():
         add_entry.place(x=65, y=69)
         okay_btn = Button(self.main_frame,
             text='Submit',
+            command=submit if command == 'submit' else update_files,
             font=("Roboto", 11),
             fg=fg1,
             bg=bg3,
@@ -1378,6 +1563,7 @@ class QUIZ_FILES():
         okay_btn.place(x=74, y=122)
         cancel_btn = Button(self.main_frame,
             text='Cancel',
+            command=cancel,
             font=("Roboto", 11),
             fg=fg1,
             bg=bg1,
@@ -1387,7 +1573,10 @@ class QUIZ_FILES():
             width=8,)
         cancel_btn.place(x=205, y=122)
     
-    def content_features(self, search_image, three_line_image, content_img, side_btn, quiz_fg, quiz_bg, indiv_file, btn_img):
+    def add_frame(self):
+        super().add_frame()
+    
+    def content_features(self, search_image, three_line_image, content_img, side_btn, quiz_fg, quiz_bg, indiv_file, btn_img, list_img):
         files_search = Label(self.master,
             image=search_image,
             border=0,
@@ -1395,7 +1584,7 @@ class QUIZ_FILES():
         files_search.place(x=30,y=12)
         content_label = Label(self.master,
             image=content_img,
-            border=0,)
+            border=0)
         content_label.place(x=23,y=110)
         files_menu = Button(self.master,
             image=three_line_image,
@@ -1411,73 +1600,7 @@ class QUIZ_FILES():
             borderwidth=0,
             fg="#e9e9e9")
         files_entry_search.place(x=100, y=30)
-        text_label = Label(self.master,
-            text="Open",
-            bg=quiz_bg,
-            fg=quiz_fg,)
-        text_label.place(x=53, y=183)
-        openside_btn = Button(self.master,
-            image=side_btn,
-            border=0,
-            bg=quiz_bg,
-            command=self.quizzes_edit,
-            activebackground=quiz_bg)
-        openside_btn.place(x=46, y=137)
-        text_label = Label(self.master,
-            text="Rename",
-            bg=quiz_bg,
-            fg=quiz_fg,)
-        text_label.place(x=46, y=250)
-        renameside_btn = Button(self.master,
-            image=side_btn,
-            border=0,
-            bg=quiz_bg,
-            command=self.rename,
-            activebackground=quiz_bg)
-        renameside_btn.place(x=46, y=204)
-        text_label = Label(self.master,
-            text="Delete",
-            bg=quiz_bg,
-            fg=quiz_fg,)
-        text_label.place(x=51, y=316)
-        deleteside_btn = Button(self.master,
-            image=side_btn,
-            border=0,
-            bg=quiz_bg,
-            command=self.delete,
-            activebackground=quiz_bg)
-        deleteside_btn.place(x=46, y=270)
-        text_label = Label(self.master,
-            text="Share",
-            bg=quiz_bg,
-            fg=quiz_fg)
-        text_label.place(x=53, y=382)
-        shareside_btn = Button(self.master,
-            image=side_btn,
-            border=0,
-            bg=quiz_bg,
-            command=self.share,
-            activebackground=quiz_bg)
-        shareside_btn.place(x=46, y=336)
-        text_label = Label(self.master,
-            text="Play Quiz",
-            bg=quiz_bg,
-            fg=quiz_fg)
-        text_label.place(x=51, y=448)
-        playside_btn = Button(self.master,
-            image=side_btn,
-            border=0,
-            bg=quiz_bg,
-            command=self.play,
-            activebackground=quiz_bg)
-        playside_btn.place(x=46, y=402)
-        self.indivfile = Button(self.master,
-            image=indiv_file,
-            border=0,
-            command=None,
-            bg=quiz_bg,
-            activebackground=quiz_bg)
-        self.indivfile.place(x=121, y=135)
+
         add_btn = Button(self.master,
             image=btn_img,
             command=self.add_frame,
@@ -1485,35 +1608,151 @@ class QUIZ_FILES():
             bg=self.bg_color,
             activebackground=self.bg_color)
         add_btn.place(x=760, y=78)
-        
+
+        inline_frame = Frame(content_label,
+                             width=727,
+                             height=340,
+                             bg=quiz_bg)
+        inline_frame.place(x=90, y=35)
+
+        second_line_frame = Frame(inline_frame,
+                                  bg=quiz_bg)
+        second_line_frame.pack(fill=BOTH, expand=1)
+
+        inline_canvas = Canvas(second_line_frame,
+                               width=727,
+                               height=315,
+                               background=quiz_bg,
+                               highlightthickness=0)
+        inline_canvas.pack(side=LEFT, fill=BOTH, expand=1)
+
+        if len(self.rows) > 6:
+            scrollbar = ttk.Scrollbar(second_line_frame,
+                                      orient=VERTICAL,
+                                      command=inline_canvas.yview)
+            scrollbar.pack(side=RIGHT, fill=Y, padx=2, pady=1)
+
+            inline_canvas.configure(yscrollcommand=scrollbar.set)
+            inline_canvas.bind('<Configure>',
+                               lambda e: inline_canvas.configure(scrollregion=inline_canvas.bbox("all")))
+            inline_canvas.bind_all('<MouseWheel>',
+                                   lambda event: inline_canvas.yview('scroll', int(-2 * (event.delta / 120)), 'units'))
+
+        another_frame = Frame(inline_canvas,
+                              bg=quiz_bg)
+        inline_canvas.create_window((0, 0), window=another_frame, anchor='nw')
+
+        def editor_button(data, state):
+            
+            openside_btn.config(state=state)
+            openside_btn.config(command= lambda var=data: self.quiz_edit(var))
+
+            renameside_btn.config(state=state)
+            renameside_btn.config(command= lambda var=data: self.rename(var))
+
+            deleteside_btn.config(state=state)
+            deleteside_btn.config(command= lambda var=data: self.delete(var))
+            
+        if self.rows != None:
+            print(self.rows)
+            for i in self.rows:
+                line_frame = Canvas(another_frame,
+                                    highlightthickness=0)
+                line_frame.pack(pady=5, padx=11)
+
+                folder = Label(line_frame,
+                               image=indiv_file,
+                               border=0,
+                               bg=quiz_bg,
+                               activebackground=quiz_bg).pack()
+                foldername = Button(line_frame,
+                                    text=i['name'],
+                                    font=("Arial", 15),
+                                    justify="left",
+                                    anchor="w",
+                                    fg=quiz_fg,
+                                    borderwidth=0,
+                                    relief=FLAT,
+                                    width=20,
+                                    background=list_img,
+                                    command=lambda data=i, state='normal': editor_button(data, state),
+                                    activebackground=list_img,
+                                    height=1).place(x=10, y=5)
+
+        text_label = Label(self.master,
+            text="Open",
+            bg=quiz_bg,
+            fg=quiz_fg)
+        text_label.place(x=53, y=183)
+        openside_btn = Button(self.master,
+            image=side_btn,
+            border=0,
+            bg=quiz_bg,
+            state='disabled',
+            activebackground=quiz_bg)
+        openside_btn.place(x=46, y=137)
+        text_label = Label(self.master,
+            text="Rename",
+            bg=quiz_bg,
+            fg=quiz_fg)
+        text_label.place(x=46, y=250)
+        renameside_btn = Button(self.master,
+            image=side_btn,
+            border=0,
+            bg=quiz_bg,
+            state='disabled',
+            activebackground=quiz_bg)
+        renameside_btn.place(x=46, y=204)
+        text_label = Label(self.master,
+            text="Delete",
+            bg=quiz_bg,
+            fg=quiz_fg)
+        text_label.place(x=51, y=316)
+        deleteside_btn = Button(self.master,
+            image=side_btn,
+            border=0,
+            bg=quiz_bg,
+            state='disabled',
+            activebackground=quiz_bg)
+        deleteside_btn.place(x=46, y=270)
+        text_label = Label(self.master,
+            text="Back",
+            bg=quiz_bg,
+            fg=quiz_fg)
+        text_label.place(x=55, y=382)
+        shareside_btn = Button(self.master,
+            image=side_btn,
+            border=0,
+            bg=quiz_bg,
+            command=lambda : QUIZ_FOLDER(self.master),
+            activebackground=quiz_bg)
+        shareside_btn.place(x=46, y=336)
+
     def features(self):
-        if self.bg_color == "#121212": 
-            self.content_features(self.search_dark, self.threelinemenu_dark, self.contentbg_dark,
-            self.sidebutton_dark, "#F2F2F2", "#2C2C2C", self.indivfile_dark, self.addbtn_dark)
-        elif self.bg_color == "#0d9187": 
-            self.content_features(self.search_light, self.threelinemenu_light, self.contentbg_light, 
-            self.sidebutton_light, "#0c325c", "#12c8bb", self.indivfile_light, self.addbtn_light)
+        super().features()
 
     def side_menu(self):
         THREELINE_MENU(self.master, visit=None)
 
-    def rename(self):
+    def rename(self, var):
+        self.button_file("Update File Name", "update", var)
+
+    def delete(self, var):
+        # db.child("Topics").child(var['topicId']).remove()
+        # edits = db.child("Editors").get()
+
+        # if edits.val() is not None:
+        #     for edit in edits.each():
+        #         if edit.key() == var['topicId']:
+        #             db.child("Editors").child(edit.key()).remove()
+        # NOTE_FILES(self.master, self.data)
         pass
 
-    def delete(self):
-        pass
-
-    def share(self):
-        pass
-
-    def play(self):
-        pass
-
-    def quizzes_edit(self):
-        QUIZ_EDITOR(self.master)
+    def quiz_edit(self, var):
+        QUIZ_EDITOR(self.master, var)
 
 class QUIZ_EDITOR():
-    def __init__(self, master):
+    def __init__(self, master, data=None):
         self.master = master
         self.threelinemenu_dark = ImageTk.PhotoImage(Image.open("images/3line_dark.png"))
         self.threelinemenu_light = ImageTk.PhotoImage(Image.open("images/3line_light.png"))
