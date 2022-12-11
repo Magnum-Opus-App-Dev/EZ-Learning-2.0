@@ -4,7 +4,7 @@ from PIL import ImageTk, Image
 import tkinter.messagebox
 from tkinter import ttk
 from pygame import FULLSCREEN
-
+#Finals
 import shutup;shutup.please()
 from dotenv import load_dotenv
 
