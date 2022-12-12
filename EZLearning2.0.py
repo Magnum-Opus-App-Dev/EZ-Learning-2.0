@@ -13,6 +13,7 @@ from model.Folder import Folder
 from model.Topic import Topic
 from model.User import User
 from model.Shared import Share
+from model.Quiz import Quiz
 
 from tkinter import messagebox
 
@@ -1131,6 +1132,14 @@ class QUIZ_FOLDER(NOTES_FOLDER):
         self.sidebutton_light = ImageTk.PhotoImage(Image.open("images/side_button_light.png"))
         self.messageBox_dark = ImageTk.PhotoImage(Image.open("images/mesbox_dark.png"))
         self.messageBox_light = ImageTk.PhotoImage(Image.open("images/mesbox_light.png"))
+        self.SB1_D = ImageTk.PhotoImage(Image.open("images/1SB_D.png"))
+        self.SB1_L = ImageTk.PhotoImage(Image.open("images/1SB_L.png"))
+        self.SB2_D = ImageTk.PhotoImage(Image.open("images/2SB_D.png"))
+        self.SB2_L = ImageTk.PhotoImage(Image.open("images/2SB_L.png"))
+        self.SB3_D = ImageTk.PhotoImage(Image.open("images/3SB_D.png"))
+        self.SB3_L = ImageTk.PhotoImage(Image.open("images/3SB_L.png"))
+        self.SB4_D = ImageTk.PhotoImage(Image.open("images/4SB_D.png"))
+        self.SB4_L = ImageTk.PhotoImage(Image.open("images/4SB_L.png"))
         self.bg_color = self.master.cget("bg")
         self.rows = []
         
@@ -1266,7 +1275,8 @@ class QUIZ_FOLDER(NOTES_FOLDER):
     def add_frame(self):
         super().add_frame()
 
-    def content_features(self, search_img, content_img, folder_img, menu_img, notes_a_fg, notes_a_bg, quiz_fg, quiz_bg, btn_img, side_btn):
+    def content_features(self, search_img, content_img, folder_img, menu_img, notes_a_fg, notes_a_bg, quiz_fg, quiz_bg, btn_img, 
+    side_btn1, side_btn2, side_btn3, side_btn4):
         row = 0
         column = 0
 
@@ -1413,7 +1423,7 @@ class QUIZ_FOLDER(NOTES_FOLDER):
                 fg=quiz_fg)
         text_label.place(x=53, y=183)
         openside_btn = Button(self.master,
-            image=side_btn,
+            image=side_btn1,
             border=0,
             bg=quiz_bg,
             state='disabled',
@@ -1423,39 +1433,38 @@ class QUIZ_FOLDER(NOTES_FOLDER):
             text="Rename",
             bg=quiz_bg,
             fg=quiz_fg)
-        text_label.place(x=46, y=250)
+        text_label.place(x=46, y=271)
         renameside_btn = Button(self.master,
-            image=side_btn,
+            image=side_btn2,
             border=0,
             bg=quiz_bg,
             state='disabled',
             activebackground=quiz_bg)
-        renameside_btn.place(x=46, y=204)
+        renameside_btn.place(x=46, y=225)
         text_label = Label(self.master,
             text="Delete",
             bg=quiz_bg,
             fg=quiz_fg)
-        text_label.place(x=51, y=316)
+        text_label.place(x=51, y=359)
         deleteside_btn = Button(self.master,
-            image=side_btn,
+            image=side_btn3,
             border=0,
             bg=quiz_bg,
             state='disabled',
             activebackground=quiz_bg)
-        deleteside_btn.place(x=46, y=270)
-
+        deleteside_btn.place(x=46, y=313)
         text_label = Label(self.master,
             text="Share",
             bg=quiz_bg,
             fg=quiz_fg)
-        text_label.place(x=53, y=382)
+        text_label.place(x=53, y=446)
         shareside_btn = Button(self.master,
-            image=side_btn,
+            image=side_btn4,
             border=0,
             bg=quiz_bg,
             state='disabled',
             activebackground=quiz_bg)
-        shareside_btn.place(x=46, y=336)
+        shareside_btn.place(x=46, y=400)
 
     def features(self):
         super().features()
@@ -1495,6 +1504,14 @@ class QUIZ_FILES(NOTE_FILES):
         self.addbtn_light = ImageTk.PhotoImage(Image.open("images/add_light.png"))
         self.messageBox_dark = ImageTk.PhotoImage(Image.open("images/mesbox_dark.png"))
         self.messageBox_light = ImageTk.PhotoImage(Image.open("images/mesbox_light.png"))
+        self.SB1_D = ImageTk.PhotoImage(Image.open("images/1SB_D.png"))
+        self.SB1_L = ImageTk.PhotoImage(Image.open("images/1SB_L.png"))
+        self.SB2_D = ImageTk.PhotoImage(Image.open("images/2SB_D.png"))
+        self.SB2_L = ImageTk.PhotoImage(Image.open("images/2SB_L.png"))
+        self.SB3_D = ImageTk.PhotoImage(Image.open("images/3SB_D.png"))
+        self.SB3_L = ImageTk.PhotoImage(Image.open("images/3SB_L.png"))
+        self.SB5_D = ImageTk.PhotoImage(Image.open("images/5SB_D.png"))
+        self.SB5_L = ImageTk.PhotoImage(Image.open("images/5SB_L.png"))
         self.bg_color = self.master.cget("bg")
         self.data = data
         self.rows = []
@@ -1589,7 +1606,8 @@ class QUIZ_FILES(NOTE_FILES):
     def add_frame(self):
         super().add_frame()
     
-    def content_features(self, search_image, three_line_image, content_img, side_btn, quiz_fg, quiz_bg, indiv_file, btn_img, list_img):
+    def content_features(self, search_image, three_line_image, content_img, quiz_fg, quiz_bg, indiv_file, btn_img, list_img, side_btn1, 
+    side_btn2, side_btn3, side_btn5):
         files_search = Label(self.master,
             image=search_image,
             border=0,
@@ -1698,7 +1716,7 @@ class QUIZ_FILES(NOTE_FILES):
             fg=quiz_fg)
         text_label.place(x=53, y=183)
         openside_btn = Button(self.master,
-            image=side_btn,
+            image=side_btn1,
             border=0,
             bg=quiz_bg,
             state='disabled',
@@ -1708,38 +1726,39 @@ class QUIZ_FILES(NOTE_FILES):
             text="Rename",
             bg=quiz_bg,
             fg=quiz_fg)
-        text_label.place(x=46, y=250)
+        text_label.place(x=46, y=271)
         renameside_btn = Button(self.master,
-            image=side_btn,
+            image=side_btn2,
             border=0,
             bg=quiz_bg,
             state='disabled',
             activebackground=quiz_bg)
-        renameside_btn.place(x=46, y=204)
+        renameside_btn.place(x=46, y=225)
         text_label = Label(self.master,
             text="Delete",
             bg=quiz_bg,
             fg=quiz_fg)
-        text_label.place(x=51, y=316)
+        text_label.place(x=51, y=359)
         deleteside_btn = Button(self.master,
-            image=side_btn,
+            image=side_btn3,
             border=0,
             bg=quiz_bg,
             state='disabled',
             activebackground=quiz_bg)
-        deleteside_btn.place(x=46, y=270)
+        deleteside_btn.place(x=46, y=313)
         text_label = Label(self.master,
             text="Back",
             bg=quiz_bg,
             fg=quiz_fg)
-        text_label.place(x=55, y=382)
+        text_label.place(x=55, y=446)
         shareside_btn = Button(self.master,
-            image=side_btn,
+            image=side_btn5,
             border=0,
             bg=quiz_bg,
             command=lambda : QUIZ_FOLDER(self.master),
             activebackground=quiz_bg)
-        shareside_btn.place(x=46, y=336)
+        shareside_btn.place(x=46, y=400)
+
 
     def features(self):
         super().features()
@@ -1773,7 +1792,18 @@ class QUIZ_EDITOR():
         self.contentbg_light = ImageTk.PhotoImage(Image.open("images/editor_light.png"))
         self.answerbg_dark = ImageTk.PhotoImage(Image.open("images/ansquiz_dark.png"))
         self.answerbg_light = ImageTk.PhotoImage(Image.open("images/ansquiz_light.png"))
+        self.sidebutton_dark = ImageTk.PhotoImage(Image.open("images/side_button_dark.png"))
+        self.sidebutton_light = ImageTk.PhotoImage(Image.open("images/side_button_light.png"))
+        self.SB5_D = ImageTk.PhotoImage(Image.open("images/5SB_D.png"))
+        self.SB5_L = ImageTk.PhotoImage(Image.open("images/5SB_L.png"))
+        self.SB6_D = ImageTk.PhotoImage(Image.open("images/6SB_D.png"))
+        self.SB6_L = ImageTk.PhotoImage(Image.open("images/6SB_L.png"))
+        self.SB7_D = ImageTk.PhotoImage(Image.open("images/7SB_D.png"))
+        self.SB7_L = ImageTk.PhotoImage(Image.open("images/7SB_L.png"))
         self.bg_color = self.master.cget("bg")
+
+        self.data = data
+
         self.backframe()
         self.features()
         self.blockframe()
@@ -1788,7 +1818,7 @@ class QUIZ_EDITOR():
         main_frame.place(x=0, y=0)
 
     def show_true_false(self):
-        display_true_or_false = self.true_false.get()
+        display_true_or_false = true_false.get()
 
         if display_true_or_false == 1:
             print("CHOSE: True")
@@ -1796,8 +1826,104 @@ class QUIZ_EDITOR():
             print("CHOSE: False")
         else:
             print("ERROR: Something Went Wrong")
+    
+    def play(self, content_img, topicId, content_bg, side_btn, content_fg, list_img):
+        no_questions = []
+        content_label = Label(self.master,
+            image=content_img,
+            border=0,)
+        content_label.place(x=23,y=45)
 
-    def content_features(self, three_line_image, content_img, content_fg, content_bg):
+        quizzes = db.child("Quiz Editor").get()
+        if quizzes.val() is not None:
+            for quiz in quizzes:
+                if quiz.val()["q_topic_id"] == topicId:
+                    no_questions.append(quiz.val())
+        
+        inline_frame = Frame(content_label,
+                             width=40,
+                             height=500,
+                             bg=content_bg)
+        inline_frame.place(x=15, y=35)
+
+        second_line_frame = Frame(inline_frame,
+                                  bg=content_bg)
+        second_line_frame.pack(fill=BOTH, expand=1)
+
+        inline_canvas = Canvas(second_line_frame,
+                               width=65,
+                               height=380,
+                               background=content_bg,
+                               highlightthickness=0)
+        inline_canvas.pack(side=LEFT, fill=BOTH, expand=1)
+
+        if len(no_questions) > 6:
+            scrollbar = ttk.Scrollbar(second_line_frame,
+                                      orient=VERTICAL,
+                                      command=inline_canvas.yview)
+            scrollbar.pack(side=RIGHT, fill=Y, padx=2, pady=1)
+
+            inline_canvas.configure(yscrollcommand=scrollbar.set)
+            inline_canvas.bind('<Configure>',
+                               lambda e: inline_canvas.configure(scrollregion=inline_canvas.bbox("all")))
+            inline_canvas.bind_all('<MouseWheel>',
+                                   lambda event: inline_canvas.yview('scroll', int(-2 * (event.delta / 120)), 'units'))
+
+        another_frame = Frame(inline_canvas,
+                              bg=content_bg)
+        inline_canvas.create_window((0, 0), window=another_frame, anchor='nw')
+
+        def dashboard(options):
+            inline_frame = Frame(content_label,
+                            width=727,
+                            height=340,
+                            bg="#FFFFFF")
+            inline_frame.place(x=90, y=35)
+
+            question_label = Label(inline_frame,
+            text=options['question'],
+            bg=content_bg,
+            foreground=content_fg,
+            font=("arial", 15))
+            question_label.place(x=110, y=80)
+
+            if options['type'] == 1:
+                answer_entry = Entry(inline_frame,
+                bg=content_bg,
+                foreground=content_fg,
+                width=55,
+                font=14)
+                answer_entry.place(x=235, y=305)
+
+        if no_questions != None:
+            numberQuestions = 1
+            for i in no_questions:
+                line_frame = Canvas(another_frame,
+                                    highlightthickness=0)
+                line_frame.pack(pady=5, padx=11)
+                Label(line_frame,
+                    image=side_btn,
+                    border=0,
+                    bg=content_bg,
+                    activebackground=content_bg).pack()
+                Button(line_frame,
+                    text= numberQuestions,
+                    font=("Arial", 15),
+                    justify="left",
+                    anchor="w",
+                    fg=content_fg,
+                    borderwidth=0,
+                    relief=FLAT,
+                    width=20,
+                    background=list_img,
+                    command=lambda data = i: dashboard(data),
+                    activebackground=list_img,
+                    height=1).place(x=10, y=5)
+                numberQuestions += 1
+
+            
+    def content_features(self, three_line_image, content_img, content_fg, content_bg, side_btn5, side_btn6, side_btn7, side_btn, list_img):
+        global add_question_entry
         search_editor = Button(self.master,
             image=three_line_image,
             command=self.side_menu,
@@ -1817,7 +1943,7 @@ class QUIZ_EDITOR():
         question_label.place(x=130, y=80)
         add_question_entry = Entry(self.master,
             bg=content_bg, 
-            foreground=content_fg, 
+            foreground=content_fg,
             width=78, 
             font=50)
         add_question_entry.place(x=133, y=120)
@@ -1827,6 +1953,69 @@ class QUIZ_EDITOR():
             foreground=content_fg,
             font=("arial", 15))
         question_label.place(x=130, y=160)
+
+        text_label = Label(self.master,
+            text="Save",
+            bg=content_bg,
+            fg=content_fg)
+        text_label.place(x=53, y=115)
+        saveside_btn = Button(self.master,
+            image=side_btn6,
+            border=0,
+            bg=content_bg,
+            command=None,
+            activebackground=content_bg)
+        saveside_btn.place(x=46, y=69)
+        text_label = Label(self.master,
+            text="Play",
+            bg=content_bg,
+            fg=content_fg)
+        text_label.place(x=55, y=183)
+        playside_btn = Button(self.master,
+            image=side_btn,
+            border=0,
+            bg=content_bg,
+            command=lambda: self.play(content_img, self.data['topicId'], content_bg, side_btn, content_fg, list_img),
+            activebackground=content_bg)
+        playside_btn.place(x=46, y=137)
+
+        text_label = Label(self.master,
+            text="Statistics",
+            bg=content_bg,
+            fg=content_fg)
+        text_label.place(x=46, y=271)
+        playside_btn = Button(self.master,
+            image=side_btn,
+            border=0,
+            bg=content_bg,
+            command=None,
+            activebackground=content_bg)
+        playside_btn.place(x=46, y=225)
+
+        text_label = Label(self.master,
+            text="Export",
+            bg=content_bg,
+            fg=content_fg)
+        text_label.place(x=51, y=359)
+        shareside_btn = Button(self.master,
+            image=side_btn7,
+            border=0,
+            bg=content_bg,
+            command=None,
+            activebackground=content_bg)
+        shareside_btn.place(x=46, y=313)
+        text_label = Label(self.master,
+            text="Back",
+            bg=content_bg,
+            fg=content_fg)
+        text_label.place(x=53, y=440)
+        exportside_btn = Button(self.master,
+            image=side_btn5,
+            command=lambda: QUIZ_FILES(self.master, self.data),
+            border=0,
+            bg=content_bg,
+            activebackground=content_bg)
+        exportside_btn.place(x=46, y=390)
 
         self.r1_v = IntVar()
         self.r2_v = IntVar()
@@ -1867,7 +2056,8 @@ class QUIZ_EDITOR():
             font=("arial", 15))
         answer_label.place(x=130, y=230)
         new_question = Button(self.master,
-            text="Add Question", 
+            text="Add Question",
+            command=self.add_question, 
             bg=content_bg,
             foreground=content_fg,
             width=15,
@@ -1876,9 +2066,9 @@ class QUIZ_EDITOR():
 
     def features(self):
         if self.bg_color == "#121212": 
-            self.content_features(self.threelinemenu_dark, self.contentbg_dark, "#F2F2F2", "#2C2C2C",)
+            self.content_features(self.threelinemenu_dark, self.contentbg_dark, "#F2F2F2", "#2C2C2C", self.SB5_D, self.SB6_D, self.SB7_D, self.sidebutton_dark, "#bbbdbd")
         elif self.bg_color == "#0d9187": 
-            self.content_features(self.threelinemenu_light, self.contentbg_light, "#0c325c", "#12c8bb")
+            self.content_features(self.threelinemenu_light, self.contentbg_light, "#0c325c", "#12c8bb", self.SB5_L, self.SB6_L, self.SB7_L, self.sidebutton_light, "#92d050")
 
     def blockframe(self):
         if self.bg_color == "#121212": bg = self.answerbg_dark
@@ -1887,8 +2077,21 @@ class QUIZ_EDITOR():
             image=bg,
             border=0,)
         content_label.place(x=143,y=260)
+    
+    def add_question(self):
+        if display_method == 2:
+            multiple_choice = choices.get()
+            choice_list = multiple_choice.split(", ")
+        else: choice_list = None
+        quizId = str(uuid.uuid4())
+        quiz = Quiz(quizId, self.data["topicId"], display_method, add_question_entry.get(), answer_entry.get() if display_method ==1
+        else answer.get() if display_method==2 else true_false.get(), choice_list)
+        db.child("Quiz Editor").child(quizId).set(quiz.__dict__)
+        QUIZ_EDITOR(self.master, self.data)
 
     def show_method(self):
+        global display_method, answer_entry, answer, true_false, choices
+
         if self.bg_color == "#121212": 
             color = "#2c2c2c"
             fg = "#a4a4a4"
@@ -1933,19 +2136,19 @@ class QUIZ_EDITOR():
             print("SHOW: Multiple Choice")
         elif display_method == 3:
             self.blockframe()
-            self.true_false = IntVar()
-            self.true_false.set(None)
+            true_false = IntVar()
+            true_false.set(None)
             self.rb1 = Radiobutton(self.master, text="True",
                 foreground=fg,
                 bg=color,
-                variable=self.true_false, 
+                variable=true_false, 
                 value=1,
                 font=("arial", 14),
                 command=self.show_true_false).place(x=325, y=299)
             self.rb2 = Radiobutton(self.master, text="False",
                 foreground=fg,
                 bg=color,
-                variable=self.true_false, 
+                variable=true_false, 
                 value=2,
                 font=("arial", 14),
                 command=self.show_true_false).place(x=555, y=299)
