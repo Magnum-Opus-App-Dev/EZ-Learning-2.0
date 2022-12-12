@@ -41,6 +41,8 @@ firebase = pyrebase.initialize_app(config)
 auth = firebase.auth()
 db = firebase.database()
 userId = ''
+# total_questions = 1
+
 
 customtkinter.set_appearance_mode("Dark")
 customtkinter.set_default_color_theme("green")
@@ -1877,23 +1879,21 @@ class QUIZ_EDITOR():
             inline_frame = Frame(content_label,
                             width=727,
                             height=340,
-                            bg="#FFFFFF")
+                            bg=content_bg)
             inline_frame.place(x=90, y=35)
 
-            question_label = Label(inline_frame,
-            text=options['question'],
-            bg=content_bg,
-            foreground=content_fg,
-            font=("arial", 15))
-            question_label.place(x=110, y=80)
-
+            content = Text(inline_frame, font=("arial", 18), width=56, height=7, bg=content_bg, fg="white", wrap=WORD)
+            content.insert(END, options['question'])
+            content.config(state=DISABLED)
+            content.place(x=3, y=5)
+            
             if options['type'] == 1:
                 answer_entry = Entry(inline_frame,
                 bg=content_bg,
                 foreground=content_fg,
-                width=55,
-                font=14)
-                answer_entry.place(x=235, y=305)
+                width=40,
+                font= ("Arial", 25, "bold"))
+                answer_entry.place(x=4, y=250)
 
         if no_questions != None:
             numberQuestions = 1
@@ -1923,7 +1923,9 @@ class QUIZ_EDITOR():
 
             
     def content_features(self, three_line_image, content_img, content_fg, content_bg, side_btn5, side_btn6, side_btn7, side_btn, list_img):
+        
         global add_question_entry
+    
         search_editor = Button(self.master,
             image=three_line_image,
             command=self.side_menu,
@@ -1941,12 +1943,14 @@ class QUIZ_EDITOR():
             foreground=content_fg,
             font=("arial", 15))
         question_label.place(x=130, y=80)
-        add_question_entry = Entry(self.master,
+        add_question_entry = Text(self.master,
             bg=content_bg, 
             foreground=content_fg,
-            width=78, 
+            width=78,
+            height=2,
+            wrap=WORD,
             font=50)
-        add_question_entry.place(x=133, y=120)
+        add_question_entry.place(x=133, y=115)
         question_label = Label(self.master,
             text="Quiz Method: ",
             bg=content_bg,
@@ -2063,6 +2067,34 @@ class QUIZ_EDITOR():
             width=15,
             font=("arial", 13))
         new_question.place(x=695, y=410)
+        
+        preview_btn = Button(self.master,
+            text="Preview",
+            border=0,
+            bg=content_bg,
+            command=None,
+            width=8,
+            foreground=content_fg,
+            font=("arial", 13),
+            activebackground=content_bg)
+        preview_btn.place(x=115, y=415)
+        next_btn = Button(self.master,
+            text="Next Page",
+            border=0,
+            bg=content_bg,
+            command=None,
+            width=8,
+            foreground=content_fg,
+            font=("arial", 13),
+            activebackground=content_bg)
+        next_btn.place(x=195, y=415)
+        # number_questions = Label(self.master, 
+        #     text="Question " + str(total_questions),
+        #     bg=content_bg,
+        #     foreground=content_fg,
+        #     font=("arial", 25))
+        # number_questions.place(x=480, y=405)
+        
 
     def features(self):
         if self.bg_color == "#121212": 
@@ -2079,16 +2111,21 @@ class QUIZ_EDITOR():
         content_label.place(x=143,y=260)
     
     def add_question(self):
-        if display_method == 2:
-            multiple_choice = choices.get()
-            choice_list = multiple_choice.split(", ")
-        else: choice_list = None
-        quizId = str(uuid.uuid4())
-        quiz = Quiz(quizId, self.data["topicId"], display_method, add_question_entry.get(), answer_entry.get() if display_method ==1
-        else answer.get() if display_method==2 else true_false.get(), choice_list)
-        db.child("Quiz Editor").child(quizId).set(quiz.__dict__)
-        QUIZ_EDITOR(self.master, self.data)
-
+        # global total_questions
+        try:
+            # total_questions += 1
+            if display_method == 2:
+                multiple_choice = choices.get()
+                choice_list = multiple_choice.split(", ")
+            else: choice_list = None
+            quizId = str(uuid.uuid4())
+            quiz = Quiz(quizId, self.data["topicId"], display_method, add_question_entry.get(1.0, "end-1c"), answer_entry.get() if display_method ==1
+            else answer.get() if display_method==2 else true_false.get(), choice_list)
+            db.child("Quiz Editor").child(quizId).set(quiz.__dict__)
+            QUIZ_EDITOR(self.master, self.data)
+        except: 
+            tkinter.messagebox.showinfo('Error', 'Please, enter data on the require fields')
+            
     def show_method(self):
         global display_method, answer_entry, answer, true_false, choices
 
