@@ -1,4 +1,4 @@
-import json, uuid, os, customtkinter, pyrebase, random
+import json, uuid, os, customtkinter, pyrebase, random, time
 from tkinter import *
 from PIL import ImageTk, Image
 import tkinter.messagebox
@@ -1848,11 +1848,11 @@ class TAKE_QUIZ():
     
     def play(self):
     
-        global uid, answer, items
+        global answer, items, _options, no_questions
 
-        uid = ''
         answer = ''
         items = []
+        _options = []
 
         search_editor = Button(self.master,
             image=self.three_line_image,
@@ -1886,7 +1886,7 @@ class TAKE_QUIZ():
 
         inline_canvas = Canvas(second_line_frame,
                                width=65,
-                               height=380,
+                               height=290,
                                background=self.content_bg,
                                highlightthickness=0)
         inline_canvas.pack(side=LEFT, fill=BOTH, expand=1)
@@ -1906,9 +1906,19 @@ class TAKE_QUIZ():
         another_frame = Frame(inline_canvas, bg=self.content_bg)
         inline_canvas.create_window((0, 0), window=another_frame, anchor='nw')
 
+        def submit():
+            correct_answer = 0
+            for ii in no_questions:
+                for iii in items:
+                    if ii['quiz_id'] == iii['id']:
+                        if str(ii['answer']).lower() == str(iii['answer']).lower():
+                            correct_answer += 1
+
+            tkinter.messagebox.showinfo('Message', f'Result: {correct_answer}/{len(no_questions)}')
+
         def dashboard(options):
 
-            global uid, answer, items
+            global answer, items, _options
 
             inline_frame = Frame(self.master,
                             width=727,
@@ -1920,17 +1930,39 @@ class TAKE_QUIZ():
             content.insert(END, options['question'])
             content.config(state=DISABLED)
             content.place(x=3, y=5)
+            content.focus_set()
 
             finished = Button(self.master,
             text="Submit",
             border=0,
             bg=self.bg_color,
-            command=None,
+            command=submit,
             width=8,
             foreground='white',
             font=("arial", 13),
             activebackground=self.bg_color)
             finished.place(x=775, y=20)
+
+            def saveItems(_answer):
+                for ii in items:
+                    if ii['id'] == options['quiz_id']:
+                        ii['answer'] = _answer
+                        print(items)
+                        break
+
+            isFound = False
+            for ii in items:
+                if ii['id'] == options['quiz_id']:
+                    isFound = True
+                    answer = ii['answer']
+                    break
+            if isFound is False:
+                items.append({'id': options['quiz_id'], 'answer': ''})
+
+            if options['type'] == 1:
+
+                def callback(event):
+                    saveItems(event.widget.get())
 
             if options['type'] == 1:
                 answer_entry = Entry(inline_frame,
@@ -1939,21 +1971,31 @@ class TAKE_QUIZ():
                 width=40,
                 font= ("Arial", 25, "bold"))
                 answer_entry.place(x=4, y=250)
-                # answer = 'method 1'
+                answer_entry.bind('<KeyRelease>', callback)
+                answer_entry.insert(0, answer)
 
             if options['type'] == 2:
-                # answer = 'method 2'
-                
+
                 def show_details():
-                    if ans.get() == container[0]: print(ans.get())
-                    if ans.get() == container[1]: print(ans.get())
-                    if ans.get() == container[2]: print(ans.get())
-                    if ans.get() == container[3]: print(ans.get())
+                    saveItems(ans.get())
 
                 container = options['choices']
-                random.shuffle(container)
+
+                isFound = False
+                for ii in _options:
+                    if ii['id'] == options['quiz_id']:
+                        isFound = True
+                        container = ii['options']
+                        break
+                if isFound is False:
+                    random.shuffle(container)
+                    _options.append({'id': options['quiz_id'], 'options': container})
 
                 ans = StringVar()
+                if answer != '':
+                    ans.set(answer)
+                else:
+                    ans.set(None)
 
                 choice1 = Radiobutton(self.master, text=container[0],
                 foreground=self.fg,
@@ -1992,13 +2034,15 @@ class TAKE_QUIZ():
                 command=show_details).place(x=530, y=350)
 
             if options['type'] == 3:
-                # answer = 'method 3'
 
                 boolean = IntVar()
+                if answer != '':
+                    boolean.set(answer)
+                else:
+                    boolean.set(None)
 
                 def show_boolean():
-                    if boolean.get() == 1: print(boolean.get())
-                    if boolean.get() == 2: print(boolean.get())
+                    saveItems(boolean.get())
 
                 choice5 = Radiobutton(self.master, text="True",
                 foreground=self.fg,
@@ -2016,26 +2060,6 @@ class TAKE_QUIZ():
                 value=2,
                 font=("arial", 14),
                 command=show_boolean).place(x=555, y=299)
-
-            # if uid == '':
-            #     uid = options['quiz_id']
-            #     items.append({'id': uid, 'answer': ''})
-            #     print(items)
-            # else:
-            #     for ii in items:
-            #         if ii['id'] == uid:
-            #             ii['answer'] = answer
-            #             break
-
-            #     uid = options['quiz_id']
-            #     isFound = False
-            #     for ii in items:
-            #         if ii['id'] == uid:
-            #             isFound = True
-            #             break
-            #     if isFound is False:
-            #         items.append({'id': uid, 'answer': ''})
-            #     print(items)
 
         if no_questions != None:
             numberQuestions = 1
@@ -2062,12 +2086,10 @@ class TAKE_QUIZ():
                     activebackground=self.list_img,
                     height=1).place(x=10, y=5)
                 numberQuestions += 1
-        
+
     def side_menu(self):
         THREELINE_MENU(self.master, visit=None)
     
-
-
 class QUIZ_EDITOR():
     def __init__(self, master, data=None):
         self.master = master
