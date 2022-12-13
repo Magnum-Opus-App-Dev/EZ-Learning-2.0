@@ -2458,7 +2458,10 @@ class PROFILE_SETTINGS():
         self.threelinemenu_light = ImageTk.PhotoImage(Image.open("images/3line_light.png"))
         self.settings_template_dark = ImageTk.PhotoImage(Image.open("images/profilesettings_dark.png"))
         self.settings_template_light = ImageTk.PhotoImage(Image.open("images/profilesettings_light.png"))
-        self.usericon = ImageTk.PhotoImage(Image.open("images/sample_usericon.png"))
+        self.user_icon_dark = ImageTk.PhotoImage(Image.open("images/defaultuserprofile_dark.png"))
+        self.user_icon_light = ImageTk.PhotoImage(Image.open("images/defaultuserprofile_light.png"))
+        self.user_name_dark = ImageTk.PhotoImage(Image.open("images/username_dark.png"))
+        self.user_name_light = ImageTk.PhotoImage(Image.open("images/username_light.png"))
         self.backframe()
         self.side_menu_icon()    
         print("OPENED: Profile Settings")
@@ -2483,6 +2486,44 @@ class PROFILE_SETTINGS():
             image=settings_template,
             border=0,)
         profilesettings_temp.place(x=240,y=45)
+
+    def profile_content(self, user_icon, user_name):
+        edit_profile = customtkinter.CTkLabel(self.master,
+            text="Edit Profile:",
+            text_font=("Roboto Medium", -16))
+        edit_profile.place(x=180, y=25)
+
+        usericon = Label(self.master,
+            image=user_icon,
+            border=0,
+            bg=self.bg_color)
+        usericon.place(x=30, y=12)
+
+        acc_username = customtkinter.CTkLabel(self.master,
+            text="Username:")
+        acc_username.place(x=112, y=65)
+
+        username = Label(self.master,
+            image=user_name,
+            border=0,
+            bg=self.bg_color)
+        username.place(x=30, y=12)
+
+        acc_gender = customtkinter.CTkLabel(self.master,
+        text="Gender:")
+        acc_gender.place(x=112, y=65)
+
+        def savechange(self):
+            pass
+
+        savechanges_btn = Button(self.master,
+            text='Save Changes',
+            font=("Roboto", 11),
+            command=savechange,
+            borderwidth=0,
+            relief=FLAT,
+            width=8, )
+        savechanges_btn.place(x=74, y=122)
 
     def side_menu_icon(self):
         if self.master.cget("bg") == "#121212": self.side_menu_icon_content(self.threelinemenu_dark, self.settings_template_dark)
