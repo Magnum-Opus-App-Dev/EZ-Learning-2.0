@@ -407,7 +407,7 @@ class NOTES_FOLDER():
             bg=bg1,
             borderwidth=0,
             fg=fg1)
-        add_text.place(x=100, y=35)
+        add_text.place(x=115, y=35)
         add_entry = Entry(self.main_frame,
             width=24,
             font=("Roboto", 12),
@@ -439,7 +439,7 @@ class NOTES_FOLDER():
         cancel_btn.place(x=205, y=122)
 
     def add_frame(self):
-        self.click_button("Folder Name", 'submit')
+        self.click_button("   Folder Name", 'submit')
         
     def content_features(self, search_img, content_img, folder_img, menu_img, quiz_a_fg, quiz_a_bg,
     notes_fg, notes_bg, btn_img, side_btn1, side_btn2, side_btn3, side_btn4):
@@ -647,7 +647,7 @@ class NOTES_FOLDER():
         NOTE_FILES(self.master, var)
     
     def rename(self, var): 
-       self.click_button("Update Folder Name", "update", var)
+       self.click_button("Rename Folder", "update", var)
 
     def delete(self, var=None):
    
@@ -699,6 +699,8 @@ class NOTE_FILES():
         self.indivfile_light = ImageTk.PhotoImage(Image.open("images/filescontent_light.png"))
         self.addbtn_dark = ImageTk.PhotoImage(Image.open("images/add_dark.png"))
         self.addbtn_light = ImageTk.PhotoImage(Image.open("images/add_light.png"))
+        self.score_dark = ImageTk.PhotoImage(Image.open("images/scores_dark.png"))
+        self.score_light = ImageTk.PhotoImage(Image.open("images/scores_light.png"))
         self.messageBox_dark = ImageTk.PhotoImage(Image.open("images/mesbox_dark.png"))
         self.messageBox_light = ImageTk.PhotoImage(Image.open("images/mesbox_light.png"))
         self.SB1_D = ImageTk.PhotoImage(Image.open("images/1SB_D.png"))
@@ -709,6 +711,8 @@ class NOTE_FILES():
         self.SB3_L = ImageTk.PhotoImage(Image.open("images/3SB_L.png"))
         self.SB5_D = ImageTk.PhotoImage(Image.open("images/5SB_D.png"))
         self.SB5_L = ImageTk.PhotoImage(Image.open("images/5SB_L.png"))
+        self.SB8_D = ImageTk.PhotoImage(Image.open("images/8SB_D.png"))
+        self.SB8_L = ImageTk.PhotoImage(Image.open("images/8SB_L.png"))
 
         self.data = data
         self.rows = []
@@ -775,7 +779,7 @@ class NOTE_FILES():
             bg=bg1,
             borderwidth=0,
             fg=fg1)
-        add_text.place(x=100, y=35)
+        add_text.place(x=120, y=35)
         add_entry = Entry(self.main_frame,
             width=24,
             font=("Roboto", 12),
@@ -807,11 +811,11 @@ class NOTE_FILES():
         cancel_btn.place(x=205, y=122)
     
     def add_frame(self):
-        self.button_file("File Name", 'submit')
+        self.button_file("     File Name", 'submit')
 
     def content_features(self, search_image, three_line_image, content_img, 
     notes_fg, notes_bg, indiv_file, btn_img, list_img, side_btn1, 
-    side_btn2, side_btn3, side_btn5):
+    side_btn2, side_btn3, side_btn5, side_btn8, scores):
         files_search = Label(self.master,
             image=search_image,
             border=0,
@@ -969,17 +973,17 @@ class NOTE_FILES():
         if self.bg_color == "#121212": 
             self.content_features(self.search_dark, self.threelinemenu_dark, self.contentbg_dark,
             "#F2F2F2", "#2C2C2C", self.indivfile_dark, self.addbtn_dark, "#969696", self.SB1_D, 
-            self.SB2_D, self.SB3_D, self.SB5_D)
+            self.SB2_D, self.SB3_D, self.SB5_D, self.SB8_D, self.score_dark)
         elif self.bg_color == "#0d9187": 
             self.content_features(self.search_light, self.threelinemenu_light, self.contentbg_light, 
             "#0c325c", "#12c8bb", self.indivfile_light, self.addbtn_light, "#92d050", self.SB1_L, 
-            self.SB2_L, self.SB3_L, self.SB5_L)
+            self.SB2_L, self.SB3_L, self.SB5_L, self.SB8_L, self.score_light)
 
     def side_menu(self):
         THREELINE_MENU(self.master, visit=None)
 
     def rename(self, var):
-        self.button_file("Update File Name", "update", var)
+        self.button_file("Rename Note", "update", var)
 
     def delete(self, var):
         db.child("Topics").child(var['topicId']).remove()
@@ -1243,7 +1247,7 @@ class QUIZ_FOLDER(NOTES_FOLDER):
             bg=bg1,
             borderwidth=0,
             fg=fg1)
-        add_text.place(x=100, y=35)
+        add_text.place(x=115, y=35)
         add_entry = Entry(self.main_frame,
             width=24,
             font=("Roboto", 12),
@@ -1502,8 +1506,10 @@ class QUIZ_FILES(NOTE_FILES):
         self.sidebutton_light = ImageTk.PhotoImage(Image.open("images/side_button_light.png"))
         self.indivfile_dark = ImageTk.PhotoImage(Image.open("images/filescontent_dark.png"))
         self.indivfile_light = ImageTk.PhotoImage(Image.open("images/filescontent_light.png"))
-        self.addbtn_dark = ImageTk.PhotoImage(Image.open("images/add_dark.png"))
-        self.addbtn_light = ImageTk.PhotoImage(Image.open("images/add_light.png"))
+        self.addbtn_dark = ImageTk.PhotoImage(Image.open("images/add3_dark.png"))
+        self.addbtn_light = ImageTk.PhotoImage(Image.open("images/add3_light.png"))
+        self.score_dark = ImageTk.PhotoImage(Image.open("images/scores_dark.png"))
+        self.score_light = ImageTk.PhotoImage(Image.open("images/scores_light.png"))
         self.messageBox_dark = ImageTk.PhotoImage(Image.open("images/mesbox_dark.png"))
         self.messageBox_light = ImageTk.PhotoImage(Image.open("images/mesbox_light.png"))
         self.SB1_D = ImageTk.PhotoImage(Image.open("images/1SB_D.png"))
@@ -1514,6 +1520,8 @@ class QUIZ_FILES(NOTE_FILES):
         self.SB3_L = ImageTk.PhotoImage(Image.open("images/3SB_L.png"))
         self.SB5_D = ImageTk.PhotoImage(Image.open("images/5SB_D.png"))
         self.SB5_L = ImageTk.PhotoImage(Image.open("images/5SB_L.png"))
+        self.SB8_D = ImageTk.PhotoImage(Image.open("images/8SB_D.png"))
+        self.SB8_L = ImageTk.PhotoImage(Image.open("images/8SB_L.png"))
         self.bg_color = self.master.cget("bg")
         self.data = data
         self.rows = []
@@ -1574,7 +1582,7 @@ class QUIZ_FILES(NOTE_FILES):
             bg=bg1,
             borderwidth=0,
             fg=fg1)
-        add_text.place(x=100, y=35)
+        add_text.place(x=123, y=35)
         add_entry = Entry(self.main_frame,
             width=24,
             font=("Roboto", 12),
@@ -1609,7 +1617,7 @@ class QUIZ_FILES(NOTE_FILES):
         super().add_frame()
     
     def content_features(self, search_image, three_line_image, content_img, quiz_fg, quiz_bg, indiv_file, btn_img, list_img, side_btn1, 
-    side_btn2, side_btn3, side_btn5):
+    side_btn2, side_btn3, side_btn5, side_btn8, scores):
         files_search = Label(self.master,
             image=search_image,
             border=0,
@@ -1641,6 +1649,14 @@ class QUIZ_FILES(NOTE_FILES):
             bg=self.bg_color,
             activebackground=self.bg_color)
         add_btn.place(x=760, y=78)
+
+        score_btn = Button(self.master,
+            image=scores,
+            command=self.add_frame,
+            border=0,
+            bg=self.bg_color,
+            activebackground=self.bg_color)
+        score_btn.place(x=640, y=78)
 
         inline_frame = Frame(content_label,
                              width=727,
@@ -1725,29 +1741,41 @@ class QUIZ_FILES(NOTE_FILES):
             activebackground=quiz_bg)
         openside_btn.place(x=46, y=137)
         text_label = Label(self.master,
+            text="Play",
+            bg=quiz_bg,
+            fg=quiz_fg)
+        text_label.place(x=57, y=250)
+        renameside_btn = Button(self.master,
+            image=side_btn8,
+            border=0,
+            bg=quiz_bg,
+            state='disabled',
+            activebackground=quiz_bg)
+        renameside_btn.place(x=46, y=204)
+        text_label = Label(self.master,
             text="Rename",
             bg=quiz_bg,
             fg=quiz_fg)
-        text_label.place(x=46, y=271)
+        text_label.place(x=46, y=315)
         renameside_btn = Button(self.master,
             image=side_btn2,
             border=0,
             bg=quiz_bg,
             state='disabled',
             activebackground=quiz_bg)
-        renameside_btn.place(x=46, y=225)
+        renameside_btn.place(x=46, y=269)
         text_label = Label(self.master,
             text="Delete",
             bg=quiz_bg,
             fg=quiz_fg)
-        text_label.place(x=51, y=359)
+        text_label.place(x=51, y=381)
         deleteside_btn = Button(self.master,
             image=side_btn3,
             border=0,
             bg=quiz_bg,
             state='disabled',
             activebackground=quiz_bg)
-        deleteside_btn.place(x=46, y=313)
+        deleteside_btn.place(x=46, y=335)
         text_label = Label(self.master,
             text="Back",
             bg=quiz_bg,
@@ -1769,7 +1797,7 @@ class QUIZ_FILES(NOTE_FILES):
         THREELINE_MENU(self.master, visit=None)
 
     def rename(self, var):
-        self.button_file("Update File Name", "update", var)
+        self.button_file("Rename Quiz", "update", var)
 
     def delete(self, var):
         # db.child("Topics").child(var['topicId']).remove()
@@ -1802,6 +1830,8 @@ class QUIZ_EDITOR():
         self.SB6_L = ImageTk.PhotoImage(Image.open("images/6SB_L.png"))
         self.SB7_D = ImageTk.PhotoImage(Image.open("images/7SB_D.png"))
         self.SB7_L = ImageTk.PhotoImage(Image.open("images/7SB_L.png"))
+        self.SB10_D = ImageTk.PhotoImage(Image.open("images/10SB_D.png"))
+        self.SB10_L = ImageTk.PhotoImage(Image.open("images/10SB_L.png"))
         self.bg_color = self.master.cget("bg")
 
         self.data = data
@@ -1959,7 +1989,7 @@ class QUIZ_EDITOR():
                 numberQuestions += 1
 
             
-    def content_features(self, three_line_image, content_img, content_fg, content_bg, side_btn5, side_btn6, side_btn7, side_btn, list_img):
+    def content_features(self, three_line_image, content_img, content_fg, content_bg, side_btn5, side_btn6, side_btn10):
         
         global add_question_entry
     
@@ -2008,43 +2038,17 @@ class QUIZ_EDITOR():
             activebackground=content_bg)
         saveside_btn.place(x=46, y=69)
         text_label = Label(self.master,
-            text="Play",
-            bg=content_bg,
-            fg=content_fg)
-        text_label.place(x=55, y=183)
-        playside_btn = Button(self.master,
-            image=side_btn,
-            border=0,
-            bg=content_bg,
-            command=lambda: self.play(content_img, self.data['topicId'], content_bg, side_btn, content_fg, list_img),
-            activebackground=content_bg)
-        playside_btn.place(x=46, y=137)
-
-        text_label = Label(self.master,
             text="Clear",
             bg=content_bg,
             fg=content_fg)
         text_label.place(x=51, y=271)
         playside_btn = Button(self.master,
-            image=side_btn,
+            image=side_btn10,
             border=0,
             bg=content_bg,
             command=None,
             activebackground=content_bg)
         playside_btn.place(x=46, y=225)
-
-        text_label = Label(self.master,
-            text="Export",
-            bg=content_bg,
-            fg=content_fg)
-        text_label.place(x=51, y=359)
-        shareside_btn = Button(self.master,
-            image=side_btn7,
-            border=0,
-            bg=content_bg,
-            command=None,
-            activebackground=content_bg)
-        shareside_btn.place(x=46, y=313)
         text_label = Label(self.master,
             text="Back",
             bg=content_bg,
@@ -2114,7 +2118,7 @@ class QUIZ_EDITOR():
             foreground=content_fg,
             font=("arial", 13),
             activebackground=content_bg)
-        preview_btn.place(x=115, y=415)
+        preview_btn.place(x=120, y=415)
         next_btn = Button(self.master,
             text="Next Page",
             border=0,
@@ -2124,20 +2128,13 @@ class QUIZ_EDITOR():
             foreground=content_fg,
             font=("arial", 13),
             activebackground=content_bg)
-        next_btn.place(x=195, y=415)
-        # number_questions = Label(self.master, 
-        #     text="Question " + str(total_questions),
-        #     bg=content_bg,
-        #     foreground=content_fg,
-        #     font=("arial", 25))
-        # number_questions.place(x=480, y=405)
-        
+        next_btn.place(x=200, y=415)
 
     def features(self):
         if self.bg_color == "#121212": 
-            self.content_features(self.threelinemenu_dark, self.contentbg_dark, "#F2F2F2", "#2C2C2C", self.SB5_D, self.SB6_D, self.SB7_D, self.sidebutton_dark, "#bbbdbd")
+            self.content_features(self.threelinemenu_dark, self.contentbg_dark, "#F2F2F2", "#2C2C2C", self.SB5_D, self.SB6_D, self.SB10_D)
         elif self.bg_color == "#0d9187": 
-            self.content_features(self.threelinemenu_light, self.contentbg_light, "#0c325c", "#12c8bb", self.SB5_L, self.SB6_L, self.SB7_L, self.sidebutton_light, "#92d050")
+            self.content_features(self.threelinemenu_light, self.contentbg_light, "#0c325c", "#12c8bb", self.SB5_L, self.SB6_L, self.SB10_L)
 
     def blockframe(self):
         if self.bg_color == "#121212": bg = self.answerbg_dark
