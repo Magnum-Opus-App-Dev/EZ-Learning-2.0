@@ -1830,6 +1830,13 @@ class QUIZ_EDITOR():
             print("ERROR: Something Went Wrong")
     
     def play(self, content_img, topicId, content_bg, side_btn, content_fg, list_img):
+
+        global uid, answer, items
+
+        uid = ''
+        answer = ''
+        items = []
+
         no_questions = []
         content_label = Label(self.master,
             image=content_img,
@@ -1863,7 +1870,6 @@ class QUIZ_EDITOR():
             scrollbar = ttk.Scrollbar(second_line_frame,
                                       orient=VERTICAL,
                                       command=inline_canvas.yview)
-            scrollbar.pack(side=RIGHT, fill=Y, padx=2, pady=1)
 
             inline_canvas.configure(yscrollcommand=scrollbar.set)
             inline_canvas.bind('<Configure>',
@@ -1876,17 +1882,21 @@ class QUIZ_EDITOR():
         inline_canvas.create_window((0, 0), window=another_frame, anchor='nw')
 
         def dashboard(options):
-            inline_frame = Frame(content_label,
+
+            global uid, answer, items
+
+            inline_frame = Frame(self.master,
                             width=727,
                             height=340,
                             bg=content_bg)
-            inline_frame.place(x=90, y=35)
+            inline_frame.place(x=120, y=70)
 
-            content = Text(inline_frame, font=("arial", 18), width=56, height=7, bg=content_bg, fg="white", wrap=WORD)
+            content = Text(inline_frame, font=("arial", 17), width=55, height=7, bg=content_bg, fg="white", wrap=WORD)
             content.insert(END, options['question'])
             content.config(state=DISABLED)
-            content.place(x=3, y=5)
+            content.place(x=8, y=5)
             
+
             if options['type'] == 1:
                 answer_entry = Entry(inline_frame,
                 bg=content_bg,
@@ -1894,7 +1904,34 @@ class QUIZ_EDITOR():
                 width=40,
                 font= ("Arial", 25, "bold"))
                 answer_entry.place(x=4, y=250)
+                answer = 'method 1'
 
+            if options['type'] == 2:
+                answer = 'method 2'
+
+            if options['type'] == 3:
+                answer = 'method 3'
+
+            if uid == '':
+                uid = options['quiz_id']
+                items.append({'id': uid, 'answer': ''})
+                print(items)
+            else:
+                for ii in items:
+                    if ii['id'] == uid:
+                        ii['answer'] = answer
+                        break
+
+                uid = options['quiz_id']
+                isFound = False
+                for ii in items:
+                    if ii['id'] == uid:
+                        isFound = True
+                        break
+                if isFound is False:
+                    items.append({'id': uid, 'answer': ''})
+                print(items)
+                
         if no_questions != None:
             numberQuestions = 1
             for i in no_questions:
@@ -1984,10 +2021,10 @@ class QUIZ_EDITOR():
         playside_btn.place(x=46, y=137)
 
         text_label = Label(self.master,
-            text="Statistics",
+            text="Clear",
             bg=content_bg,
             fg=content_fg)
-        text_label.place(x=46, y=271)
+        text_label.place(x=51, y=271)
         playside_btn = Button(self.master,
             image=side_btn,
             border=0,
@@ -2111,19 +2148,59 @@ class QUIZ_EDITOR():
         content_label.place(x=143,y=260)
     
     def add_question(self):
-        # global total_questions
         try:
-            # total_questions += 1
-            if display_method == 2:
-                multiple_choice = choices.get()
-                choice_list = multiple_choice.split(", ")
-            else: choice_list = None
-            quizId = str(uuid.uuid4())
-            quiz = Quiz(quizId, self.data["topicId"], display_method, add_question_entry.get(1.0, "end-1c"), answer_entry.get() if display_method ==1
-            else answer.get() if display_method==2 else true_false.get(), choice_list)
-            db.child("Quiz Editor").child(quizId).set(quiz.__dict__)
-            QUIZ_EDITOR(self.master, self.data)
-        except: 
+            isCompleted = True
+            choice_list = None
+            errMessage = ''
+
+            print(display_method)
+
+            if display_method is None:
+                errMessage = 'Please, select quiz method!'
+                isCompleted = False
+            elif add_question_entry.get(1.0, "end-1c") == '':
+                errMessage = 'Please, enter data for question!'
+                isCompleted = False
+            else:
+
+                if display_method == 2:
+                    multiple_choice = choices.get()
+                    choice_list = multiple_choice.split(", ")
+
+                if display_method == 1 and answer_entry.get() == '':
+                    errMessage = 'Please, enter data for answer!'
+                    isCompleted = False
+                elif display_method == 2 and (answer.get() == '' or len(choice_list) != 3):
+                    if answer.get() == '':
+                        errMessage = 'Please, enter data for answer!'
+                    elif len(choice_list) != 3:
+                        errMessage = 'Please, add 3 items for choices!'
+                    isCompleted = False
+                elif display_method == 3 and true_false.get() == 0:
+                    if true_false.get() == 0:
+                        errMessage = 'Please, enter data for answer!'
+                    isCompleted = False
+
+            if isCompleted:
+                quizId = str(uuid.uuid4())
+                if display_method == 2:
+                    choice_list.append(answer.get())
+                quiz = Quiz(quizId, self.data["topicId"], display_method, add_question_entry.get(1.0, "end-1c"), answer_entry.get() if display_method ==1
+                else answer.get() if display_method==2 else true_false.get(), choice_list)
+                db.child("Quiz Editor").child(quizId).set(quiz.__dict__)
+
+                add_question_entry.delete(1.0, END)
+                if display_method == 1:
+                    answer_entry.delete(0, END)
+                if display_method == 2:
+                    answer.delete(0, END)
+                    choices.delete(0, END)
+                if display_method == 3:
+                    true_false.set(0)
+            else:
+                tkinter.messagebox.showinfo('Error', errMessage)
+        except Exception as e:
+            print(e)
             tkinter.messagebox.showinfo('Error', 'Please, enter data on the require fields')
             
     def show_method(self):
@@ -2644,7 +2721,7 @@ class THREELINE_MENU():
             else: pass
         
             Shared_files = Button(threeline_menu,
-                text="     Shared Folder",
+                text="     Shared Folders",
                 anchor=W,font=fontstyle,
                 command=self.shared_files,
                 border=0,
