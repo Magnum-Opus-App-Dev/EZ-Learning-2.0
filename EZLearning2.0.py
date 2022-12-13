@@ -1,4 +1,4 @@
-import json, uuid, os, customtkinter, pyrebase
+import json, uuid, os, customtkinter, pyrebase, random
 from tkinter import *
 from PIL import ImageTk, Image
 import tkinter.messagebox
@@ -815,7 +815,7 @@ class NOTE_FILES():
 
     def content_features(self, search_image, three_line_image, content_img, 
     notes_fg, notes_bg, indiv_file, btn_img, list_img, side_btn1, 
-    side_btn2, side_btn3, side_btn5, side_btn8, scores):
+    side_btn2, side_btn3, side_btn5, side_btn8, scores, side_btn):
         files_search = Label(self.master,
             image=search_image,
             border=0,
@@ -973,11 +973,11 @@ class NOTE_FILES():
         if self.bg_color == "#121212": 
             self.content_features(self.search_dark, self.threelinemenu_dark, self.contentbg_dark,
             "#F2F2F2", "#2C2C2C", self.indivfile_dark, self.addbtn_dark, "#969696", self.SB1_D, 
-            self.SB2_D, self.SB3_D, self.SB5_D, self.SB8_D, self.score_dark)
+            self.SB2_D, self.SB3_D, self.SB5_D, self.SB8_D, self.score_dark, self.sidebutton_dark)
         elif self.bg_color == "#0d9187": 
             self.content_features(self.search_light, self.threelinemenu_light, self.contentbg_light, 
             "#0c325c", "#12c8bb", self.indivfile_light, self.addbtn_light, "#92d050", self.SB1_L, 
-            self.SB2_L, self.SB3_L, self.SB5_L, self.SB8_L, self.score_light)
+            self.SB2_L, self.SB3_L, self.SB5_L, self.SB8_L, self.score_light,self.sidebutton_light)
 
     def side_menu(self):
         THREELINE_MENU(self.master, visit=None)
@@ -1617,7 +1617,7 @@ class QUIZ_FILES(NOTE_FILES):
         super().add_frame()
     
     def content_features(self, search_image, three_line_image, content_img, quiz_fg, quiz_bg, indiv_file, btn_img, list_img, side_btn1, 
-    side_btn2, side_btn3, side_btn5, side_btn8, scores):
+    side_btn2, side_btn3, side_btn5, side_btn8, scores, side_btn):
         files_search = Label(self.master,
             image=search_image,
             border=0,
@@ -1701,6 +1701,10 @@ class QUIZ_FILES(NOTE_FILES):
 
             deleteside_btn.config(state=state)
             deleteside_btn.config(command= lambda var=data: self.delete(var))
+
+            playside_btn.config(state=state)
+            playside_btn.config(command= lambda var= data, cont_img = content_img, cont_bg = quiz_bg, 
+            side = side_btn, cont_fg = quiz_fg, lst = list_img, line = three_line_image: TAKE_QUIZ(self.master, var, cont_img, cont_bg, side, cont_fg, lst, line))
             
         if self.rows != None:
             print(self.rows)
@@ -1745,13 +1749,13 @@ class QUIZ_FILES(NOTE_FILES):
             bg=quiz_bg,
             fg=quiz_fg)
         text_label.place(x=57, y=250)
-        renameside_btn = Button(self.master,
+        playside_btn = Button(self.master,
             image=side_btn8,
             border=0,
             bg=quiz_bg,
             state='disabled',
             activebackground=quiz_bg)
-        renameside_btn.place(x=46, y=204)
+        playside_btn.place(x=46, y=204)
         text_label = Label(self.master,
             text="Rename",
             bg=quiz_bg,
@@ -1813,6 +1817,257 @@ class QUIZ_FILES(NOTE_FILES):
     def quiz_edit(self, var):
         QUIZ_EDITOR(self.master, var)
 
+class TAKE_QUIZ():
+    def __init__(self, master, data, content_img, content_bg, side_btn, content_fg, list_img, three_line_image):
+        self.master = master
+        self.content_img = content_img
+        self.data = data
+        self.content_bg = content_bg
+        self.side_btn = side_btn
+        self.content_fg = content_fg
+        self.list_img = list_img
+        self.three_line_image = three_line_image
+        self.bg_color = self.master.cget("bg")
+
+        if self.bg_color == "#121212": 
+            self.color = "#2c2c2c"
+            self.fg = "#a4a4a4"
+        elif self.bg_color == "#0d9187": 
+            self.color = "#12c8bb"
+            self.fg = "#0c325c"
+        
+        self.backframe()
+        self.play()
+
+    def backframe(self):
+        main_frame = Frame(self.master,
+        width=900,
+        height=500,
+        background=self.master.cget("bg"))
+        main_frame.place(x=0, y=0)
+    
+    def play(self):
+    
+        global uid, answer, items
+
+        uid = ''
+        answer = ''
+        items = []
+
+        search_editor = Button(self.master,
+            image=self.three_line_image,
+            command=self.side_menu,
+            border=0,
+            bg=self.bg_color,
+            activebackground=self.bg_color)
+        search_editor.place(x=7,y=10)
+
+        no_questions = []
+        content_label = Label(self.master,
+            image=self.content_img,
+            border=0,)
+        content_label.place(x=23,y=45)
+
+        quizzes = db.child("Quiz Editor").get()
+        if quizzes.val() is not None:
+            for quiz in quizzes:
+                if quiz.val()["q_topic_id"] == self.data['topicId']:
+                    no_questions.append(quiz.val())
+        
+        inline_frame = Frame(content_label,
+                             width=40,
+                             height=500,
+                             bg=self.content_bg)
+        inline_frame.place(x=15, y=35)
+
+        second_line_frame = Frame(inline_frame,
+                                  bg=self.content_bg)
+        second_line_frame.pack(fill=BOTH, expand=1)
+
+        inline_canvas = Canvas(second_line_frame,
+                               width=65,
+                               height=380,
+                               background=self.content_bg,
+                               highlightthickness=0)
+        inline_canvas.pack(side=LEFT, fill=BOTH, expand=1)
+
+        if len(no_questions) > 6:
+            scrollbar = ttk.Scrollbar(second_line_frame,
+                                      orient=VERTICAL,
+                                      command=inline_canvas.yview)
+            scrollbar.pack(side=RIGHT, fill=Y, padx=2, pady=1)
+
+            inline_canvas.configure(yscrollcommand=scrollbar.set)
+            inline_canvas.bind('<Configure>',
+                               lambda e: inline_canvas.configure(scrollregion=inline_canvas.bbox("all")))
+            inline_canvas.bind_all('<MouseWheel>',
+                                   lambda event: inline_canvas.yview('scroll', int(-2 * (event.delta / 120)), 'units'))
+
+        another_frame = Frame(inline_canvas, bg=self.content_bg)
+        inline_canvas.create_window((0, 0), window=another_frame, anchor='nw')
+
+        def dashboard(options):
+
+            global uid, answer, items
+
+            inline_frame = Frame(self.master,
+                            width=727,
+                            height=340,
+                            bg=self.content_bg)
+            inline_frame.place(x=120, y=70)
+
+            content = Text(inline_frame, font=("arial", 18), width=56, height=7, bg=self.content_bg, fg="white", wrap=WORD)
+            content.insert(END, options['question'])
+            content.config(state=DISABLED)
+            content.place(x=3, y=5)
+
+            finished = Button(self.master,
+            text="Submit",
+            border=0,
+            bg=self.bg_color,
+            command=None,
+            width=8,
+            foreground='white',
+            font=("arial", 13),
+            activebackground=self.bg_color)
+            finished.place(x=775, y=20)
+
+            if options['type'] == 1:
+                answer_entry = Entry(inline_frame,
+                bg=self.content_bg,
+                foreground=self.content_fg,
+                width=40,
+                font= ("Arial", 25, "bold"))
+                answer_entry.place(x=4, y=250)
+                # answer = 'method 1'
+
+            if options['type'] == 2:
+                # answer = 'method 2'
+                
+                def show_details():
+                    if ans.get() == container[0]: print(ans.get())
+                    if ans.get() == container[1]: print(ans.get())
+                    if ans.get() == container[2]: print(ans.get())
+                    if ans.get() == container[3]: print(ans.get())
+
+                container = options['choices']
+                random.shuffle(container)
+
+                ans = StringVar()
+
+                choice1 = Radiobutton(self.master, text=container[0],
+                foreground=self.fg,
+                activebackground=self.content_bg,
+                bg=self.content_bg,
+                variable=ans, 
+                value=container[0],
+                font=("arial", 14),
+                command=show_details).place(x=250, y=299)
+                
+                choice2 = Radiobutton(self.master, text=container[1],
+                foreground=self.fg,
+                activebackground=self.content_bg,
+                bg=self.content_bg,
+                variable=ans, 
+                value=container[1],
+                font=("arial", 14),
+                command=show_details).place(x=530, y=299)
+                
+                choice3 = Radiobutton(self.master, text=container[2],
+                foreground=self.fg,
+                activebackground=self.content_bg,
+                bg=self.content_bg,
+                variable=ans, 
+                value=container[2],
+                font=("arial", 14),
+                command=show_details).place(x=250, y=350)
+                
+                choice4 = Radiobutton(self.master, text=container[3],
+                foreground=self.fg,
+                activebackground=self.content_bg,
+                bg=self.content_bg,
+                variable=ans, 
+                value=container[3],
+                font=("arial", 14),
+                command=show_details).place(x=530, y=350)
+
+            if options['type'] == 3:
+                # answer = 'method 3'
+
+                boolean = IntVar()
+
+                def show_boolean():
+                    if boolean.get() == 1: print(boolean.get())
+                    if boolean.get() == 2: print(boolean.get())
+
+                choice5 = Radiobutton(self.master, text="True",
+                foreground=self.fg,
+                activebackground=self.content_bg,
+                bg=self.content_bg,
+                variable=boolean, 
+                value=1,
+                font=("arial", 14),
+                command=show_boolean).place(x=300, y=299)
+                choice6 = Radiobutton(self.master, text="False",
+                foreground=self.fg,
+                activebackground=self.content_bg,
+                bg=self.content_bg,
+                variable=boolean, 
+                value=2,
+                font=("arial", 14),
+                command=show_boolean).place(x=555, y=299)
+
+            # if uid == '':
+            #     uid = options['quiz_id']
+            #     items.append({'id': uid, 'answer': ''})
+            #     print(items)
+            # else:
+            #     for ii in items:
+            #         if ii['id'] == uid:
+            #             ii['answer'] = answer
+            #             break
+
+            #     uid = options['quiz_id']
+            #     isFound = False
+            #     for ii in items:
+            #         if ii['id'] == uid:
+            #             isFound = True
+            #             break
+            #     if isFound is False:
+            #         items.append({'id': uid, 'answer': ''})
+            #     print(items)
+
+        if no_questions != None:
+            numberQuestions = 1
+            for i in no_questions:
+                line_frame = Canvas(another_frame,
+                                    highlightthickness=0)
+                line_frame.pack(pady=5, padx=11)
+                Label(line_frame,
+                    image=self.side_btn,
+                    border=0,
+                    bg=self.content_bg,
+                    activebackground=self.content_bg).pack()
+                Button(line_frame,
+                    text= numberQuestions,
+                    font=("Arial", 15),
+                    justify="left",
+                    anchor="w",
+                    fg=self.content_fg,
+                    borderwidth=0,
+                    relief=FLAT,
+                    width=20,
+                    background=self.list_img,
+                    command=lambda data = i: dashboard(data),
+                    activebackground=self.list_img,
+                    height=1).place(x=10, y=5)
+                numberQuestions += 1
+        
+    def side_menu(self):
+        THREELINE_MENU(self.master, visit=None)
+    
+
+
 class QUIZ_EDITOR():
     def __init__(self, master, data=None):
         self.master = master
@@ -1835,6 +2090,13 @@ class QUIZ_EDITOR():
         self.bg_color = self.master.cget("bg")
 
         self.data = data
+
+        if self.bg_color == "#121212": 
+            self.color = "#2c2c2c"
+            self.fg = "#a4a4a4"
+        elif self.bg_color == "#0d9187": 
+            self.color = "#12c8bb"
+            self.fg = "#0c325c"
 
         self.backframe()
         self.features()
@@ -1859,136 +2121,6 @@ class QUIZ_EDITOR():
         else:
             print("ERROR: Something Went Wrong")
     
-    def play(self, content_img, topicId, content_bg, side_btn, content_fg, list_img):
-
-        global uid, answer, items
-
-        uid = ''
-        answer = ''
-        items = []
-
-        no_questions = []
-        content_label = Label(self.master,
-            image=content_img,
-            border=0,)
-        content_label.place(x=23,y=45)
-
-        quizzes = db.child("Quiz Editor").get()
-        if quizzes.val() is not None:
-            for quiz in quizzes:
-                if quiz.val()["q_topic_id"] == topicId:
-                    no_questions.append(quiz.val())
-        
-        inline_frame = Frame(content_label,
-                             width=40,
-                             height=500,
-                             bg=content_bg)
-        inline_frame.place(x=15, y=35)
-
-        second_line_frame = Frame(inline_frame,
-                                  bg=content_bg)
-        second_line_frame.pack(fill=BOTH, expand=1)
-
-        inline_canvas = Canvas(second_line_frame,
-                               width=65,
-                               height=380,
-                               background=content_bg,
-                               highlightthickness=0)
-        inline_canvas.pack(side=LEFT, fill=BOTH, expand=1)
-
-        if len(no_questions) > 6:
-            scrollbar = ttk.Scrollbar(second_line_frame,
-                                      orient=VERTICAL,
-                                      command=inline_canvas.yview)
-
-            inline_canvas.configure(yscrollcommand=scrollbar.set)
-            inline_canvas.bind('<Configure>',
-                               lambda e: inline_canvas.configure(scrollregion=inline_canvas.bbox("all")))
-            inline_canvas.bind_all('<MouseWheel>',
-                                   lambda event: inline_canvas.yview('scroll', int(-2 * (event.delta / 120)), 'units'))
-
-        another_frame = Frame(inline_canvas,
-                              bg=content_bg)
-        inline_canvas.create_window((0, 0), window=another_frame, anchor='nw')
-
-        def dashboard(options):
-
-            global uid, answer, items
-
-            inline_frame = Frame(self.master,
-                            width=727,
-                            height=340,
-                            bg=content_bg)
-            inline_frame.place(x=120, y=70)
-
-            content = Text(inline_frame, font=("arial", 17), width=55, height=7, bg=content_bg, fg="white", wrap=WORD)
-            content.insert(END, options['question'])
-            content.config(state=DISABLED)
-            content.place(x=8, y=5)
-            
-
-            if options['type'] == 1:
-                answer_entry = Entry(inline_frame,
-                bg=content_bg,
-                foreground=content_fg,
-                width=40,
-                font= ("Arial", 25, "bold"))
-                answer_entry.place(x=4, y=250)
-                answer = 'method 1'
-
-            if options['type'] == 2:
-                answer = 'method 2'
-
-            if options['type'] == 3:
-                answer = 'method 3'
-
-            if uid == '':
-                uid = options['quiz_id']
-                items.append({'id': uid, 'answer': ''})
-                print(items)
-            else:
-                for ii in items:
-                    if ii['id'] == uid:
-                        ii['answer'] = answer
-                        break
-
-                uid = options['quiz_id']
-                isFound = False
-                for ii in items:
-                    if ii['id'] == uid:
-                        isFound = True
-                        break
-                if isFound is False:
-                    items.append({'id': uid, 'answer': ''})
-                print(items)
-                
-        if no_questions != None:
-            numberQuestions = 1
-            for i in no_questions:
-                line_frame = Canvas(another_frame,
-                                    highlightthickness=0)
-                line_frame.pack(pady=5, padx=11)
-                Label(line_frame,
-                    image=side_btn,
-                    border=0,
-                    bg=content_bg,
-                    activebackground=content_bg).pack()
-                Button(line_frame,
-                    text= numberQuestions,
-                    font=("Arial", 15),
-                    justify="left",
-                    anchor="w",
-                    fg=content_fg,
-                    borderwidth=0,
-                    relief=FLAT,
-                    width=20,
-                    background=list_img,
-                    command=lambda data = i: dashboard(data),
-                    activebackground=list_img,
-                    height=1).place(x=10, y=5)
-                numberQuestions += 1
-
-            
     def content_features(self, three_line_image, content_img, content_fg, content_bg, side_btn5, side_btn6, side_btn10):
         
         global add_question_entry
@@ -2069,7 +2201,7 @@ class QUIZ_EDITOR():
 
         method_one = Radiobutton(self.master, 
             text="Identification",
-            foreground=content_fg,
+            foreground=self.fg,
             bg=content_bg,
             variable=self.r1_v, value=1,
             font=("arial", 12),
@@ -2078,7 +2210,7 @@ class QUIZ_EDITOR():
         method_one.place(x=190, y=200)
         method_two = Radiobutton(self.master, 
             text="Multiple Choice",
-            foreground=content_fg,
+            foreground=self.fg,
             bg=content_bg,
             variable=self.r1_v, value=2,
             font=("arial", 12),
@@ -2087,7 +2219,7 @@ class QUIZ_EDITOR():
         method_two.place(x=415, y=200)
         method_three = Radiobutton(self.master, 
             text="True or False",
-            foreground=content_fg,
+            foreground=self.fg,
             bg=content_bg,
             variable=self.r1_v, value=3,
             font=("arial", 12),
@@ -2109,27 +2241,6 @@ class QUIZ_EDITOR():
             font=("arial", 13))
         new_question.place(x=695, y=410)
         
-        preview_btn = Button(self.master,
-            text="Preview",
-            border=0,
-            bg=content_bg,
-            command=None,
-            width=8,
-            foreground=content_fg,
-            font=("arial", 13),
-            activebackground=content_bg)
-        preview_btn.place(x=120, y=415)
-        next_btn = Button(self.master,
-            text="Next Page",
-            border=0,
-            bg=content_bg,
-            command=None,
-            width=8,
-            foreground=content_fg,
-            font=("arial", 13),
-            activebackground=content_bg)
-        next_btn.place(x=200, y=415)
-
     def features(self):
         if self.bg_color == "#121212": 
             self.content_features(self.threelinemenu_dark, self.contentbg_dark, "#F2F2F2", "#2C2C2C", self.SB5_D, self.SB6_D, self.SB10_D)
@@ -2201,21 +2312,16 @@ class QUIZ_EDITOR():
             tkinter.messagebox.showinfo('Error', 'Please, enter data on the require fields')
             
     def show_method(self):
+        
         global display_method, answer_entry, answer, true_false, choices
 
-        if self.bg_color == "#121212": 
-            color = "#2c2c2c"
-            fg = "#a4a4a4"
-        elif self.bg_color == "#0d9187": 
-            color = "#12c8bb"
-            fg = "#0c325c"
         display_method = self.r1_v.get()
         
         if display_method == 1:
             self.blockframe()
             answer_entry = Entry(self.master,
-                bg=color,
-                foreground=fg,
+                bg=self.color,
+                foreground=self.fg,
                 width=55, 
                 font=14)
             answer_entry.place(x=235, y=305)
@@ -2223,24 +2329,24 @@ class QUIZ_EDITOR():
         elif display_method == 2:
             self.blockframe()
             answer_label = Label(self.master, text="Answer:",
-                foreground=fg,
-                bg=color,
+                foreground=self.fg,
+                bg=self.color,
                 font=("arial", 14))
             answer_label.place(x=201, y=291)
             choices_label = Label(self.master, text="Choices:",
-                foreground=fg,
-                bg=color,
+                foreground=self.fg,
+                bg=self.color,
                 font=("arial", 14))
             choices_label.place(x=195, y=316)
             answer = Entry(self.master,
-                bg=color,
-                foreground=fg,
+                bg=self.color,
+                foreground=self.fg,
                 width=55, 
                 font=10)
             answer.place(x=280, y=295)
             choices = Entry(self.master,
-                bg=color,
-                foreground=fg,
+                bg=self.color,
+                foreground=self.fg,
                 width=55,
                 font=10)
             choices.place(x=280, y=317)
@@ -2250,15 +2356,15 @@ class QUIZ_EDITOR():
             true_false = IntVar()
             true_false.set(None)
             self.rb1 = Radiobutton(self.master, text="True",
-                foreground=fg,
-                bg=color,
+                foreground=self.fg,
+                bg=self.color,
                 variable=true_false, 
                 value=1,
                 font=("arial", 14),
                 command=self.show_true_false).place(x=325, y=299)
             self.rb2 = Radiobutton(self.master, text="False",
-                foreground=fg,
-                bg=color,
+                foreground=self.fg,
+                bg=self.color,
                 variable=true_false, 
                 value=2,
                 font=("arial", 14),
