@@ -851,6 +851,20 @@ class NOTE_FILES():
                                    fg="#e9e9e9")
         files_entry_search.place(x=100, y=30)
 
+        my_folder = ''
+        folderTitle= db.child("Folders").get()
+        if folderTitle.val() is not None:
+            for folder in folderTitle:
+                if folder.val()['folderId'] == self.data['folderId']:
+                    my_folder = folder.val()['name']
+
+        text_label = Label(self.master,
+            font = ("Arial", 20),
+            text=my_folder,
+            bg=self.bg_color,
+            fg=notes_fg)
+        text_label.place(x=35, y=80)
+
         add_btn = Button(self.master,
                          image=btn_img,
                          command=self.add_frame,
@@ -1073,6 +1087,22 @@ class NOTE_EDITOR():
         else:
             background = "#12c8bb"
             foreground = "Black"
+        
+        my_folder = ''
+        folderTitle= db.child("Topics").get()
+        if folderTitle.val() is not None:
+            for folder in folderTitle:
+                if folder.val()['topicId'] == self.data['topicId']:
+                    my_folder = folder.val()['name']
+        
+        text_label = Label(self.master,
+            font = ("Arial", 20),
+            text=my_folder,
+            bg=self.bg_color,
+            fg=notes_fg)
+        text_label.place(x=50, y=12)
+
+
         Text_Entry = Text(self.master,
                           bg=background,
                           height=19,
@@ -1683,6 +1713,7 @@ class QUIZ_FILES(NOTE_FILES):
     def showtable(self):
         def cancel():
             self.main_frame.destroy()
+            QUIZ_FILES(self.master, self.data)
 
         if self.master.cget("bg") == "#121212":
             mesbox_image = self.scoreBox_dark
@@ -1730,8 +1761,9 @@ class QUIZ_FILES(NOTE_FILES):
         if scores.val() is not None:
             i = 0
             for score in scores:
-                i += 1
-                listbox.insert(i, f"{score.val()['time']}          Score:{score.val()['score']}         {score.val()['name']}")
+                if score.val()['uid'] == userId:
+                    i += 1
+                    listbox.insert(i, f"{score.val()['time']}          Score: {score.val()['score']}         {score.val()['name']}")
         listbox.place(x=36, y=49)
 
     def button_file(self, title, command, var=None):
@@ -1837,6 +1869,20 @@ class QUIZ_FILES(NOTE_FILES):
                                    borderwidth=0,
                                    fg="#e9e9e9")
         files_entry_search.place(x=100, y=30)
+
+        my_folder = ''
+        folderTitle= db.child("Quiz Folders").get()
+        if folderTitle.val() is not None:
+            for folder in folderTitle:
+                if folder.val()['folderId'] == self.data['folderId']:
+                    my_folder = folder.val()['name']
+
+        text_label = Label(self.master,
+            font = ("Arial", 20),
+            text=my_folder,
+            bg=self.bg_color,
+            fg=quiz_fg)
+        text_label.place(x=35, y=80)
 
         add_btn = Button(self.master,
                          image=btn_img,
@@ -2140,7 +2186,7 @@ class TAKE_QUIZ():
             call_dt = today.strftime(f"%m/%d/%Y, %I:%M:%S %p")
 
             scoreId = str(uuid.uuid4())
-            scores = Scores(scoreId, _data['topicId'], _data['name'], call_dt, correct_answer)
+            scores = Scores(scoreId, _data['topicId'], _data['name'], call_dt, correct_answer, userId)
             db.child("Scores").child(scoreId).set(scores.__dict__)
             
             content_label = Label(self.master,
@@ -2437,6 +2483,21 @@ class QUIZ_EDITOR():
 
         global add_question_entry
 
+        my_folder = ''
+        folderTitle= db.child("Quiz Topics").get()
+        if folderTitle.val() is not None:
+            for folder in folderTitle:
+                if folder.val()['topicId'] == self.data['topicId']:
+                    my_folder = folder.val()['name']
+        
+        text_label = Label(self.master,
+            font = ("Arial", 20),
+            text=my_folder,
+            bg=self.bg_color,
+            fg=content_fg)
+        text_label.place(x=50, y=12)
+
+
         search_editor = Button(self.master,
                                image=three_line_image,
                                command=self.side_menu,
@@ -2490,7 +2551,7 @@ class QUIZ_EDITOR():
                               image=side_btn10,
                               border=0,
                               bg=content_bg,
-                              command=None,
+                              command=self.clear,
                               activebackground=content_bg)
         playside_btn.place(x=46, y=225)
         text_label = Label(self.master,
@@ -2570,6 +2631,16 @@ class QUIZ_EDITOR():
                               image=bg,
                               border=0, )
         content_label.place(x=143, y=260)
+    
+    def clear(self):
+        add_question_entry.delete(1.0, END)
+        if display_method == 1:
+            answer_entry.delete(0, END)
+        if display_method == 2:
+            answer.delete(0, END)
+            choices.delete(0, END)
+        if display_method == 3:
+            true_false.set(0)
 
     def add_question(self):
         try:
@@ -2627,7 +2698,7 @@ class QUIZ_EDITOR():
         except Exception as e:
             print(e)
             tkinter.messagebox.showinfo('Error', 'Please, enter data on the require fields')
-
+    
     def show_method(self):
 
         global display_method, answer_entry, answer, true_false, choices
