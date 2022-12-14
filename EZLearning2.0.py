@@ -2771,8 +2771,6 @@ class PROFILE_SETTINGS():
         self.settings_template_light = ImageTk.PhotoImage(Image.open("images/profilesettings_light.png"))
         self.user_icon_dark = ImageTk.PhotoImage(Image.open("images/defaultuserprofile_dark.png"))
         self.user_icon_light = ImageTk.PhotoImage(Image.open("images/defaultuserprofile_light.png"))
-        self.user_name_dark = ImageTk.PhotoImage(Image.open("images/username_dark.png"))
-        self.user_name_light = ImageTk.PhotoImage(Image.open("images/username_light.png"))
         self.bg_color = self.master.cget("bg")
         self.backframe()
         self.side_menu_icon()
@@ -2785,7 +2783,7 @@ class PROFILE_SETTINGS():
                                background= self.bg_color)
         self.mainframe.place(x=0, y=0)
 
-    def side_menu_icon_content(self, three_line_menu, settings_template, icon, name):
+    def side_menu_icon_content(self, three_line_menu, settings_template, icon):
         profile_menu = Button(self.master,
                               image=three_line_menu,
                               command=self.side_menu,
@@ -2794,56 +2792,11 @@ class PROFILE_SETTINGS():
                               activebackground= self.bg_color)
         profile_menu.place(x=5, y=8)
 
-        profilesettings_temp = Label(self.master,
-                                     image=settings_template,
-                                     border=0, )
-        profilesettings_temp.place(x=240, y=45)
-
-        self.profile_content(icon, name)
-
-    def profile_content(self, user_icon, user_name):
-        edit_profile = customtkinter.CTkLabel(self.master,
-                                              text="Edit Profile:",
-                                              text_font=("Roboto Medium", -16))
-        edit_profile.place(x=180, y=25)
-
-        usericon = Label(self.master,
-                         image=user_icon,
-                         border=0,
-                         bg=self.bg_color)
-        usericon.place(x=410, y=95)
-
-        acc_username = customtkinter.CTkLabel(self.master,
-                                              text="Username: ")
-        acc_username.place(x=112, y=65)
-
-        username = Label(self.master,
-                         image=user_name,
-                         border=0,
-                         bg=self.bg_color)
-        username.place(x=30, y=12)
-
-        acc_gender = customtkinter.CTkLabel(self.master,
-                                            text="Email: ")
-        acc_gender.place(x=112, y=65)
-
-        def savechange(self):
-            pass
-
-        savechanges_btn = Button(self.master,
-                                 text='Delete Account',
-                                 font=("Roboto", 11),
-                                 command=savechange,
-                                 borderwidth=0,
-                                 relief=FLAT,
-                                 width=8, )
-        savechanges_btn.place(x=74, y=122)
-
     def side_menu_icon(self):
         if self.master.cget("bg") == "#121212":
-            self.side_menu_icon_content(self.threelinemenu_dark, self.settings_template_dark, self.user_icon_dark, self.user_name_dark)
+            self.side_menu_icon_content(self.threelinemenu_dark, self.settings_template_dark, self.user_icon_dark)
         elif self.master.cget("bg") == "#0d9187":
-            self.side_menu_icon_content(self.threelinemenu_light, self.settings_template_light, self.user_icon_light, self.user_name_light)
+            self.side_menu_icon_content(self.threelinemenu_light, self.settings_template_light, self.user_icon_light)
 
     def side_menu(self):
         THREELINE_MENU(self.master, visit='Profile')
