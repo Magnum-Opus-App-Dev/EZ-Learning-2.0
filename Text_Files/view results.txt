@@ -1,6 +1,14 @@
-You score 0 out of 1
+You score 2 out of 3
+
+Questions: szs
+Your Answer: ddd
+Correct Answer: ddd
 
 Questions: sadddd
-Your Answer: ccc
+Your Answer: dasd
 Correct Answer: cccc
+
+Questions: ddddd
+Your Answer: True
+Correct Answer: True
 

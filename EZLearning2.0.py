@@ -2882,8 +2882,6 @@ class SHARED_FILES():
         self.quizbtn_light = ImageTk.PhotoImage(Image.open("images/quizzesfolder_lightshared.png"))
         self.folder_dark = ImageTk.PhotoImage(Image.open("images/folder_dark.png"))
         self.folder_light = ImageTk.PhotoImage(Image.open("images/folder_light.png"))
-        self.blocker_dark = ImageTk.PhotoImage(Image.open("images/blocker_dark.png"))
-        self.blocker_light = ImageTk.PhotoImage(Image.open("images/blocker_light.png"))
         self.sidebutton_dark = ImageTk.PhotoImage(Image.open("images/side_button_dark.png"))
         self.sidebutton_light = ImageTk.PhotoImage(Image.open("images/side_button_light.png"))
         self.bg_color = self.master.cget("bg")
@@ -2932,7 +2930,7 @@ class SHARED_FILES():
         self.click_button("Folder Name", 'submit')
 
     def content_features(self, search_img, content_img, folder_img, menu_img, afg, abg,
-                         fg, bg, side_btn, blocker):
+                         fg, bg):
         row = 0
         column = 0
 
@@ -3077,20 +3075,16 @@ class SHARED_FILES():
     def features(self):
         if self.bg_color == "#121212" and self.type == 'notes':
             self.content_features(self.search_dark, self.contentbg_dark, self.folder_dark,
-                                  self.threelinemenu_dark, self.bg_color, "#A6A6A6", "#F2F2F2", "#2C2C2C",
-                                  self.sidebutton_dark, self.blocker_dark)
+                                  self.threelinemenu_dark, self.bg_color, "#A6A6A6", "#F2F2F2", "#2C2C2C")
         elif self.bg_color == "#0d9187" and self.type == 'notes':
             self.content_features(self.search_light, self.contentbg_light, self.folder_light,
-                                  self.threelinemenu_light, "#F2F2F2", "#0c325c", "#0c325c", "#12c8bb",
-                                  self.sidebutton_light, self.blocker_light)
+                                  self.threelinemenu_light, "#F2F2F2", "#0c325c", "#0c325c", "#12c8bb")
         elif self.bg_color == "#121212" and self.type == 'quiz':
             self.content_features(self.search_dark, self.quizbtn_dark, self.folder_dark,
-                                  self.threelinemenu_dark, self.bg_color, "#A6A6A6", "#F2F2F2", "#2C2C2C",
-                                  self.sidebutton_dark, self.blocker_dark)
+                                  self.threelinemenu_dark, self.bg_color, "#A6A6A6", "#F2F2F2", "#2C2C2C")
         elif self.bg_color == "#0d9187" and self.type == 'quiz':
             self.content_features(self.search_light, self.quizbtn_light, self.folder_light,
-                                  self.threelinemenu_light, "#F2F2F2", "#0c325c", "#0c325c", "#12c8bb",
-                                  self.sidebutton_light, self.blocker_light)
+                                  self.threelinemenu_light, "#F2F2F2", "#0c325c", "#0c325c", "#12c8bb")
 
     def side_menu(self):
         THREELINE_MENU(self.master, visit='Share')
@@ -3171,8 +3165,6 @@ class THREELINE_MENU():
                 self.quiz_folder()
             elif self.visit == 'Share':
                 self.shared_files()
-            elif self.visit == 'Bin':
-                self.recycle_bin()
             elif self.visit == 'Profile':
                 self.profile_settings()
             else:
@@ -3211,7 +3203,7 @@ class THREELINE_MENU():
                         activebackground=bg_color)
         closed.place(x=7, y=10)
 
-        def side_buttons(note, quiz, share, bin, profile, logout, state):
+        def side_buttons(note, quiz, share, profile, logout, state):
 
             no_state = []
             for x in state: no_state.append(x)
@@ -3259,7 +3251,8 @@ class THREELINE_MENU():
 
             Shared_files = Button(threeline_menu,
                                   text="     Shared Folders",
-                                  anchor=W, font=fontstyle,
+                                  anchor=W, 
+                                  font=fontstyle,
                                   command=self.shared_files,
                                   border=0,
                                   fg=fg_color,
@@ -3289,10 +3282,10 @@ class THREELINE_MENU():
                                       activebackground=activebg,
                                       width=20,
                                       disabledforeground=fg_color,
-                                      state=no_state[4])
+                                      state=no_state[3])
             Profile_Settings.place(x=0, y=219)
 
-            if no_state[4] != 'disabled':
+            if no_state[3] != 'disabled':
                 Profile_Settings.bind("<Enter>", lambda _: on_entera(None, Profile_Settings))
                 Profile_Settings.bind("<Leave>", lambda _: on_leavea(None, Profile_Settings))
             else:
@@ -3310,10 +3303,10 @@ class THREELINE_MENU():
                             activebackground=activebg,
                             disabledforeground=fg_color,
                             width=20,
-                            state=no_state[5])
+                            state=no_state[4])
             Logout.place(x=0, y=267)
 
-            if no_state[5] != 'disabled':
+            if no_state[4] != 'disabled':
                 Logout.bind("<Enter>", lambda _: on_entera(None, Logout))
                 Logout.bind("<Leave>", lambda _: on_leavea(None, Logout))
             else:
@@ -3328,28 +3321,25 @@ class THREELINE_MENU():
             button['foreground'] = activefg
 
         if self.visit == 'Note':
-            notes_state = ['disabled', 'normal', 'normal', 'normal', 'normal', 'normal']
-            side_buttons(clickedbg, bg_color, bg_color, bg_color, bg_color, bg_color, notes_state)
+            notes_state = ['disabled', 'normal', 'normal', 'normal', 'normal']
+            side_buttons(clickedbg, bg_color, bg_color, bg_color, bg_color, notes_state)
         elif self.visit == 'Quiz':
-            quiz_state = ['normal', 'disabled', 'normal', 'normal', 'normal', 'normal']
-            side_buttons(bg_color, clickedbg, bg_color, bg_color, bg_color, bg_color, quiz_state)
+            quiz_state = ['normal', 'disabled', 'normal', 'normal', 'normal']
+            side_buttons(bg_color, clickedbg, bg_color, bg_color, bg_color, quiz_state)
 
         elif self.visit == 'Share':
-            share_state = ['normal', 'normal', 'disabled', 'normal', 'normal', 'normal']
-            side_buttons(bg_color, bg_color, clickedbg, bg_color, bg_color, bg_color, share_state)
+            share_state = ['normal', 'normal', 'disabled', 'normal', 'normal']
+            side_buttons(bg_color, bg_color, clickedbg, bg_color, bg_color, share_state)
 
-        elif self.visit == 'Bin':
-            bin_state = ['normal', 'normal', 'normal', 'disabled', 'normal', 'normal']
-            side_buttons(bg_color, bg_color, bg_color, clickedbg, bg_color, bg_color, bin_state)
         elif self.visit == 'Profile':
-            profile_state = ['normal', 'normal', 'normal', 'normal', 'disabled', 'normal']
-            side_buttons(bg_color, bg_color, bg_color, bg_color, clickedbg, bg_color, profile_state)
+            profile_state = ['normal', 'normal', 'normal', 'disabled', 'normal']
+            side_buttons(bg_color, bg_color, bg_color, clickedbg, bg_color, profile_state)
         elif self.visit == 'Logout':
-            logout_state = ['normal', 'normal', 'normal', 'normal', 'normal' 'disabled']
-            side_buttons(bg_color, bg_color, bg_color, bg_color, bg_color, clickedbg, logout_state)
+            logout_state = ['normal', 'normal', 'normal', 'normal', 'disabled']
+            side_buttons(bg_color, bg_color, bg_color, bg_color, clickedbg, logout_state)
         else:
-            general_state = ['normal', 'normal', 'normal', 'normal', 'normal', 'normal']
-            side_buttons(bg_color, bg_color, bg_color, bg_color, bg_color, bg_color, general_state)
+            general_state = ['normal', 'normal', 'normal', 'normal', 'normal']
+            side_buttons(bg_color, bg_color, bg_color, bg_color, bg_color, general_state)
 
 window = Tk()
 window.resizable(False, False)
