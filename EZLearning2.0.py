@@ -103,7 +103,7 @@ class LOGIN():
                                                  text="Login",
                                                  border_width=2,
                                                  fg_color=None,
-                                                 command=self.quicklogin)
+                                                 command=self.login)
         self.enter_btn.place(x=270, y=230)
 
         self.signup_btn = customtkinter.CTkButton(self.template,
