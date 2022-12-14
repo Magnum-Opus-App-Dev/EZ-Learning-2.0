@@ -47,7 +47,7 @@ userId = ''
 # total_questions = 1
 
 
-customtkinter.set_appearance_mode("Dark")
+customtkinter.set_appearance_mode("Light")
 customtkinter.set_default_color_theme("green")
 
 
@@ -64,7 +64,7 @@ class LOGIN():
         self._Email = StringVar()
         self._Password = StringVar()
 
-        self.change_appearance("#121212", "images/logo_darkmode.png", "#bbbbbb")
+        self.change_appearance("#0d9187", "images/logo_lightmode.png", "#bbbbbb")
 
         self.template = customtkinter.CTkFrame(self.master,
                                                width=500,
@@ -117,7 +117,7 @@ class LOGIN():
         self.app_label.place(x=605, y=17)
 
         self.appearance = customtkinter.CTkComboBox(self.master,
-                                                    values=["Dark", "Light"],
+                                                    values=["Light", "Dark"],
                                                     command=self.change_appearance_mode)
         self.appearance.place(x=745, y=15)
 
@@ -163,7 +163,6 @@ class LOGIN():
     def signup(self):
         SIGNUP(self.master)
 
-
 class SIGNUP():
     def __init__(self, master):
         self.master = master
@@ -175,7 +174,7 @@ class SIGNUP():
         self._Password = StringVar()
         self._Confirm_Password = StringVar()
 
-        self.change_appearance("#121212", "images/logo_darkmode.png", "#bbbbbb")
+        self.change_appearance("#0d9187", "images/logo_lightmode.png", "#bbbbbb")
 
         self.template = customtkinter.CTkFrame(self.master,
                                                width=500,
@@ -236,7 +235,7 @@ class SIGNUP():
                                                 text_font=("Roboto Medium", 10))
         self.app_label.place(x=605, y=17)
         self.appearance = customtkinter.CTkComboBox(self.master,
-                                                    values=["Dark", "Light"],
+                                                    values=["Light", "Dark"],
                                                     command=self.change_appearance_mode)
         self.appearance.place(x=745, y=15)
 
@@ -285,7 +284,6 @@ class SIGNUP():
 
     def login(self):
         LOGIN(self.master)
-
 
 class NOTES_FOLDER():
     def __init__(self, master):
@@ -702,7 +700,6 @@ class NOTES_FOLDER():
     def share(self, var):
         self.click_button("Share your folder to: ", "share", var)
 
-
 class NOTE_FILES():
     def __init__(self, master, data=None):
         self.master = master
@@ -1020,7 +1017,6 @@ class NOTE_FILES():
     def notes_edit(self, var):
         NOTE_EDITOR(self.master, var)
 
-
 class NOTE_EDITOR():
     def __init__(self, master, data=None):
         self.master = master
@@ -1143,7 +1139,6 @@ class NOTE_EDITOR():
 
     def export(self):
         pass
-
 
 class QUIZ_FOLDER(NOTES_FOLDER):
     def __init__(self, master):
@@ -1575,6 +1570,8 @@ class QUIZ_FILES(NOTE_FILES):
         self.SB5_L = ImageTk.PhotoImage(Image.open("images/5SB_L.png"))
         self.SB8_D = ImageTk.PhotoImage(Image.open("images/8SB_D.png"))
         self.SB8_L = ImageTk.PhotoImage(Image.open("images/8SB_L.png"))
+        self.closemenu_dark = ImageTk.PhotoImage(Image.open("images/smallclose_dark.png"))
+        self.closemenu_light = ImageTk.PhotoImage(Image.open("images/smallclose_light.png"))
         self.score_dark = ImageTk.PhotoImage(Image.open("images/scores_dark.png"))
         self.score_light = ImageTk.PhotoImage(Image.open("images/scores_light.png"))
         self.scoreBox_dark = ImageTk.PhotoImage(Image.open("images/scoretable_dark.png"))
@@ -1607,41 +1604,49 @@ class QUIZ_FILES(NOTE_FILES):
             bg1 = "#7a7a7a"
             bg2 = "#959595"
             bg3 = "#4b4949"
+            closebtn = self.closemenu_dark
         else:
             mesbox_image = self.scoreBox_light
             fg1 = "Black"
             bg1 = "#005f60"
             bg2 = "#047a7b"
             bg3 = "#014344"
+            closebtn = self.closemenu_light
 
         self.main_frame = Frame(self.master,
-                                width=350,
-                                height=200,
-                                background=self.master.cget("bg"))
+            width=350,
+            height=200,
+            background=self.master.cget("bg"))
         self.main_frame.place(x=276, y=170)
         search_label = Label(self.main_frame,
-                             image=mesbox_image,
-                             border=0,
-                             bg=self.master.cget("bg"))
+            image=mesbox_image,
+            border=0,
+            bg=self.master.cget("bg"))
         search_label.place(x=2, y=2)
-        add_text = Button(self.main_frame,
-                          text="Score History",
-                          font=("Roboto", 14),
-                          bg=self.master.cget("bg"),
-                          borderwidth=0,
-                          command=cancel,
-                          fg=fg1)
+        add_text = Label(self.main_frame,
+            text="Score History",
+            font=("Roboto", 14),
+            bg=self.master.cget("bg"),
+            borderwidth=0,
+            fg=fg1)
         add_text.place(x=121, y=10)
+        closed = Button(self.main_frame,
+            image=closebtn,
+            command=cancel,
+            border=0,
+            bg=self.master.cget("bg"),
+            activebackground=self.master.cget("bg"))
+        closed.place(x=324, y=8)
 
-        listbox = Listbox(self.main_frame, width=43, height=6)
+        listbox = Listbox(self.main_frame, width=46, height=8, border=0, bg="#dfdfdf")
 
         scores = db.child("Scores").get()
         if scores.val() is not None:
             i = 0
             for score in scores:
                 i += 1
-                listbox.insert(i, f"{score.val()['name']}       Score:{score.val()['score']}        {score.val()['time']}")
-        listbox.place(x=44, y=55)
+                listbox.insert(i, f"{score.val()['time']}          Score:{score.val()['score']}         {score.val()['name']}")
+        listbox.place(x=36, y=49)
 
     def button_file(self, title, command, var=None):
         def submit():
@@ -1928,7 +1933,6 @@ class QUIZ_FILES(NOTE_FILES):
     def quiz_edit(self, var):
         QUIZ_EDITOR(self.master, var)
 
-
 class TAKE_QUIZ():
     def __init__(self, master, data, content_bg, side_btn, content_fg, list_img, three_line_image):
         self.master = master
@@ -2084,21 +2088,10 @@ class TAKE_QUIZ():
             with open("Text_Files/view results.txt", "r") as file:
                 Vresult = file.read()
 
-            results = Text(self.master, font=("arial", 15), width=68, height=12)
+            results = Text(self.master, font=("arial", 14), width=65, height=12, bg="#dfdfdf", borderwidth=0, border=0)
             results.insert(END, Vresult)
             results.config(state= DISABLED)
-            results.place(x=71, y=143)
-
-            # preview_btn = Button(self.master,
-            #     text="Score Sheet",
-            #     border=0,
-            #     bg=bg1,
-            #     command=None,
-            #     width=12,
-            #     foreground=fg1,
-            #     font=("arial", 14),
-            #     activebackground=bg1)
-            # preview_btn.place(x=535, y=85)
+            results.place(x=90, y=150)
 
             play_btn = Button(self.master,
                 text="Play Again",
@@ -2121,8 +2114,6 @@ class TAKE_QUIZ():
                 font=("arial", 14),
                 activebackground=bg1)
             play_btn.place(x=780, y=85)
-
-        
         
         def submit():
             ask = tkinter.messagebox.askyesno("Notice!", "Do you want to finish your attempt?")
@@ -2140,7 +2131,7 @@ class TAKE_QUIZ():
             inline_frame.place(x=120, y=70)
 
             content = Text(inline_frame, font=("arial", 18), width=56, height=7, bg=self.content_bg, fg="white",
-                           wrap=WORD)
+                           wrap=WORD, borderwidth=0, border=0)
             content.insert(END, options['question'])
             content.config(state=DISABLED)
             content.place(x=3, y=5)
@@ -2155,7 +2146,7 @@ class TAKE_QUIZ():
                               foreground='white',
                               font=("arial", 13),
                               activebackground=self.bg_color)
-            finished.place(x=775, y=20)
+            finished.place(x=780, y=20)
 
             def saveItems(_answer):
                 for ii in items:
@@ -2181,9 +2172,9 @@ class TAKE_QUIZ():
                 answer_entry = Entry(inline_frame,
                                      bg=self.content_bg,
                                      foreground=self.content_fg,
-                                     width=40,
-                                     font=("Arial", 25, "bold"))
-                answer_entry.place(x=4, y=250)
+                                     width=47,
+                                     font=("Arial", 20, "bold"))
+                answer_entry.place(x=12, y=250)
                 answer_entry.bind('<KeyRelease>', callback)
                 answer_entry.insert(0, answer)
 
@@ -2279,7 +2270,7 @@ class TAKE_QUIZ():
             for i in no_questions:
                 line_frame = Canvas(another_frame,
                                     highlightthickness=0)
-                line_frame.pack(pady=5, padx=11)
+                line_frame.pack(pady=5, padx=10)
                 Label(line_frame,
                       image=self.side_btn,
                       border=0,
@@ -2296,13 +2287,12 @@ class TAKE_QUIZ():
                        width=20,
                        background=self.list_img,
                        command=lambda data=i: dashboard(data),
-                       activebackground=self.list_img,
-                       height=1).place(x=10, y=5)
+                       activebackground="Black",
+                       height=1).place(x=15, y=5)
                 numberQuestions += 1
 
     def side_menu(self):
         THREELINE_MENU(self.master, visit=None)
-
 
 class QUIZ_EDITOR():
     def __init__(self, master, data=None):
@@ -2615,7 +2605,6 @@ class QUIZ_EDITOR():
     def side_menu(self):
         THREELINE_MENU(self.master, visit=None)
 
-
 class RECYCLE_BIN():
     def __init__(self, master):
         self.master = master
@@ -2668,7 +2657,6 @@ class RECYCLE_BIN():
 
     def side_menu(self):
         THREELINE_MENU(self.master, visit='Bin')
-
 
 class PROFILE_SETTINGS():
     def __init__(self, master):
@@ -2753,7 +2741,6 @@ class PROFILE_SETTINGS():
     def side_menu(self):
         THREELINE_MENU(self.master, visit='Profile')
 
-
 class LOGOUT():
     def __init__(self, master):
         self.master = master
@@ -2775,7 +2762,6 @@ class LOGOUT():
         elif response == False:
             pass
 
-
 class SHARED_FILES():
 
     def __init__(self, master, type):
@@ -2790,6 +2776,8 @@ class SHARED_FILES():
         self.quizbtn_light = ImageTk.PhotoImage(Image.open("images/quizzesfolder_light.png"))
         self.folder_dark = ImageTk.PhotoImage(Image.open("images/folder_dark.png"))
         self.folder_light = ImageTk.PhotoImage(Image.open("images/folder_light.png"))
+        self.blocker_dark = ImageTk.PhotoImage(Image.open("images/blocker_dark.png"))
+        self.blocker_light = ImageTk.PhotoImage(Image.open("images/blocker_light.png"))
         self.sidebutton_dark = ImageTk.PhotoImage(Image.open("images/side_button_dark.png"))
         self.sidebutton_light = ImageTk.PhotoImage(Image.open("images/side_button_light.png"))
         self.bg_color = self.master.cget("bg")
@@ -2838,7 +2826,7 @@ class SHARED_FILES():
         self.click_button("Folder Name", 'submit')
 
     def content_features(self, search_img, content_img, folder_img, menu_img, afg, abg,
-                         fg, bg, side_btn):
+                         fg, bg, side_btn, blocker):
         row = 0
         column = 0
 
@@ -2849,8 +2837,12 @@ class SHARED_FILES():
         search_label.place(x=30, y=12)
         content_label = Label(self.master,
                               image=content_img,
-                              border=0, )
+                              border=0)
         content_label.place(x=23, y=70)
+        blocker = Label(self.master,
+                             image=blocker,
+                             border=0)
+        blocker.place(x=100, y=130)
 
         inline_frame = Frame(content_label,
                              width=727,
@@ -2985,23 +2977,22 @@ class SHARED_FILES():
         if self.bg_color == "#121212" and self.type == 'notes':
             self.content_features(self.search_dark, self.contentbg_dark, self.folder_dark,
                                   self.threelinemenu_dark, self.bg_color, "#A6A6A6", "#F2F2F2", "#2C2C2C",
-                                  self.sidebutton_dark)
+                                  self.sidebutton_dark, self.blocker_dark)
         elif self.bg_color == "#0d9187" and self.type == 'notes':
             self.content_features(self.search_light, self.contentbg_light, self.folder_light,
                                   self.threelinemenu_light, "#F2F2F2", "#0c325c", "#0c325c", "#12c8bb",
-                                  self.sidebutton_light)
+                                  self.sidebutton_light, self.blocker_light)
         elif self.bg_color == "#121212" and self.type == 'quiz':
             self.content_features(self.search_dark, self.quizbtn_dark, self.folder_dark,
                                   self.threelinemenu_dark, self.bg_color, "#A6A6A6", "#F2F2F2", "#2C2C2C",
-                                  self.sidebutton_dark)
+                                  self.sidebutton_dark, self.blocker_dark)
         elif self.bg_color == "#0d9187" and self.type == 'quiz':
             self.content_features(self.search_light, self.quizbtn_light, self.folder_light,
                                   self.threelinemenu_light, "#F2F2F2", "#0c325c", "#0c325c", "#12c8bb",
-                                  self.sidebutton_light)
+                                  self.sidebutton_light, self.blocker_light)
 
     def side_menu(self):
         THREELINE_MENU(self.master, visit='Share')
-
 
 class THREELINE_MENU():
     def __init__(self, master, visit):
@@ -3240,7 +3231,6 @@ class THREELINE_MENU():
         else:
             general_state = ['normal', 'normal', 'normal', 'normal', 'normal', 'normal']
             side_buttons(bg_color, bg_color, bg_color, bg_color, bg_color, bg_color, general_state)
-
 
 window = Tk()
 window.resizable(False, False)
