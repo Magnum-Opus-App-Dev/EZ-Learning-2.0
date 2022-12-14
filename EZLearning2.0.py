@@ -152,7 +152,6 @@ class LOGIN():
             try:
                 global userId
                 login = auth.sign_in_with_email_and_password(self._Email.get(), self._Password.get())
-                # login = auth.sign_in_with_email_and_password('gelo@gmail.com', '1234567')
                 userId = login['localId']
                 NOTES_FOLDER(self.master)
             except Exception as e:
@@ -312,8 +311,6 @@ class NOTES_FOLDER():
         self.SB3_L = ImageTk.PhotoImage(Image.open("images/3SB_L.png"))
         self.SB4_D = ImageTk.PhotoImage(Image.open("images/4SB_D.png"))
         self.SB4_L = ImageTk.PhotoImage(Image.open("images/4SB_L.png"))
-        # self.SB5_D = ImageTk.PhotoImage(Image.open("images/5SB_D.png"))
-        # self.SB5_L = ImageTk.PhotoImage(Image.open("images/5SB_L.png"))
         self.messageBox_dark = ImageTk.PhotoImage(Image.open("images/mesbox_dark.png"))
         self.messageBox_light = ImageTk.PhotoImage(Image.open("images/mesbox_light.png"))
         self.bg_color = self.master.cget("bg")
@@ -334,8 +331,6 @@ class NOTES_FOLDER():
                         for sharedFolder in sharedFolders:
                             if sharedFolder.val()['folderId'] == file.val()['folderId']:
                                 self.rows.append(sharedFolder.val())
-
-        # print(len(self.rows))
 
         self.backframe()
         self.features()
@@ -527,11 +522,10 @@ class NOTES_FOLDER():
             shareside_btn.config(command=lambda var=data: self.share(var))
 
         if self.rows != None:
-            # print(self.rows)
             for i in self.rows:
                 line_frame = Canvas(another_frame,
                                     highlightthickness=0)
-                line_frame.grid(row=row, column=column, pady=5, padx=11)
+                line_frame.grid(row=row, column=column, pady=7, padx=10)
 
                 folder = Button(line_frame,
                                 image=folder_img,
@@ -867,9 +861,9 @@ class NOTE_FILES():
 
         inline_frame = Frame(content_label,
                              width=727,
-                             height=340,
+                             height=333,
                              bg=notes_bg)
-        inline_frame.place(x=90, y=35)
+        inline_frame.place(x=90, y=25)
 
         second_line_frame = Frame(inline_frame,
                                   bg=notes_bg)
@@ -877,7 +871,7 @@ class NOTE_FILES():
 
         inline_canvas = Canvas(second_line_frame,
                                width=727,
-                               height=315,
+                               height=333,
                                background=notes_bg,
                                highlightthickness=0)
         inline_canvas.pack(side=LEFT, fill=BOTH, expand=1)
@@ -914,7 +908,7 @@ class NOTE_FILES():
             for i in self.rows:
                 line_frame = Canvas(another_frame,
                                     highlightthickness=0)
-                line_frame.pack(pady=5, padx=11)
+                line_frame.pack(pady=4, padx=11)
 
                 folder = Label(line_frame,
                                image=indiv_file,
@@ -1232,7 +1226,6 @@ class NOTE_EDITOR():
                             relief=FLAT,
                             width=8, )
         cancel_btn.place(x=205, y=122)
-        
 
 class QUIZ_FOLDER(NOTES_FOLDER):
     def __init__(self, master):
@@ -1463,11 +1456,10 @@ class QUIZ_FOLDER(NOTES_FOLDER):
             shareside_btn.config(command=lambda var=data: self.share(var))
 
         if self.rows != None:
-            # print(self.rows)
             for i in self.rows:
                 line_frame = Canvas(another_frame,
                                     highlightthickness=0)
-                line_frame.grid(row=row, column=column, pady=5, padx=11)
+                line_frame.grid(row=row, column=column, pady=7, padx=10)
 
                 folder = Button(line_frame,
                                 image=folder_img,
@@ -1864,9 +1856,9 @@ class QUIZ_FILES(NOTE_FILES):
 
         inline_frame = Frame(content_label,
                              width=727,
-                             height=340,
+                             height=333,
                              bg=quiz_bg)
-        inline_frame.place(x=90, y=35)
+        inline_frame.place(x=90, y=25)
 
         second_line_frame = Frame(inline_frame,
                                   bg=quiz_bg)
@@ -1874,7 +1866,7 @@ class QUIZ_FILES(NOTE_FILES):
 
         inline_canvas = Canvas(second_line_frame,
                                width=727,
-                               height=315,
+                               height=333,
                                background=quiz_bg,
                                highlightthickness=0)
         inline_canvas.pack(side=LEFT, fill=BOTH, expand=1)
@@ -1917,7 +1909,7 @@ class QUIZ_FILES(NOTE_FILES):
             for i in self.rows:
                 line_frame = Canvas(another_frame,
                                     highlightthickness=0)
-                line_frame.pack(pady=5, padx=11)
+                line_frame.pack(pady=4, padx=11)
 
                 folder = Label(line_frame,
                                image=indiv_file,
@@ -2381,7 +2373,7 @@ class TAKE_QUIZ():
                        width=20,
                        background=self.list_img,
                        command=lambda data=i: dashboard(data),
-                       activebackground="Black",
+                       activebackground=self.list_img,
                        height=1).place(x=15, y=5)
                 numberQuestions += 1
 
@@ -2699,59 +2691,6 @@ class QUIZ_EDITOR():
     def side_menu(self):
         THREELINE_MENU(self.master, visit=None)
 
-class RECYCLE_BIN():
-    def __init__(self, master):
-        self.master = master
-        self.threelinemenu_dark = ImageTk.PhotoImage(Image.open("images/3line_dark.png"))
-        self.threelinemenu_light = ImageTk.PhotoImage(Image.open("images/3line_light.png"))
-        self.search_dark = ImageTk.PhotoImage(Image.open("images/search_dark.png"))
-        self.search_light = ImageTk.PhotoImage(Image.open("images/search_light.png"))
-        self.bg_color = self.master.cget("bg")
-        self.backframe()
-        self.features()
-
-        print("OPENED: Recycle Bin")
-
-    def backframe(self):
-        self.mainframe = Frame(self.master,
-                               width=900,
-                               height=500,
-                               background=self.master.cget("bg"))
-        self.mainframe.place(x=0, y=0)
-
-    def content_features(self, search_image, three_line_image):
-        bin_search = Label(self.master,
-                           image=search_image,
-                           border=0,
-                           bg=self.bg_color)
-        bin_search.place(x=30, y=12)
-
-        bin_button = Button(self.master,
-                            image=three_line_image,
-                            command=self.side_menu,
-                            border=0,
-                            bg=self.bg_color,
-                            activebackground=self.bg_color)
-        bin_button.place(x=50, y=24)
-
-        bin_entry = Entry(self.master,
-                          width=74,
-                          font=("Roboto", 12, "bold"),
-                          bg=self.bg_color,
-                          borderwidth=0,
-                          fg="#e9e9e9")
-        bin_entry.place(x=100, y=30)
-
-    def features(self):
-
-        if self.bg_color == "#121212":
-            self.content_features(self.search_dark, self.threelinemenu_dark)
-        elif self.bg_color == "#0d9187":
-            self.content_features(self.search_light, self.threelinemenu_light)
-
-    def side_menu(self):
-        THREELINE_MENU(self.master, visit='Bin')
-
 class PROFILE_SETTINGS():
     def __init__(self, master):
         self.master = master
@@ -2860,17 +2799,16 @@ class LOGOUT():
             pass
 
 class SHARED_FILES():
-
     def __init__(self, master, type):
         self.master = master
         self.threelinemenu_dark = ImageTk.PhotoImage(Image.open("images/3line_dark.png"))
         self.threelinemenu_light = ImageTk.PhotoImage(Image.open("images/3line_light.png"))
         self.search_dark = ImageTk.PhotoImage(Image.open("images/search_dark.png"))
         self.search_light = ImageTk.PhotoImage(Image.open("images/search_light.png"))
-        self.contentbg_dark = ImageTk.PhotoImage(Image.open("images/notesfolder_dark.png"))
-        self.contentbg_light = ImageTk.PhotoImage(Image.open("images/notesfolder_light.png"))
-        self.quizbtn_dark = ImageTk.PhotoImage(Image.open("images/quizzesfolder_dark.png"))
-        self.quizbtn_light = ImageTk.PhotoImage(Image.open("images/quizzesfolder_light.png"))
+        self.contentbg_dark = ImageTk.PhotoImage(Image.open("images/notesfolder_darkshared.png"))
+        self.contentbg_light = ImageTk.PhotoImage(Image.open("images/notesfolder_lightshared.png"))
+        self.quizbtn_dark = ImageTk.PhotoImage(Image.open("images/quizzesfolder_darkshared.png"))
+        self.quizbtn_light = ImageTk.PhotoImage(Image.open("images/quizzesfolder_lightshared.png"))
         self.folder_dark = ImageTk.PhotoImage(Image.open("images/folder_dark.png"))
         self.folder_light = ImageTk.PhotoImage(Image.open("images/folder_light.png"))
         self.blocker_dark = ImageTk.PhotoImage(Image.open("images/blocker_dark.png"))
@@ -2936,23 +2874,18 @@ class SHARED_FILES():
                               image=content_img,
                               border=0)
         content_label.place(x=23, y=70)
-        blocker = Label(self.master,
-                             image=blocker,
-                             border=0)
-        blocker.place(x=100, y=130)
-
         inline_frame = Frame(content_label,
-                             width=727,
+                             width=800,
                              height=340,
                              bg=bg)
-        inline_frame.place(x=90, y=65)
+        inline_frame.place(x=20, y=65)
 
         second_line_frame = Frame(inline_frame,
                                   bg=bg)
         second_line_frame.pack(fill=BOTH, expand=1)
 
         inline_canvas = Canvas(second_line_frame,
-                               width=727,
+                               width=800,
                                height=333,
                                background=bg,
                                highlightthickness=0)
@@ -2975,7 +2908,7 @@ class SHARED_FILES():
         inline_canvas.create_window((0, 0), window=another_frame, anchor='nw')
 
         def button(data, state):
-            message = tkinter.messagebox.askyesno('Error', 'Show Message Here.')
+            message = tkinter.messagebox.askyesno('Error', 'Save Shared Folder?')
             if message:
                 db.child("Share").child(data['folderId'] + data['sharedTo']).update({'status': 1})
                 SHARED_FILES(self.master, self.type)
@@ -2985,7 +2918,7 @@ class SHARED_FILES():
             for i in self.rows:
                 line_frame = Canvas(another_frame,
                                     highlightthickness=0)
-                line_frame.grid(row=row, column=column, pady=5, padx=11)
+                line_frame.grid(row=row, column=column, pady=7, padx=17)
 
                 folder = Button(line_frame,
                                 image=folder_img,
@@ -3091,7 +3024,6 @@ class SHARED_FILES():
     def side_menu(self):
         THREELINE_MENU(self.master, visit='Share')
 
-
 class PDF(FPDF):
     '''
     A class that utilized the process of converting the reviewers from pdf
@@ -3151,9 +3083,6 @@ class THREELINE_MENU():
 
     def shared_files(self):
         SHARED_FILES(self.master, 'notes')
-
-    def recycle_bin(self):
-        RECYCLE_BIN(self.master)
 
     def profile_settings(self):
         PROFILE_SETTINGS(self.master)
@@ -3277,26 +3206,6 @@ class THREELINE_MENU():
             else:
                 pass
 
-            Recycle_Bin = Button(threeline_menu,
-                                 text="     Recycle Bin",
-                                 anchor=W, font=fontstyle,
-                                 command=self.recycle_bin,
-                                 border=0,
-                                 fg=fg_color,
-                                 activeforeground=activefg,
-                                 bg=bin,
-                                 activebackground=activebg,
-                                 width=20,
-                                 disabledforeground=fg_color,
-                                 state=no_state[3])
-            Recycle_Bin.place(x=0, y=219)
-
-            if no_state[3] != 'disabled':
-                Recycle_Bin.bind("<Enter>", lambda _: on_entera(None, Recycle_Bin))
-                Recycle_Bin.bind("<Leave>", lambda _: on_leavea(None, Recycle_Bin))
-            else:
-                pass
-
             Profile_Settings = Button(threeline_menu,
                                       text="     Profile Settings",
                                       anchor=W,
@@ -3310,7 +3219,7 @@ class THREELINE_MENU():
                                       width=20,
                                       disabledforeground=fg_color,
                                       state=no_state[4])
-            Profile_Settings.place(x=0, y=267)
+            Profile_Settings.place(x=0, y=219)
 
             if no_state[4] != 'disabled':
                 Profile_Settings.bind("<Enter>", lambda _: on_entera(None, Profile_Settings))
@@ -3331,7 +3240,7 @@ class THREELINE_MENU():
                             disabledforeground=fg_color,
                             width=20,
                             state=no_state[5])
-            Logout.place(x=0, y=315)
+            Logout.place(x=0, y=267)
 
             if no_state[5] != 'disabled':
                 Logout.bind("<Enter>", lambda _: on_entera(None, Logout))
