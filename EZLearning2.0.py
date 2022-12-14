@@ -103,7 +103,7 @@ class LOGIN():
                                                  text="Login",
                                                  border_width=2,
                                                  fg_color=None,
-                                                 command=self.login)
+                                                 command=self.quicklogin)
         self.enter_btn.place(x=270, y=230)
 
         self.signup_btn = customtkinter.CTkButton(self.template,
@@ -2811,7 +2811,7 @@ class PROFILE_SETTINGS():
                          image=user_icon,
                          border=0,
                          bg=self.bg_color)
-        usericon.place(x=280, y=50)
+        usericon.place(x=410, y=95)
 
         acc_username = customtkinter.CTkLabel(self.master,
                                               text="Username: ")
