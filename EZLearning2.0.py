@@ -1,11 +1,12 @@
 import json, uuid, os, customtkinter, pyrebase, random, datetime
+from fpdf import FPDF
 from tkinter import *
+from tkinter import filedialog
 from PIL import ImageTk, Image
 import tkinter.messagebox
 from tkinter import ttk
 from pygame import FULLSCREEN
 
-from model.Scores import Scores
 import shutup;
 
 shutup.please()
@@ -17,6 +18,7 @@ from model.Topic import Topic
 from model.User import User
 from model.Shared import Share
 from model.Quiz import Quiz
+from model.Scores import Scores
 
 from tkinter import messagebox
 
@@ -44,7 +46,7 @@ firebase = pyrebase.initialize_app(config)
 auth = firebase.auth()
 db = firebase.database()
 userId = ''
-# total_questions = 1
+title = "EZ Learning 2.0"
 
 
 customtkinter.set_appearance_mode("Light")
@@ -312,7 +314,6 @@ class NOTES_FOLDER():
         self.SB4_L = ImageTk.PhotoImage(Image.open("images/4SB_L.png"))
         # self.SB5_D = ImageTk.PhotoImage(Image.open("images/5SB_D.png"))
         # self.SB5_L = ImageTk.PhotoImage(Image.open("images/5SB_L.png"))
-
         self.messageBox_dark = ImageTk.PhotoImage(Image.open("images/mesbox_dark.png"))
         self.messageBox_light = ImageTk.PhotoImage(Image.open("images/mesbox_light.png"))
         self.bg_color = self.master.cget("bg")
@@ -1011,9 +1012,6 @@ class NOTE_FILES():
                     db.child("Editors").child(edit.key()).remove()
         NOTE_FILES(self.master, self.data)
 
-    def share(self, var):
-        pass
-
     def notes_edit(self, var):
         NOTE_EDITOR(self.master, var)
 
@@ -1032,6 +1030,8 @@ class NOTE_EDITOR():
         self.SB6_L = ImageTk.PhotoImage(Image.open("images/6SB_L.png"))
         self.SB7_D = ImageTk.PhotoImage(Image.open("images/7SB_D.png"))
         self.SB7_L = ImageTk.PhotoImage(Image.open("images/7SB_L.png"))
+        self.messageBox_dark = ImageTk.PhotoImage(Image.open("images/mesbox_dark.png"))
+        self.messageBox_light = ImageTk.PhotoImage(Image.open("images/mesbox_light.png"))
 
         self.data = data
         self.contents = ''
@@ -1085,7 +1085,8 @@ class NOTE_EDITOR():
                           width=78,
                           font=("Roboto", 12),
                           fg=foreground,
-                          borderwidth=0)
+                          borderwidth=0,
+                          wrap=WORD)
         Text_Entry.insert("end-1c", self.contents)
         Text_Entry.place(x=135, y=80)
         text_label = Label(self.master,
@@ -1138,7 +1139,100 @@ class NOTE_EDITOR():
         THREELINE_MENU(self.master, visit=None)
 
     def export(self):
-        pass
+
+        with open("Text_Files/gen_pdf.txt", "w") as f:
+            f.write(self.contents)
+
+        def submit():
+            foldername = ''
+
+            folders = db.child('Folders').get()
+            if folders.val() is not None:
+                for folder in folders:
+                    if folder.val()['folderId'] == self.data['folderId']:
+                        foldername = folder.val()['name']
+
+            filename =f"{add_entry.get()}.pdf"
+            if add_entry.get() != "":
+                add_entry.delete(0, END)
+                pdf = PDF()
+                pdf.set_title(title)
+                pdf.print_chapter(foldername, self.data['name'],"Text_Files/gen_pdf.txt")
+                current_directory = filedialog.askdirectory()
+                if current_directory == "": pass
+                else:
+                    file_path = os.path.join(current_directory,filename)
+                    pdf.output(file_path)
+
+                    self.main_frame.destroy()
+                    NOTE_EDITOR(self.master, self.data)
+
+            else: tkinter.messagebox.showerror("ERROR","Please complete the required field.")
+
+        def cancel():
+            self.main_frame.destroy()
+            NOTE_EDITOR(self.master, self.data)
+        
+        if self.master.cget("bg") == "#121212":
+            mesbox_image = self.messageBox_dark
+            fg1 = "Black"
+            bg1 = "#7a7a7a"
+            bg2 = "#959595"
+            bg3 = "#4b4949"
+        else:
+            mesbox_image = self.messageBox_light
+            fg1 = "White"
+            bg1 = "#005f60"
+            bg2 = "#047a7b"
+            bg3 = "#014344"
+
+        self.main_frame = Frame(self.master,
+                                width=350,
+                                height=200,
+                                background=self.master.cget("bg"))
+        self.main_frame.place(x=276, y=170)
+        search_label = Label(self.main_frame,
+                             image=mesbox_image,
+                             border=0,
+                             bg=self.master.cget("bg"))
+        search_label.place(x=2, y=2)
+        add_text = Label(self.main_frame,
+                         text=title,
+                         font=("Roboto", 13),
+                         bg=bg1,
+                         borderwidth=0,
+                         fg=fg1)
+        add_text.place(x=115, y=35)
+        add_entry = Entry(self.main_frame,
+                          width=24,
+                          font=("Roboto", 12),
+                          bg=bg2,
+                          borderwidth=0,
+                          fg=fg1)
+        add_entry.place(x=65, y=69)
+        okay_btn = Button(self.main_frame,
+                          text='Submit',
+                          font=("Roboto", 11),
+                          command= submit,
+                          fg=fg1,
+                          bg=bg3,
+                          activebackground=bg3,
+                          borderwidth=0,
+                          relief=FLAT,
+                          width=8, )
+        okay_btn.place(x=74, y=122)
+        cancel_btn = Button(self.main_frame,
+                            text='Cancel',
+                            command=cancel,
+                            font=("Roboto", 11),
+                            fg=fg1,
+                            bg=bg1,
+                            activebackground=bg1,
+                            borderwidth=0,
+                            relief=FLAT,
+                            width=8, )
+        cancel_btn.place(x=205, y=122)
+        
 
 class QUIZ_FOLDER(NOTES_FOLDER):
     def __init__(self, master):
@@ -2669,6 +2763,7 @@ class PROFILE_SETTINGS():
         self.user_icon_light = ImageTk.PhotoImage(Image.open("images/defaultuserprofile_light.png"))
         self.user_name_dark = ImageTk.PhotoImage(Image.open("images/username_dark.png"))
         self.user_name_light = ImageTk.PhotoImage(Image.open("images/username_light.png"))
+        self.bg_color = self.master.cget("bg")
         self.backframe()
         self.side_menu_icon()
         print("OPENED: Profile Settings")
@@ -2677,22 +2772,24 @@ class PROFILE_SETTINGS():
         self.mainframe = Frame(self.master,
                                width=900,
                                height=500,
-                               background=self.master.cget("bg"))
+                               background= self.bg_color)
         self.mainframe.place(x=0, y=0)
 
-    def side_menu_icon_content(self, three_line_menu, settings_template):
+    def side_menu_icon_content(self, three_line_menu, settings_template, icon, name):
         profile_menu = Button(self.master,
                               image=three_line_menu,
                               command=self.side_menu,
                               border=0,
                               bg=self.master.cget("bg"),
-                              activebackground=self.master.cget("bg"))
+                              activebackground= self.bg_color)
         profile_menu.place(x=5, y=8)
 
         profilesettings_temp = Label(self.master,
                                      image=settings_template,
                                      border=0, )
         profilesettings_temp.place(x=240, y=45)
+
+        self.profile_content(icon, name)
 
     def profile_content(self, user_icon, user_name):
         edit_profile = customtkinter.CTkLabel(self.master,
@@ -2704,10 +2801,10 @@ class PROFILE_SETTINGS():
                          image=user_icon,
                          border=0,
                          bg=self.bg_color)
-        usericon.place(x=30, y=12)
+        usericon.place(x=280, y=50)
 
         acc_username = customtkinter.CTkLabel(self.master,
-                                              text="Username:")
+                                              text="Username: ")
         acc_username.place(x=112, y=65)
 
         username = Label(self.master,
@@ -2717,14 +2814,14 @@ class PROFILE_SETTINGS():
         username.place(x=30, y=12)
 
         acc_gender = customtkinter.CTkLabel(self.master,
-                                            text="Gender:")
+                                            text="Email: ")
         acc_gender.place(x=112, y=65)
 
         def savechange(self):
             pass
 
         savechanges_btn = Button(self.master,
-                                 text='Save Changes',
+                                 text='Delete Account',
                                  font=("Roboto", 11),
                                  command=savechange,
                                  borderwidth=0,
@@ -2734,9 +2831,9 @@ class PROFILE_SETTINGS():
 
     def side_menu_icon(self):
         if self.master.cget("bg") == "#121212":
-            self.side_menu_icon_content(self.threelinemenu_dark, self.settings_template_dark)
+            self.side_menu_icon_content(self.threelinemenu_dark, self.settings_template_dark, self.user_icon_dark, self.user_name_dark)
         elif self.master.cget("bg") == "#0d9187":
-            self.side_menu_icon_content(self.threelinemenu_light, self.settings_template_light)
+            self.side_menu_icon_content(self.threelinemenu_light, self.settings_template_light, self.user_icon_light, self.user_name_light)
 
     def side_menu(self):
         THREELINE_MENU(self.master, visit='Profile')
@@ -2993,6 +3090,48 @@ class SHARED_FILES():
 
     def side_menu(self):
         THREELINE_MENU(self.master, visit='Share')
+
+
+class PDF(FPDF):
+    '''
+    A class that utilized the process of converting the reviewers from pdf
+    '''
+    def header(self):
+        self.set_font('Arial', 'B', 15)
+        w = self.get_string_width(title) + 6
+        self.set_x((210 - w) / 2)
+        self.set_draw_color(72, 163, 169)
+        self.set_fill_color(244, 158, 156)
+        self.set_text_color(4, 92, 137)
+        self.set_line_width(1)
+        self.cell(w, 9, title, 1, 1, 'C', 1)
+        self.ln(10)
+
+    def footer(self):
+        self.set_y(-15)
+        self.set_font('Arial', 'I', 8)
+        self.set_text_color(128)
+        self.cell(0, 10, 'Page ' + str(self.page_no()), 0, 0, 'C')
+
+    def chapter_title(self, sub, topic):
+        self.set_font('Arial', '', 12)
+        self.set_fill_color(200, 220, 255)
+        self.cell(0, 6, '%s : %s' % (sub, topic), 0, 1, 'L', 1)
+        self.ln(4)
+
+    def chapter_body(self, name):
+        with open(name, 'rb') as fh:
+            txt = fh.read().decode('latin-1')
+        self.set_font('Arial', '', 12)
+        self.multi_cell(0, 5, txt)
+        self.ln()
+        self.set_font('', 'I')
+        self.cell(0, 5, '(end of reviewer)')
+
+    def print_chapter(self, subject, topic, name):
+        self.add_page()
+        self.chapter_title(subject, topic)
+        self.chapter_body(name)
 
 class THREELINE_MENU():
     def __init__(self, master, visit):
